@@ -4,6 +4,7 @@
 
 ```bash
 sudo npm i -g @vue/cli --scripts-prepend-node-path
+vue create project
 ```
 
 ## hard reset
