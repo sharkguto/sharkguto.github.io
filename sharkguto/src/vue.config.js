@@ -12,5 +12,8 @@ module.exports = {
     optimization: {
       splitChunks: false,
     },
+    css: {
+      extract: false,
+    },
   },
 };

@@ -3,8 +3,15 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 
-Vue.config.productionTip = true;
-Vue.config.
+// Vue.config.productionTip = true;
+// Vue.config.configureWebpack = {
+//   optimization: {
+//     splitChunks: false,
+//   },
+//   css: {
+//     extract: false,
+//   },
+// };
 
 new Vue({
   router,

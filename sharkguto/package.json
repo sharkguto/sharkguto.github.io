@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build && cp -r dist/* ../",
+    "build": "vue-cli-service build && rm -rf ../js/ ../css/ ../img/ && cp -r dist/* ../",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
   },
@@ -31,7 +31,8 @@
   "eslintConfig": {
     "root": true,
     "env": {
-      "node": true
+      "node": true,
+      "es6": true
     },
     "extends": [
       "plugin:vue/essential",
