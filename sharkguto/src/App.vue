@@ -1,8 +1,12 @@
 <template>
-  <div id="app">
+  <div id="app" class="container-fluid">
     <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <div class="row">
+        <div class="col-8">
+          <router-link to="/">Home</router-link>
+          <router-link to="/about">About</router-link>
+        </div>
+      </div>
     </div>
     <router-view/>
   </div>
