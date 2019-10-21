@@ -5,7 +5,7 @@ import store from '../store';
 
 Vue.use(VueRouter);
 
-function requireAuth (to, from, next) {
+function requireAuth(to, from, next) {
   if (!store.getters.isLogged()) {
     next({
       path: '/login',
