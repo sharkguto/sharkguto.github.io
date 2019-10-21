@@ -10,7 +10,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css';
 Vue.use(BootstrapVue);
 
 
-// Vue.config.productionTip = true;
+Vue.config.productionTip = false;
 // Vue.config.configureWebpack = {
 //   optimization: {
 //     splitChunks: false,

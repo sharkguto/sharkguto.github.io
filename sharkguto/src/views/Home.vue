@@ -1,6 +1,6 @@
 <template>
   <div>
-    <img alt="Vue logo" src="../assets/logo.png">
+    <img alt="GMF-tech logo" class="img-fluid" src="../assets/logo.png">
     <HelloWorld :msg="msg"/>
   </div>
 </template>

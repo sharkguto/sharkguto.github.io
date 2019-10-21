@@ -1,8 +1,21 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
+import store from '../store';
 
 Vue.use(VueRouter);
+
+function requireAuth (to, from, next) {
+  if (!store.getters.isLogged()) {
+    next({
+      path: '/login',
+      query: { redirect: to.fullPath },
+    });
+  } else {
+    next();
+  }
+}
+
 
 const routes = [
   {
@@ -13,6 +26,7 @@ const routes = [
   {
     path: '/about',
     name: 'about',
+    beforeEnter: requireAuth,
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -21,6 +35,7 @@ const routes = [
   {
     path: '/products',
     name: 'products',
+    beforeEnter: requireAuth,
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
