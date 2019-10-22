@@ -3,15 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "dev": "NODE_ENV=development vue-cli-service serve --host localhost --scripts-prepend-node-path",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build && rm -rf ../js/ ../css/ ../img/ && cp -r dist/* ../",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.4",
     "core-js": "^3.3.3",
+    "cross-env": "^6.0.3",
     "vue": "^2.6.10",
     "vue-router": "^3.0.6",
     "vuex": "^3.0.1"
@@ -29,7 +32,9 @@
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
     "vue-template-compiler": "^2.6.10",
-    "webpack-dev-server": "^3.8.2"
+    "webpack-dev-server": "^3.8.2",
+    "webpack-cli": "^3.3.9",
+    "cross-env": "^6.0.3"
   },
   "eslintConfig": {
     "root": true,

@@ -33,6 +33,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 ```bash
 sudo npm i -g @vue/cli --scripts-prepend-node-path
 vue create project
+npm install axios --save
 ```
 
 ## hard reset

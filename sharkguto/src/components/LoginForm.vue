@@ -6,7 +6,7 @@
  */
 
 <template>
-    <div>
+    <div class="caravela-login">
         <h4>Login</h4>
         <form>
             <label for="email" >E-Mail Address</label>
@@ -28,7 +28,16 @@
     </div>
 </template>
 
+<style scoped>
+  .caravela-login {
+    z-index: 200;
+  }
+</style>
+
 <script>
+import axios from 'axios';
+import store from '../store';
+
 export default {
   data() {
     return {
@@ -40,15 +49,23 @@ export default {
     handleSubmit(e) {
       e.preventDefault();
       if (this.password.length > 0) {
-        this.$http.post('http://localhost:3000/login', {
-          email: this.email,
-          password: this.password,
+        console.log(this.password.length);
+        // const auth = `Basic ${btoa(`${this.username}:${this.password}`)}`;
+        axios.post('https://5daf0f29f2946f001481d271.mockapi.io/v1/login',
+          {
+            auth: {
+              username: this.username,
+              password: this.password,
+            },
+          }).then((response) => {
+          console.log(`SUCCESS ${response}`);
+          if (response.data.success === true) {
+            store.state.isLogged = true;
+            console.log(store.state.isLogged);
+          }
         })
-          .then((response) => {
-            console.log(response);
-          })
           .catch((error) => {
-            console.error(error.response);
+            console.error(`ERROR ${error.response}`);
           });
       }
     },

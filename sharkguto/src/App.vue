@@ -4,9 +4,10 @@
       <div class="row">
         <div class="col-8">
           <router-link to="/">Home</router-link>
-          <router-link to="/about">About</router-link>
-          <router-link to="/products">Products</router-link>
-          <router-link to="/login">Login</router-link>
+          <router-link v-if="$store.getters.isLogged" to="/about">About</router-link>
+          <router-link v-if="$store.getters.isLogged" to="/products">Products</router-link>
+          <router-link v-if="!$store.getters.isLogged" to="/login">Login</router-link>
+          <router-link v-if="$store.getters.isLogged" to="/logoff">Logoff</router-link>
         </div>
       </div>
     </div>
