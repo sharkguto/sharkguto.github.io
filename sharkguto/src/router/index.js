@@ -7,10 +7,10 @@ import store from '../store';
 Vue.use(VueRouter);
 
 function requireAuth(to, from, next) {
-  if (!store.getters.isLogged()) {
+  if (!store.getters.isLogged) {
     next({
       path: '/login',
-      query: { redirect: to.fullPath },
+      query: { redirect: to.name },
     });
   } else {
     next();
@@ -18,8 +18,12 @@ function requireAuth(to, from, next) {
 }
 
 function logoff(to, from, next) {
-  store.state.isLogged = false;
-  next();
+  if (store.getters.isLogged) {
+    store.commit('logoff');
+    next({ path: '/login' });
+  } else {
+    next();
+  }
 }
 
 
@@ -59,6 +63,7 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: Login,
+    beforeEnter: logoff,
     // component: () => import(/* webpackChunkName: "about" */ '../views/Login.vue'),
   },
 ];
