@@ -62,7 +62,7 @@ export default {
             // store.actions.loginAction(true);
             store.commit('login');
             const urlcall = this.$route.query.redirect ? this.$route.query.redirect : 'home';
-            router.push(urlcall);
+            router.push({ name: urlcall });
           }
         })
           // eslint-disable-next-line no-unused-vars
