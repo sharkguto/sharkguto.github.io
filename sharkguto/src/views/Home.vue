@@ -15,7 +15,7 @@ export default {
   name: 'home',
   data() {
     return {
-      msg: `Welcome to Your Vue.js App ${store.getters.counter}`,
+      msg: `${store.getters.counter}`,
     };
   },
   components: {

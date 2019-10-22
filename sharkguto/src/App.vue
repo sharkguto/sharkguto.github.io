@@ -3,17 +3,54 @@
     <div id="nav">
       <div class="row">
         <div class="col-8">
-          <router-link to="/">Home</router-link>
-          <router-link v-if="$store.getters.isLogged" to="/about">About</router-link>
-          <router-link v-if="$store.getters.isLogged" to="/products">Products</router-link>
-          <router-link v-if="!$store.getters.isLogged" to="/login">Login</router-link>
-          <router-link v-if="$store.getters.isLogged" to="/logoff">Logoff</router-link>
+          <router-link to="/">{{$t("Home")}}</router-link>
+          <router-link v-if="$store.getters.isLogged" to="/about">{{$t("About")}}</router-link>
+          <router-link v-if="$store.getters.isLogged" to="/products">
+            {{$t("Products")}}
+          </router-link>
+          <router-link v-if="!$store.getters.isLogged" to="/login">{{$t("Login")}}</router-link>
+          <router-link v-if="$store.getters.isLogged" to="/logoff">{{$t("Logoff")}}</router-link>
+        </div>
+        <div class="col-4">
+          <div class="row">
+            <button class="btn col-4" v-for="entry in languages"
+          :key="entry.title" @click="changeLocale(entry.language)">
+                <country-flag :country="entry.flag" v-bind:squared=false size='small'/>
+                 {{ $t(entry.title) }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
-    <router-view/>
+    <div class="row">
+      <div class="col-12">
+        <router-view/>
+      </div>
+    </div>
   </div>
 </template>
+
+<script>
+
+import i18n from './translate';
+
+export default {
+  name: 'app',
+  data() {
+    return {
+      languages: [
+        { flag: 'us', language: 'en', title: 'English' },
+        { flag: 'br', language: 'br', title: 'Portuguese' },
+      ],
+    };
+  },
+  methods: {
+    changeLocale(locale) {
+      i18n.locale = locale;
+    },
+  },
+};
+</script>
 
 <style>
 #app {

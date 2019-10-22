@@ -3,7 +3,7 @@
 <template>
   <div class="row">
     <h1 v-if="!$store.getters.isLogged">{{ $store.getters.isLogged }}</h1>
-    <h1 v-if="$store.getters.isLogged">{{ msg }}</h1>
+    <h1 v-if="$store.getters.isLogged">{{ $t('welcomeMsg') }} {{ msg }}</h1>
   </div>
 </template>
 
