@@ -13,6 +13,7 @@ function requireAuth(to, from, next) {
       query: { redirect: to.name },
     });
   } else {
+    store.commit('countPlus');
     next();
   }
 }
@@ -20,6 +21,7 @@ function requireAuth(to, from, next) {
 function logoff(to, from, next) {
   if (store.getters.isLogged) {
     store.commit('logoff');
+    store.commit('countReset');
     next({ path: '/login' });
   } else {
     next();
@@ -32,6 +34,8 @@ const routes = [
     path: '/',
     name: 'home',
     component: Home,
+    beforeEnter: (to, from, next) => { store.commit('countPlus'); next(); },
+
   },
   {
     path: '/logoff',

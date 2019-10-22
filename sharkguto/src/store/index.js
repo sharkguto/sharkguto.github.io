@@ -14,6 +14,12 @@ export default new Vuex.Store({
     incrementCounter(state, payload) {
       state.count += payload;
     },
+    countPlus(state) {
+      state.count += 1;
+    },
+    countReset(state) {
+      state.count = 0;
+    },
     login(state) {
       state.isLogged = true;
     },
@@ -23,6 +29,7 @@ export default new Vuex.Store({
   },
   getters: {
     isLogged: state => state.isLogged,
+    counter: state => state.count,
   },
   actions: {
     incrementAction(context, payload) {

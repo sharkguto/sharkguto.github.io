@@ -8,13 +8,14 @@
 <script>
 // @ is an alias to /src
 import HelloWorld from '../components/HelloWorld.vue';
+import store from '../store';
 
 
 export default {
   name: 'home',
   data() {
     return {
-      msg: 'Welcome to Your Vue.js App',
+      msg: `Welcome to Your Vue.js App ${store.getters.counter}`,
     };
   },
   components: {
