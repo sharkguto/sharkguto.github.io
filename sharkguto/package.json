@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "NODE_ENV=development vue-cli-service serve --host localhost --scripts-prepend-node-path",
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --host localhost",
     "build": "vue-cli-service build && rm -rf ../js/ ../css/ ../img/ && cp -r dist/* ../",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
@@ -16,6 +16,7 @@
     "core-js": "^3.3.3",
     "cross-env": "^6.0.3",
     "vue": "^2.6.10",
+    "vue-i18n": "^8.15.0",
     "vue-router": "^3.0.6",
     "vuex": "^3.0.1",
     "vuex-persistedstate": "^2.5.4"

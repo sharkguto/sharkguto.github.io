@@ -1,16 +1,18 @@
 import Vue from 'vue';
 import BootstrapVue from 'bootstrap-vue';
+import VueI18n from 'vue-i18n';
 import App from './App.vue';
 import router from './router';
 import store from './store';
-
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 
+Vue.use(VueI18n);
 Vue.use(BootstrapVue);
 
 
-Vue.config.productionTip = false;
+Vue.config.productionTip = true;
+
 // Vue.config.configureWebpack = {
 //   optimization: {
 //     splitChunks: false,

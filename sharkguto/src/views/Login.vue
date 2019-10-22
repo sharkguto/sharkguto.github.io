@@ -11,7 +11,7 @@
 import LoginForm from '../components/LoginForm.vue';
 
 export default {
-  name: 'home',
+  name: 'login',
   data() {
     return {
       msg: 'Welcome to Your Vue.js App',
