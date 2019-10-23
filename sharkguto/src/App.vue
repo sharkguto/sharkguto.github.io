@@ -32,6 +32,7 @@
 
 <script>
 
+import store from './store';
 import i18n from './translate';
 
 export default {
@@ -46,6 +47,7 @@ export default {
   },
   methods: {
     changeLocale(locale) {
+      store.commit('setLanguage', locale);
       i18n.locale = locale;
     },
   },
