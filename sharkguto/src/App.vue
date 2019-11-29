@@ -37,6 +37,18 @@ import i18n from './translate';
 
 export default {
   name: 'app',
+  metaInfo: {
+    meta: [
+      { charset: 'utf-8' },
+      { name: 'viewport', content: 'width=device-width,initial-scale=1.0' },
+    ],
+    title: 'GMF-TECH',
+    titleTemplate: '%s - ship',
+    htmlAttrs: {
+      lang: store.getters.locale,
+      amp: true,
+    },
+  },
   data() {
     return {
       languages: [

@@ -3,6 +3,8 @@ import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
 import Login from '../views/Login.vue';
 import store from '../store';
+import About from '../views/About.vue';
+import Products from '../views/Products.vue';
 
 Vue.use(VueRouter);
 
@@ -49,7 +51,9 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    // component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    // component: () => import('../views/About.vue'), // for chunk
+    component: About,
   },
   {
     path: '/products',
@@ -58,7 +62,9 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "products" */ '../views/Products.vue'),
+    // component: () => import(/* webpackChunkName: "products" */ '../views/Products.vue'),
+    // component: () => import('../views/Products.vue'),
+    component: Products,
   },
   {
     path: '/login',
