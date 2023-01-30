@@ -19,5 +19,5 @@ onUpdated(() => {
 </script>
 
 <template>
-    <div>News for {{account}}</div>
+    <div><p v-t="'news'"></p><p>{{ account }}</p></div>
 </template>

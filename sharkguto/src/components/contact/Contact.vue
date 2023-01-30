@@ -1,3 +1,3 @@
 <template>
-    <div>Contact</div>
+    <div v-t="'contact'"></div>
 </template>
