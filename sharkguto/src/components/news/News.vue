@@ -19,5 +19,6 @@ onUpdated(() => {
 </script>
 
 <template>
-    <div><p v-t="'news'"></p><p>{{ account }}</p></div>
+    <!-- <div><p v-t="'news'"></p><p>{{ account }}</p></div> -->
+    <div> {{ $t("news") }} {{ account }}</div>
 </template>
