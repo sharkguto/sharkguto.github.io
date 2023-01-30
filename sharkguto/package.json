@@ -12,7 +12,8 @@
         "@oruga-ui/oruga-next": "^0.5.10",
         "bulma": "^0.9.4",
         "sass": "^1.57.1",
-        "vue": "^3.2.45"
+        "vue": "^3.2.45",
+        "vue-router": "^4.1.6"
     },
     "devDependencies": {
         "@vitejs/plugin-vue": "^4.0.0",

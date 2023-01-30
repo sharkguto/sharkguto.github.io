@@ -1,15 +1,22 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import { ref, reactive } from 'vue'
+
+
+// ref para valores primitivos
+// reactive para objetos json
+const accname = ref('gmf-tech');
+
+
 </script>
 
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/favicon.svg" class="logo" alt="Vite logo" />
-    </a>
-
+  <div id="nav">
+    <router-link to="/">Home</router-link> |
+    <router-link :to="{ name: 'news', params: { account: accname } }"> {{ accname }}</router-link>
+    <input v-model="accname" placeholder="edit me" />
+    <router-link to="/contact">Contact</router-link>
   </div>
-  <HelloWorld msg="Vite + Vue" />
+  <router-view />
 </template>
 
 <style scoped>
