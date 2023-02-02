@@ -1,24 +1,22 @@
 <script setup>
-import { ref, onUpdated , onMounted} from 'vue'
-import {useRoute} from 'vue-router'
+import { ref, onUpdated, onMounted } from "vue";
+import { useRoute } from "vue-router";
 
-let route = useRoute();
-console.log(route);
-let account = ref(route.params.account);
+const route = useRoute();
+const account = ref(route.params.account);
 
 onMounted(() => {
     console.log("onMounted news");
     account.value = route.params.account;
-})
+});
 
 onUpdated(() => {
     console.log("onUpdated news");
     account.value = route.params.account;
-})
-
+});
 </script>
 
 <template>
     <!-- <div><p v-t="'news'"></p><p>{{ account }}</p></div> -->
-    <div> {{ $t("news") }} {{ account }}</div>
+    <div>{{ $t ("news") }} {{ account }}</div>
 </template>

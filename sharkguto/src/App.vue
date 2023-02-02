@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import i18n from "@/locales";
+import { i18n } from "@/locales";
 
 const languages = [
   { flag: "us", language: "en-us", title: "English" },
@@ -17,7 +17,6 @@ function changeLocale (lang_locale) {
 
   console.log(lang_locale);
   i18n.global.locale.value = lang_locale;
-  //t.locale = lang_locale;
 }
 </script>
 

@@ -4,8 +4,8 @@ import Oruga from "@oruga-ui/oruga-next";
 import "@oruga-ui/oruga-next/dist/oruga.css";
 import CountryFlag from "vue-country-flag-next";
 
-import router from "@/router";
-import i18n from "@/locales";
+import { router } from "@/router";
+import { i18n } from "@/locales";
 
 import App from "@/App.vue";
 
