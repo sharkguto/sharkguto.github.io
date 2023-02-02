@@ -19,6 +19,7 @@
         "pinia": "^2.0.29",
         "sass": "^1.57.1",
         "vue": "^3.2.45",
+        "vue-country-flag-next": "^2.3.2",
         "vue-echarts": "^6.5.2",
         "vue-i18n": "^9.2.2",
         "vue-router": "^4.1.6"

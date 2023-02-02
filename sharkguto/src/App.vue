@@ -1,11 +1,23 @@
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 
+
+const languages = [
+  { flag: 'us', language: 'en-us', title: 'English' },
+  { flag: 'br', language: 'pt-br', title: 'Portuguese' },
+];
 
 // ref para valores primitivos
 // reactive para objetos json
 const accname = ref('gmf-tech');
 
+function changeLocale (lang_locale) {
+  //store.commit('setLanguage', locale);
+
+  console.log(lang_locale);
+  t.locale = lang_locale;
+
+}
 
 </script>
 
@@ -15,6 +27,14 @@ const accname = ref('gmf-tech');
     <router-link :to="{ name: 'news', params: { account: accname } }"> {{ accname }}</router-link>
     <input v-model="accname" placeholder="edit me" />
     <router-link to="/contact">Contact</router-link>
+    <div class="col-4">
+      <div class="row">
+        <button class="btn col-4" v-for="entry in languages" :key="entry.title" @click="changeLocale(entry.language)">
+          <country-flag :country="entry.flag" v-bind:squared=false size='small' />
+          {{ $t (entry.title) }}
+        </button>
+      </div>
+    </div>
   </div>
   <router-view />
 </template>
