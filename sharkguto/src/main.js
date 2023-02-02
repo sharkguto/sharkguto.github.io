@@ -5,10 +5,9 @@ import "@oruga-ui/oruga-next/dist/oruga.css";
 import CountryFlag from "vue-country-flag-next";
 
 import router from "@/router";
+import i18n from "@/locales";
 
 import App from "@/App.vue";
-
-import i18n from "@/locales";
 
 const app = createApp(App);
 app.use(Oruga);
