@@ -1,4 +1,4 @@
-from js import document, window
+from js import document, window, console
 from pyodide.ffi import create_proxy
 
 # Lista para manter vivos os proxies dos event listeners
@@ -13,6 +13,7 @@ def remove_loading_screen(*args):
 # Quando o PyScript estiver pronto, remove o loading
 window.addEventListener("py-script:ready", remove_loading_screen)
 
+console.log("Olá, mundo!")
 
 # Função que será chamada quando o DOM estiver completamente carregado
 def on_dom_loaded(*args):
