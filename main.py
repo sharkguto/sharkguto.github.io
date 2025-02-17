@@ -1,9 +1,12 @@
 from js import document
+from pyodide.ffi import create_proxy
 
-# Injetando estilos CSS via Python
+# Lista global para armazenar os proxies e evitar que sejam destruídos
+event_proxies = []
+
+# --- Injetando estilos CSS via Python ---
 style = document.createElement("style")
 style.innerHTML = """
-/* (Inclua aqui os estilos para sua interface, conforme seu exemplo anterior) */
 body {
   background: #2e2e2e;
   font-family: Arial, sans-serif;
@@ -24,17 +27,100 @@ body {
   flex-direction: column;
   overflow: hidden;
 }
-/* ... demais estilos ... */
+.title-bar {
+  background: #007BFF;
+  color: #fff;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.title-bar .title {
+  font-size: 18px;
+  font-weight: bold;
+}
+.window-controls {
+  display: flex;
+  gap: 10px;
+}
+.window-controls span {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  line-height: 20px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.3);
+  cursor: pointer;
+  user-select: none;
+}
+.menu-bar {
+  background: #e0e0e0;
+  padding: 8px;
+  display: flex;
+  gap: 15px;
+  border-bottom: 1px solid #ccc;
+}
+.menu-bar button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+.menu-bar button:hover {
+  background: #ccc;
+}
+.content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+.content section {
+  display: none;
+}
+.content section.active {
+  display: block;
+}
+form label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+form input,
+form textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+form button {
+  margin-top: 15px;
+  padding: 10px;
+  background: #007BFF;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+#resultado {
+  margin-top: 15px;
+  font-weight: bold;
+}
 """
 document.head.appendChild(style)
 
-# Criando a interface "desktop" via Python
+# --- Criando a interface "desktop" via Python ---
 
-# Container principal
+# Cria o container principal
 app_window = document.createElement("div")
 app_window.className = "app-window"
 
-# Barra de título
+# Cria a barra de título
 title_bar = document.createElement("div")
 title_bar.className = "title-bar"
 app_window.appendChild(title_bar)
@@ -44,45 +130,48 @@ title_text.className = "title"
 title_text.innerText = "Tech Outsource"
 title_bar.appendChild(title_text)
 
-# Controles da janela
+# Cria os controles da janela
 window_controls = document.createElement("div")
 window_controls.className = "window-controls"
 title_bar.appendChild(window_controls)
-
-minimize_btn = document.createElement("span")
-minimize_btn.innerText = "_"
 
 
 def minimize_action(event):
     content.style.display = "none"
 
 
-minimize_btn.addEventListener("click", minimize_action)
+minimize_proxy = create_proxy(minimize_action)
+event_proxies.append(minimize_proxy)
+minimize_btn = document.createElement("span")
+minimize_btn.innerText = "_"
+minimize_btn.addEventListener("click", minimize_proxy)
 window_controls.appendChild(minimize_btn)
-
-maximize_btn = document.createElement("span")
-maximize_btn.innerText = "[]"
 
 
 def maximize_action(event):
     content.style.display = "block"
 
 
-maximize_btn.addEventListener("click", maximize_action)
+maximize_proxy = create_proxy(maximize_action)
+event_proxies.append(maximize_proxy)
+maximize_btn = document.createElement("span")
+maximize_btn.innerText = "[]"
+maximize_btn.addEventListener("click", maximize_proxy)
 window_controls.appendChild(maximize_btn)
-
-close_btn = document.createElement("span")
-close_btn.innerText = "X"
 
 
 def close_action(event):
     app_window.style.display = "none"
 
 
-close_btn.addEventListener("click", close_action)
+close_proxy = create_proxy(close_action)
+event_proxies.append(close_proxy)
+close_btn = document.createElement("span")
+close_btn.innerText = "X"
+close_btn.addEventListener("click", close_proxy)
 window_controls.appendChild(close_btn)
 
-# Menu de navegação
+# Cria a barra de menu
 menu_bar = document.createElement("div")
 menu_bar.className = "menu-bar"
 app_window.appendChild(menu_bar)
@@ -91,7 +180,10 @@ app_window.appendChild(menu_bar)
 def create_menu_button(text, section_id):
     btn = document.createElement("button")
     btn.innerText = text
-    btn.addEventListener("click", lambda event: show_section(section_id))
+    # Cria um proxy para a função anônima que chama show_section
+    btn_proxy = create_proxy(lambda event: show_section(section_id))
+    event_proxies.append(btn_proxy)
+    btn.addEventListener("click", btn_proxy)
     menu_bar.appendChild(btn)
 
 
@@ -99,13 +191,13 @@ create_menu_button("Início", "home")
 create_menu_button("Serviços", "services")
 create_menu_button("Contato", "contact")
 
-# Área de conteúdo
+# Cria a área de conteúdo
 content = document.createElement("div")
 content.className = "content"
 app_window.appendChild(content)
 
 
-# Função para alternar seções
+# Função para alternar as seções
 def show_section(section_id):
     sections = content.querySelectorAll("section")
     for section in sections:
@@ -118,7 +210,7 @@ def show_section(section_id):
 # Seção: Início
 home_section = document.createElement("section")
 home_section.id = "home"
-home_section.className = "active"
+home_section.className = "active"  # Exibe inicialmente
 h2_home = document.createElement("h2")
 h2_home.innerText = "Bem-vindo à Tech Outsource"
 home_section.appendChild(h2_home)
@@ -155,6 +247,7 @@ contact_section.appendChild(h2_contact)
 form = document.createElement("form")
 form.id = "contact-form"
 
+# Campo: Nome
 label_nome = document.createElement("label")
 label_nome.innerText = "Nome:"
 form.appendChild(label_nome)
@@ -163,6 +256,7 @@ input_nome.id = "nome"
 input_nome.placeholder = "Seu nome"
 form.appendChild(input_nome)
 
+# Campo: Email
 label_email = document.createElement("label")
 label_email.innerText = "Email:"
 form.appendChild(label_email)
@@ -172,6 +266,7 @@ input_email.type = "email"
 input_email.placeholder = "Seu email"
 form.appendChild(input_email)
 
+# Campo: Mensagem
 label_mensagem = document.createElement("label")
 label_mensagem.innerText = "Mensagem:"
 form.appendChild(label_mensagem)
@@ -180,6 +275,7 @@ textarea_mensagem.id = "mensagem"
 textarea_mensagem.placeholder = "Sua mensagem"
 form.appendChild(textarea_mensagem)
 
+# Botão de envio
 submit_btn = document.createElement("button")
 submit_btn.type = "button"
 submit_btn.innerText = "Enviar"
@@ -201,7 +297,9 @@ def enviar_formulario(event):
     textarea_mensagem.value = ""
 
 
-submit_btn.addEventListener("click", enviar_formulario)
+submit_proxy = create_proxy(enviar_formulario)
+event_proxies.append(submit_proxy)
+submit_btn.addEventListener("click", submit_proxy)
 form.appendChild(submit_btn)
 contact_section.appendChild(form)
 
@@ -210,4 +308,5 @@ resultado_div.id = "resultado"
 contact_section.appendChild(resultado_div)
 content.appendChild(contact_section)
 
+# Adiciona a aplicação à página
 document.body.appendChild(app_window)
