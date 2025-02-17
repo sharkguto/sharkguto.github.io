@@ -1,0 +1,9 @@
+# Generated using Python 3.11.11
+[briefcase]
+target_version = "0.3.21"
+
+[paths]
+app_path = "app"
+app_requirements_path = "requirements.txt"
+
+icon.32 = "www/static/logo-32.png"
