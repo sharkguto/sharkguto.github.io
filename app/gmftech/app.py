@@ -3,18 +3,13 @@ from toga.style import Pack
 from toga.style.pack import COLUMN, ROW
 
 
-class OutsourcingApp(toga.App):
+class ResponsiveApp(toga.App):
     def startup(self):
-        # Cria o layout principal
-        main_box = toga.Box(style=Pack(direction=COLUMN, padding=10))
+        main_box = toga.Box(style=Pack(direction=COLUMN, padding=10, flex=1))
 
-        # Cabeçalho (removido font_size e text_align para compatibilidade)
-        header = toga.Label(
-            "Bem-vindo à Empresa de Outsourcing de TI", style=Pack(padding=5)
-        )
+        header = toga.Label("Empresa de Outsourcing de TI", style=Pack(padding=5))
         main_box.add(header)
 
-        # Barra de navegação
         nav_box = toga.Box(style=Pack(direction=ROW, padding=5, alignment="center"))
         btn_home = toga.Button("Home", on_press=self.show_home, style=Pack(padding=5))
         btn_services = toga.Button(
@@ -26,33 +21,35 @@ class OutsourcingApp(toga.App):
         btn_contact = toga.Button(
             "Contato", on_press=self.show_contact, style=Pack(padding=5)
         )
+
         nav_box.add(btn_home)
         nav_box.add(btn_services)
         nav_box.add(btn_about)
         nav_box.add(btn_contact)
         main_box.add(nav_box)
 
-        # Área de conteúdo (usando Label para exibir texto)
-        self.content = toga.Label("", style=Pack(flex=1, padding=5))
+        # MultilineTextInput pode ser usado para exibir texto com quebra de linha,
+        # desde que o backend Web ofereça suporte. Deixe-o como somente leitura.
+        self.content = toga.MultilineTextInput(
+            readonly=True, style=Pack(flex=1, padding=5)
+        )
         main_box.add(self.content)
 
-        # Define o conteúdo inicial
-        self.show_home(None)
-
-        # Cria a janela principal
         self.main_window = toga.MainWindow(title=self.formal_name)
         self.main_window.content = main_box
         self.main_window.show()
 
+        self.show_home(None)
+
     def show_home(self, widget):
-        self.content.text = (
+        self.content.value = (
             "Bem-vindo à nossa empresa de Outsourcing de TI!\n\n"
             "Oferecemos soluções inovadoras e personalizadas para atender às necessidades "
             "tecnológicas de sua empresa, com foco em qualidade e eficiência."
         )
 
     def show_services(self, widget):
-        self.content.text = (
+        self.content.value = (
             "Serviços:\n"
             "- Desenvolvimento de Software\n"
             "- Gestão de Infraestrutura\n"
@@ -61,14 +58,14 @@ class OutsourcingApp(toga.App):
         )
 
     def show_about(self, widget):
-        self.content.text = (
+        self.content.value = (
             "Sobre nós:\n"
             "Somos uma empresa com ampla experiência no setor de TI, comprometida em oferecer "
             "soluções que impulsionam o sucesso de nossos clientes."
         )
 
     def show_contact(self, widget):
-        self.content.text = (
+        self.content.value = (
             "Contato:\n"
             "Email: contato@empresaoutsourcing.com\n"
             "Telefone: (11) 1234-5678\n"
@@ -77,7 +74,7 @@ class OutsourcingApp(toga.App):
 
 
 def main():
-    return OutsourcingApp("", "org.exemplo.outsourcing")
+    return ResponsiveApp("Empresa Outsourcing TI", "org.exemplo.outsourcing")
 
 
 if __name__ == "__main__":

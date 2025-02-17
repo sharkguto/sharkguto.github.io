@@ -8,6 +8,10 @@ cd $SCRIPTPATH
 
 export PATH=$PATH:/usr/local/bin
 
+rm -rf app/
+
+rm -rf static/
+
 cd gmftech/
 
 rm -rf build/
