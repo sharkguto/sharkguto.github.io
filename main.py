@@ -1,108 +1,53 @@
-from js import document
-from pyodide.ffi import create_proxy
-
-# Lista para manter vivos os proxies dos event listeners
-event_proxies = []
-
-# Injetando estilos CSS dinamicamente
-style = document.createElement("style")
-style.innerHTML = """
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
-}
-header {
-    background-color: #007BFF;
-    color: #fff;
-    padding: 15px;
-    text-align: center;
-}
-nav {
-    background-color: #e0e0e0;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    padding: 10px;
-}
-nav button {
-    background: none;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    padding: 8px 12px;
-    border-radius: 4px;
-}
-nav button:hover {
-    background-color: #ccc;
-}
-main {
-    padding: 20px;
-}
-"""
-document.head.appendChild(style)
-
-# Cria um container para o site
-container = document.createElement("div")
-
-# Cria o cabeçalho com o nome da empresa
-header = document.createElement("header")
-h1 = document.createElement("h1")
-h1.innerText = "Tech Outsource"
-header.appendChild(h1)
-container.appendChild(header)
-
-# Cria a barra de navegação (menu)
-nav = document.createElement("nav")
-container.appendChild(nav)
-
-# Cria a área principal de conteúdo
-main_content = document.createElement("main")
-container.appendChild(main_content)
-
-# Adiciona o container ao body
-document.body.appendChild(container)
+from pyscript import window
 
 
-# Função para atualizar o conteúdo principal
-def update_content(content_html):
-    main_content.innerHTML = content_html
+# Função que será chamada quando o DOM estiver completamente carregado
+def on_dom_loaded(*args):
+    from pyscript import document
+
+    # Função para adicionar elementos ao DOM
+    def adiciona_elemento(tag, text, **kwargs):
+        el = document.createElement(tag)
+        el.textContent = text
+        for key, value in kwargs.items():
+            el.setAttribute(key, value)
+        document.body.appendChild(el)
+        return el
+
+    # Adiciona o cabeçalho
+    adiciona_elemento(
+        "header",
+        "",
+        class_="header",
+        style="background-color: #4CAF50; color: white; padding: 20px 0; text-align: center;",
+    )
+    adiciona_elemento("h1", "NuvemPython", parent=document.querySelector("header"))
+    adiciona_elemento(
+        "p",
+        "Soluções em Nuvem e Desenvolvimento Backend com Python",
+        parent=document.querySelector("header"),
+    )
+
+    # ... (continuar adicionando o restante dos elementos)
+
+    # Adiciona botão de contato
+    button = adiciona_elemento(
+        "button",
+        "Contate-nos",
+        id="contactBtn",
+        style="background-color: #4CAF50; border: none; color: white; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;",
+    )
+
+    # Função para o botão de contato
+    def show_message(*args):
+        window.alert("Obrigado pelo interesse! Entraremos em contato em breve.")
+
+    # Adiciona evento ao botão
+    button.addEventListener("click", show_message)
+
+    # Remove a tela de carregamento
+    document.getElementById("loading-screen").style.display = "none"
 
 
-# Dicionário com as opções do menu e seus conteúdos
-menu_options = {
-    "Início": (
-        "<h2>Bem-vindo à Tech Outsource</h2>"
-        "<p>Potencialize seu negócio com soluções inovadoras em outsourcing de TI.</p>"
-    ),
-    "Serviços": (
-        "<h2>Nossos Serviços</h2>"
-        "<ul>"
-        "<li>Suporte Técnico 24/7</li>"
-        "<li>Gestão de Infraestrutura</li>"
-        "<li>Consultoria em TI</li>"
-        "</ul>"
-    ),
-    "Contato": (
-        "<h2>Contato</h2>"
-        "<p>Envie um e-mail para <strong>contato@techoutsource.com.br</strong> ou ligue para (11) 1234-5678.</p>"
-    ),
-}
-
-# Cria os botões do menu dinamicamente
-for option, content_html in menu_options.items():
-    btn = document.createElement("button")
-    btn.innerText = option
-
-    # Cria um proxy para a função de clique
-    def on_click(event, content=content_html):
-        update_content(content)
-
-    proxy = create_proxy(on_click)
-    event_proxies.append(proxy)  # Armazena o proxy para que ele não seja destruído
-    btn.addEventListener("click", proxy)
-
-    nav.appendChild(btn)
-
-# Define o conteúdo inicial (Início)
-update_content(menu_options["Início"])
+# Configura para que `on_dom_loaded` seja chamada quando o evento 'DOMContentLoaded' ocorrer
+window.addEventListener("DOMContentLoaded", on_dom_loaded)
