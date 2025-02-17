@@ -5,13 +5,13 @@ from js import document, window, console
 event_proxies = []
 
 
-# Função para remover a tela de carregamento
-def remove_loading_screen(*args):
-    document.getElementById("loading-screen").style.display = "none"
+def remove_loading_screen(event):
+    loading = document.getElementById("loading-screen")
+    if loading:
+        loading.style.display = "none"
 
 
-# Quando o PyScript estiver pronto, remove o loading
-window.addEventListener("py-script:ready", remove_loading_screen)
+window.addEventListener("pyscript:ready", remove_loading_screen)
 
 console.log("Olá, mundo!")
 
