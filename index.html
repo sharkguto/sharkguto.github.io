@@ -3,13 +3,12 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>PyScript Desktop App com Loading</title>
-    <!-- Carregando PyScript -->
+    <title>Site Dinâmico com PyScript</title>
+    <!-- Usando os links que funcionam -->
     <link rel="stylesheet" href="https://pyscript.net/releases/2025.2.2/core.css" />
     <script type="module" src="https://pyscript.net/releases/2025.2.2/core.js"></script>
-    <!-- Estilos para o Loading -->
     <style>
-        /* Estilo da tela de loading */
+        /* Estilo para a tela de loading */
         #loading {
             position: fixed;
             top: 0;
@@ -28,20 +27,35 @@
 </head>
 
 <body>
-    <!-- Tela de loading exibida enquanto o PyScript carrega -->
+    <!-- Tela de Loading -->
     <div id="loading">Carregando...</div>
 
-    <!-- Carrega a lógica e a interface em Python -->
+    <!-- Carrega a interface via Python -->
     <py-script src="main.py"></py-script>
 
-    <!-- Script JavaScript que remove o loading quando o PyScript estiver pronto -->
+    <!-- Script para remover o loading quando o PyScript estiver pronto -->
     <script>
+        // Tenta usar o evento padrão (pyscript:ready)
         document.addEventListener("pyscript:ready", () => {
             const loading = document.getElementById("loading");
             if (loading) {
                 loading.style.display = "none";
             }
         });
+
+        // Abordagem alternativa: MutationObserver
+        const observer = new MutationObserver((mutations, obs) => {
+            // Verifica se o elemento <py-script> foi carregado e possui shadowRoot (indicativo de inicialização)
+            const pyScriptEl = document.querySelector("py-script");
+            if (pyScriptEl && pyScriptEl.shadowRoot) {
+                const loading = document.getElementById("loading");
+                if (loading) {
+                    loading.style.display = "none";
+                }
+                obs.disconnect(); // Para de observar após remover o loading
+            }
+        });
+        observer.observe(document, { childList: true, subtree: true });
     </script>
 </body>
 
