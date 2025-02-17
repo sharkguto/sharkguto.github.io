@@ -3,15 +3,46 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>GMF-tech</title>
+    <title>PyScript Desktop App com Loading</title>
     <!-- Carregando PyScript -->
     <link rel="stylesheet" href="https://pyscript.net/releases/2025.2.2/core.css" />
     <script type="module" src="https://pyscript.net/releases/2025.2.2/core.js"></script>
+    <!-- Estilos para o Loading -->
+    <style>
+        /* Estilo da tela de loading */
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #2e2e2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 24px;
+            z-index: 9999;
+        }
+    </style>
 </head>
 
 <body>
-    <!-- Nenhuma marcação HTML é definida aqui – a interface será criada via Python -->
+    <!-- Tela de loading exibida enquanto o PyScript carrega -->
+    <div id="loading">Carregando...</div>
+
+    <!-- Carrega a lógica e a interface em Python -->
     <py-script src="main.py"></py-script>
+
+    <!-- Script JavaScript que remove o loading quando o PyScript estiver pronto -->
+    <script>
+        document.addEventListener("pyscript:ready", () => {
+            const loading = document.getElementById("loading");
+            if (loading) {
+                loading.style.display = "none";
+            }
+        });
+    </script>
 </body>
 
 </html>
