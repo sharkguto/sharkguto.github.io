@@ -2,97 +2,233 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NuvemPython - Especialistas em Nuvem e Backend Python</title>
-    <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
-    <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tech Outsource - Soluções em TI</title>
+    <!-- PyScript -->
+    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+    <!-- Estilos CSS -->
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        * {
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            box-sizing: border-box;
         }
 
-        .header {
-            background-color: #4CAF50;
-            color: white;
-            padding: 20px 0;
-            text-align: center;
-        }
-
-        .container {
-            padding: 20px;
-            max-width: 800px;
-            margin: auto;
-        }
-
-        h1,
-        h2 {
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
             color: #333;
         }
 
-        button {
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            padding: 15px 32px;
-            text-align: center;
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        header {
+            background: #333;
+            color: #fff;
+            padding: 20px 0;
+        }
+
+        header h1 {
+            margin-left: 20px;
+        }
+
+        header nav {
+            margin-top: 10px;
+            text-align: right;
+            margin-right: 20px;
+        }
+
+        header nav a {
+            color: #fff;
+            margin-left: 15px;
             text-decoration: none;
+            font-weight: bold;
+        }
+
+        #hero {
+            background: url('https://via.placeholder.com/1200x500') no-repeat center center/cover;
+            color: #fff;
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        #hero h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: #007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+
+        section {
+            padding: 60px 20px;
+        }
+
+        #services .service {
+            background: #f4f4f4;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 5px;
             display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
+            width: calc(33% - 20px);
+            vertical-align: top;
+            text-align: center;
+        }
+
+        #services .service h3 {
+            margin-bottom: 10px;
+        }
+
+        #contact form {
+            display: flex;
+            flex-direction: column;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        #contact label {
+            margin-top: 10px;
+        }
+
+        #contact input,
+        #contact textarea {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #contact button {
+            margin-top: 20px;
+            padding: 10px;
+            background: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
+            font-size: 16px;
         }
 
-        .section {
-            margin-bottom: 30px;
+        #resultado {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
         }
 
-        .location {
-            font-style: italic;
-            color: #666;
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 40px;
         }
     </style>
 </head>
 
 <body>
-    <header class="header">
-        <h1>NuvemPython</h1>
-        <p>Soluções em Nuvem e Desenvolvimento Backend com Python</p>
+    <!-- Cabeçalho -->
+    <header>
+        <div class="container">
+            <h1>Tech Outsource</h1>
+            <nav>
+                <a href="#hero">Início</a>
+                <a href="#services">Serviços</a>
+                <a href="#contact">Contato</a>
+            </nav>
+        </div>
     </header>
-    <div class="container">
-        <section class="section">
-            <h2>Quem Somos</h2>
-            <p>Somos uma empresa especializada em fornecer soluções de desenvolvimento backend em Python e
-                infraestrutura na nuvem. Com uma equipe de desenvolvedores altamente qualificados, estamos comprometidos
-                em impulsionar seu negócio com tecnologias modernas e eficientes.</p>
-        </section>
-        <section class="section">
-            <h2>Nossos Serviços</h2>
-            <ul>
-                <li>Desenvolvimento de Aplicações Backend em Python</li>
-                <li>Infraestrutura e Gestão de Serviços na Nuvem (AWS, Google Cloud, Azure)</li>
-                <li>Consultoria em Arquitetura de Software</li>
-                <li>Manutenção e Suporte Técnico</li>
-            </ul>
-        </section>
-        <section class="section">
-            <h2>Localização</h2>
-            <p class="location">São Paulo, Brasil</p>
-            <p>Estamos localizados no coração do maior centro tecnológico do Brasil, prontos para atender você.</p>
-        </section>
-        <py-script>
-            from js import document, alert
 
-            def show_message():
-            alert("Obrigado pelo interesse! Entraremos em contato em breve.")
+    <!-- Seção Hero -->
+    <section id="hero">
+        <div class="container">
+            <h2>Transforme sua TI com nossa expertise</h2>
+            <p>Oferecemos soluções completas de outsourcing para potencializar o seu negócio.</p>
+            <a href="#contact" class="btn">Fale Conosco</a>
+        </div>
+    </section>
 
-            document.getElementById('contactBtn').addEventListener('click', show_message)
-        </py-script>
-        <button id="contactBtn">Contate-nos</button>
-    </div>
+    <!-- Seção de Serviços -->
+    <section id="services">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 40px;">Nossos Serviços</h2>
+            <div class="service">
+                <h3>Suporte Técnico 24/7</h3>
+                <p>Atendimento especializado para manter seu negócio sempre em funcionamento.</p>
+            </div>
+            <div class="service">
+                <h3>Gestão de Infraestrutura</h3>
+                <p>Monitoramento e manutenção proativa dos seus sistemas.</p>
+            </div>
+            <div class="service">
+                <h3>Consultoria em TI</h3>
+                <p>Estratégias para otimização de processos e inovação tecnológica.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção de Contato -->
+    <section id="contact">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 20px;">Entre em Contato</h2>
+            <form id="contact-form">
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" placeholder="Seu nome" />
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Seu email" />
+
+                <label for="mensagem">Mensagem:</label>
+                <textarea id="mensagem" name="mensagem" placeholder="Sua mensagem"></textarea>
+
+                <!-- Botão com evento PyScript -->
+                <button type="button" py-click="enviar_formulario()">Enviar</button>
+            </form>
+            <div id="resultado"></div>
+        </div>
+    </section>
+
+    <!-- Rodapé -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Tech Outsource. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Código PyScript -->
+    <py-script>
+        import js
+        from pyscript import Element
+
+        def enviar_formulario():
+        # Obtém os valores dos campos
+        nome = Element("nome").element.value
+        email = Element("email").element.value
+        mensagem = Element("mensagem").element.value
+
+        # Validação simples dos campos
+        if not nome or not email or not mensagem:
+        Element("resultado").element.innerHTML = "<p style='color: red;'>Por favor, preencha todos os campos.</p>"
+        else:
+        Element("resultado").element.innerHTML = f"<p style='color: green;'>Obrigado, {nome}! Em breve entraremos em
+            contato.</p>"
+
+        # Limpa os campos do formulário
+        Element("nome").element.value = ""
+        Element("email").element.value = ""
+        Element("mensagem").element.value = ""
+    </py-script>
 </body>
 
 </html>
