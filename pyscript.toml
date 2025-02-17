@@ -1,0 +1,9 @@
+plugins = [
+    "!error",
+]
+packages = [
+    "/static/wheels/gmftech-0.0.1-py3-none-any.whl",
+    "/static/wheels/toga_core-0.4.9-py3-none-any.whl",
+    "/static/wheels/toga_web-0.4.9-py3-none-any.whl",
+    "/static/wheels/travertino-0.3.0-py3-none-any.whl",
+]

@@ -5,12 +5,24 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python Debugger: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
             "type": "firefox",
             "request": "launch",
             "name": "vuejs: firefox",
             "url": "http://localhost:8080",
             "webRoot": "${workspaceFolder}/src",
-            "pathMappings": [{ "url": "webpack:///src/", "path": "${webRoot}/" }]
-          }
+            "pathMappings": [
+                {
+                    "url": "webpack:///src/",
+                    "path": "${webRoot}/"
+                }
+            ]
+        }
     ]
 }
