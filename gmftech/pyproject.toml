@@ -3,7 +3,7 @@
 project_name = "gmf-tech"
 bundle = "com.gmf-tech"
 version = "0.0.1"
-url = "https://gmf-tech.com/gmftech"
+url = "https://gmf-tech.com/"
 license.file = "LICENSE"
 author = "Gustavo M Freitas"
 author_email = "gustavo@gmf-tech.com"
