@@ -26,7 +26,7 @@ cd flet-gmftech/
 
 rm -rf dist/
 
-flet publish --app-name gmf-tech --pre app.py
+flet publish --pre
 
 #cp -r dist/** $SCRIPTPATH/
 
@@ -34,4 +34,4 @@ echo $SCRIPTPATH
 
 cp -r dist/* $SCRIPTPATH
 
-cp requirements.txt $SCRIPTPATH/requirements.txt
+# cp requirements.txt $SCRIPTPATH/requirements.txt

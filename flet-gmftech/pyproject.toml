@@ -1,0 +1,6 @@
+[project]
+name = "gmf_tech"
+version = "1.0.0"
+description = "My first Flet project"
+authors = [{ name = "Gustavo M Freitas", email = "gustavo@gmf-tech.com" }]
+dependencies = ["flet==0.26.0", "pyecharts==2.0.8"]

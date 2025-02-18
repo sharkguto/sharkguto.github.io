@@ -1,11 +1,11 @@
 {
-  "name": "gmf-tech",
-  "short_name": "flet-gmftech",
+  "name": "gmf_tech",
+  "short_name": "gmf_tech",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#FFFFFF",
   "theme_color": "#0175C2",
-  "description": "Flet - the fastest way to build Flutter apps in Python",
+  "description": "My first Flet project",
   "orientation": "natural",
   "prefer_related_applications": false,
   "icons": [

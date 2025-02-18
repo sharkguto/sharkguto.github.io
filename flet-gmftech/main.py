@@ -9,7 +9,7 @@ bar = (
     Bar(init_opts=opts.InitOpts(theme=ThemeType.LIGHT))
     .add_xaxis(["A", "B", "C"])
     .add_yaxis("Series 1", [1, 2, 4])
-    .set_global_opts(title_opts=opts.TitleOpts(title="Gráfico de Barras"))
+    .set_global_opts(title_opts=opts.TitleOpts(title="Gráfico test"))
 )
 
 # Obtém o HTML incorporado do gráfico
