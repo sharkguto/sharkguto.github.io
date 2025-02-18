@@ -43,10 +43,12 @@ def main(page: ft.Page):
 
     # Gera o gráfico com pyecharts
     bar = (
-        Bar(init_opts=opts.InitOpts(theme=ThemeType.LIGHT))
+        Bar(
+            init_opts=opts.InitOpts(width="100%", height="400px", theme=ThemeType.LIGHT)
+        )
         .add_xaxis(["A", "B", "C"])
         .add_yaxis("Series 1", [1, 2, 4])
-        .set_global_opts(title_opts=opts.TitleOpts(title="Gráfico test"))
+        .set_global_opts(title_opts=opts.TitleOpts(title="Gráfico Responsivo"))
     )
 
     # Obtém o HTML incorporado do gráfico
@@ -57,14 +59,14 @@ def main(page: ft.Page):
     data_url = f"data:text/html;base64,{encoded_html}"
 
     chart_webview = ft.WebView(url=data_url, expand=True)
-    chart_webview.height = 400  # altura fixa para o gráfico
+    chart_webview.height = 480  # altura fixa para o gráfico
 
     # Container que envolve o gráfico; ele expande para preencher a largura disponível
     chart_container = ft.Container(
         content=chart_webview,
         expand=True,
         padding=10,
-        border=ft.border.all(1, ft.colors.OUTLINE),
+        border=ft.border.all(1, ft.Colors.OUTLINE),
         border_radius=5,
     )
 
