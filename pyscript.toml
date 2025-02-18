@@ -1,7 +1,4 @@
 name = "GMF-tech"
 description = "GMF-tech outsourcing IT"
 tags = ["TI", "Python"]
-packages = [
-    "streamlit",
-    "pyodide-http",
-]
+packages = ["flet"]
