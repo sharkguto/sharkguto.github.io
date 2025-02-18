@@ -18,8 +18,9 @@ rm -f index.html
 rm -f favicon.png
 rm -f manifest.json
 rm -f bar_chart.html
+rm -f requirements.txt
 
-# exit 2
+exit 2
 
 cd flet-gmftech/
 
