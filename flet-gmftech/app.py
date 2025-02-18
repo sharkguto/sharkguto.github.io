@@ -59,10 +59,6 @@ def main(page: ft.Page):
     chart_webview = ft.WebView(url=data_url, expand=True)
     chart_webview.height = 400  # altura fixa para o gráfico
 
-    # Cria o WebView usando o parâmetro 'url' e define a altura fixa para o gráfico
-    chart_webview = ft.WebView(url=data_url, expand=True)
-    chart_webview.height = 400  # altura fixa para o gráfico
-
     # Container que envolve o gráfico; ele expande para preencher a largura disponível
     chart_container = ft.Container(
         content=chart_webview,
