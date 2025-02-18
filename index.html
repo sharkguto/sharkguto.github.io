@@ -4,23 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Streamlit com PyScript</title>
+    <title>GMF-tech</title>
     <link rel="stylesheet" href="https://pyscript.net/releases/2025.2.2/core.css" />
     <script type="module" src="https://pyscript.net/releases/2025.2.2/core.js"></script>
-    <py-env>
-        - streamlit
-        - pandas
-    </py-env>
 </head>
 
 <body>
-    <script type="py" terminal>
-        import micropip
-        await micropip.install('streamlit')
-        await micropip.install('pandas')
-        print("Pacotes instalados com sucesso!")
-    </script>
-    <py-script src="app.py"></py-script>
+    <script type="py" src="./app.py" config="./pyscript.toml"></script>
+    <!-- <script type="py" src="./app.py" config="./pyscript.toml" async></script> -->
+    <!-- <py-config src="./pyscript.toml"></py-config>
+    <py-script src="./app.py"></py-script> -->
 </body>
 
 </html>
