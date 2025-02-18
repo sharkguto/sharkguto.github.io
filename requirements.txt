@@ -1,0 +1,2 @@
+flet==0.26.0
+pyecharts==2.0.8
