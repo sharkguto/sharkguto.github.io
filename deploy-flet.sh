@@ -26,7 +26,7 @@ cd flet-gmftech/
 
 rm -rf dist/
 
-flet publish --app-name gmf-tech --pre app.py
+flet publish app.py
 
 #cp -r dist/** $SCRIPTPATH/
 

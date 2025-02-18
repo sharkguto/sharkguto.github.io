@@ -1,12 +1,19 @@
 [project]
 name = "gmf_tech"
 version = "1.0.0"
-description = "My first Flet project"
+description = "website gmf-tech"
 authors = [{ name = "Gustavo M Freitas", email = "gustavo@gmf-tech.com" }]
 dependencies = ["flet==0.26.0", "pyecharts==2.0.8"]
 
+[tool.flet]
+org = "com.gmf-tech"                          # --org
+product = "GMF tech website"                  # --product
+company = "GMF tech"                          # --company
+copyright = "Copyright (C) 2024 by sharkguto" # --copyright
+build_number = 1                              # --build-number
+
 [tool.flet.web]
-base_url = "/" # --base-url
-renderer = "canvaskit" # --web-renderer
-use_color_emoji = false # --use-color-emoji
+base_url = "/"              # --base-url
+renderer = "canvaskit"      # --web-renderer
+use_color_emoji = false     # --use-color-emoji
 route_url_strategy = "path" # --route-url-strategy
