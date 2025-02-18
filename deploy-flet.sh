@@ -30,3 +30,5 @@ flet publish --app-name gmf-tech app.py
 echo $SCRIPTPATH
 
 cp -r dist/* $SCRIPTPATH
+
+cp requirements.txt $SCRIPTPATH/requirements.txt
