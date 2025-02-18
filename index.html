@@ -1,39 +1,20 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>gmf-tech</title>
 
-        <link rel="icon" type="image/png" href="/static/logo-32.png"/>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streamlit com PyScript</title>
+    <link rel="stylesheet" href="https://pyscript.net/releases/2025.2.2/core.css" />
+    <script type="module" src="https://pyscript.net/releases/2025.2.2/core.js"></script>
+    <py-env>
+        - streamlit
+        - pandas
+    </py-env>
+</head>
 
-        <script type="module">
-            // Hide the splash screen when the page is ready.
-            import { hooks } from "https://pyscript.net/releases/2024.11.1/core.js";
-            hooks.main.onReady.add(() => {
-                document.getElementById("briefcase-splash").classList.add("hidden");
-            });
-        </script>
+<body>
+    <py-script src="app.py"></py-script>
+</body>
 
-        <link rel="stylesheet" href="https://pyscript.net/releases/2024.11.1/core.css">
-        <script type="module" src="https://pyscript.net/releases/2024.11.1/core.js"></script>
-
-        <link rel="stylesheet"
-              href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.3.0/dist/themes/light.css" />
-        <script type="module"
-                src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.3.0/dist/shoelace.js"></script>
-        <link rel="stylesheet" href="/static/css/briefcase.css">
-    </head>
-    <body id="app-placeholder">
-        <div id="briefcase-splash">
-            <img src="static/logo-32.png" alt="Splash screen logo">
-            <p>Loading...</p>
-        </div>
-        <script type="py" async="false" config="pyscript.toml">
-            import runpy
-            result = runpy.run_module(
-                "gmftech", run_name="__main__", alter_sys=True
-            )
-        </script>
-    </body>
 </html>
