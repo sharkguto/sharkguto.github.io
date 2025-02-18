@@ -13,3 +13,7 @@ cd flet-gmftech/
 flet publish --app-name gmf-tech app.py
 
 #cp -r dist/** $SCRIPTPATH/
+
+echo $SCRIPTPATH
+
+cp -r dist/* $SCRIPTPATH
