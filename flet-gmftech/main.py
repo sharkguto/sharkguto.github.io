@@ -20,7 +20,7 @@ encoded_html = base64.b64encode(html.encode("utf-8")).decode("utf-8")
 data_url = f"data:text/html;base64,{encoded_html}"
 
 
-def main(page: ft.Page):
+def load(page: ft.Page):
     page.title = "Pyecharts in Flet - Responsivo"
     page.scroll = "adaptive"
 
@@ -58,4 +58,4 @@ def main(page: ft.Page):
     page.add(layout)
 
 
-ft.app(target=main, view=ft.WEB_BROWSER)
+ft.app(target=load, view=ft.WEB_BROWSER)
