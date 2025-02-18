@@ -1,8 +1,10 @@
-import streamlit as st
+import asyncio
+import flet as ft
 
-st.title("Meu Primeiro App com stlite")
-st.write("Este é um exemplo de como usar o Streamlit no navegador.")
 
-# Adicionando um botão para interatividade
-if st.button("Clique aqui"):
-    st.write("Você clicou no botão!")
+async def main(page: ft.Page):
+    await asyncio.sleep(1)
+    page.add(ft.Text("Hello, async world!"))
+
+
+ft.app(main)
