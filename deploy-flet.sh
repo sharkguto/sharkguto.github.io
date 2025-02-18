@@ -8,6 +8,19 @@ cd $SCRIPTPATH
 
 export PATH=$PATH:/usr/local/bin
 
+rm -rf icons/
+rm -f app.tar.gz
+rm -f flutter*
+rm -f main.dart.js
+rm -f python*
+rm -f version.json
+rm -f index.html
+rm -f favicon.png
+rm -f manifest.json
+rm -f bar_chart.html
+
+# exit 2
+
 cd flet-gmftech/
 
 flet publish --app-name gmf-tech app.py
