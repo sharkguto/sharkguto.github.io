@@ -25,6 +25,12 @@ def update_chart_file():
         f.write(html)
 
 
+# Função para definir a altura do WebView como 80% da altura da página
+def set_webview_height(page, chart_webview):
+    page_height = page.height
+    chart_webview.height = int(page_height * 0.8)
+
+
 def main(page: ft.Page):
     page.title = "Empresa de Outsourcing em TI"
     page.scroll = "adaptive"
@@ -96,7 +102,14 @@ def main(page: ft.Page):
         expand=True,
     )
 
-    chart_webview.height = 480  # altura fixa para o gráfico
+    chart_webview.height = page.height - 48  # altura fixa para o gráfico
+
+    header = ft.Text(
+        "Gráfico Integrado Pyecharts com Flet",
+        style="headlineMedium",
+        weight="bold",
+        text_align=ft.TextAlign.CENTER,
+    )
 
     # Container que envolve o gráfico; ele expande para preencher a largura disponível
     chart_container = ft.Container(
@@ -105,13 +118,6 @@ def main(page: ft.Page):
         padding=10,
         border=ft.border.all(1, ft.Colors.OUTLINE),
         border_radius=5,
-    )
-
-    header = ft.Text(
-        "Gráfico Integrado Pyecharts com Flet",
-        style="headlineMedium",
-        weight="bold",
-        text_align=ft.TextAlign.CENTER,
     )
 
     # Layout principal em coluna, que se adapta ao tamanho da tela
@@ -166,6 +172,11 @@ def main(page: ft.Page):
     )
 
     page.add(tabs)
+    page.on_resized = (
+        lambda e: set_webview_height(page, chart_webview)
+        if e.data == "window_resize"
+        else None
+    )
     page.update()
 
 
