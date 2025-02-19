@@ -1,8 +1,28 @@
 import base64
+import os
 import flet as ft
+import flet_webview as fwv
 from pyecharts import options as opts
 from pyecharts.charts import Bar
 from pyecharts.globals import ThemeType
+
+
+def update_chart_file():
+    bar = (
+        Bar(
+            init_opts=opts.InitOpts(width="100%", height="400px", theme=ThemeType.LIGHT)
+        )
+        .add_xaxis(["A", "B", "C"])
+        .add_yaxis("Series 1", [1, 2, 4])
+        .set_global_opts(title_opts=opts.TitleOpts(title="Gráfico Responsivo"))
+    )
+    html = bar.render_embed()
+    assets_dir = "assets"
+    if not os.path.exists(assets_dir):
+        os.makedirs(assets_dir)
+    file_path = os.path.join(assets_dir, "chart.html")
+    with open(file_path, "w", encoding="utf-8") as f:
+        f.write(html)
 
 
 def main(page: ft.Page):
@@ -41,6 +61,9 @@ def main(page: ft.Page):
         spacing=5,
     )
 
+    ######################################################################
+    #######################################################################
+
     # Gera o gráfico com pyecharts
     bar = (
         Bar(
@@ -58,7 +81,21 @@ def main(page: ft.Page):
     encoded_html = base64.b64encode(html.encode("utf-8")).decode("utf-8")
     data_url = f"data:text/html;base64,{encoded_html}"
 
-    chart_webview = ft.WebView(url=data_url, expand=True)
+    chart_webview = fwv.WebView(
+        url=data_url,
+        # url=chart_url,
+        on_page_started=lambda _: page.eval_js(
+            "console.log('Log do navegador: echarts iniciado!');"
+        ),
+        on_page_ended=lambda _: page.eval_js(
+            "console.log('Log do navegador: echarts carregou!');"
+        ),
+        on_web_resource_error=lambda e: page.eval_js(
+            f"console.log('Log do navegador: erro: {e.data}!');"
+        ),
+        expand=True,
+    )
+
     chart_webview.height = 480  # altura fixa para o gráfico
 
     # Container que envolve o gráfico; ele expande para preencher a largura disponível
@@ -87,6 +124,9 @@ def main(page: ft.Page):
         expand=True,
         spacing=20,
     )
+
+    ###############################################################################
+    ###############################################################################
 
     # Conteúdo da aba "Sobre Nós"
     about_content = ft.Column(

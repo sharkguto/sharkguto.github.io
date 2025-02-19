@@ -3,7 +3,7 @@ name = "gmf_tech"
 version = "1.0.0"
 description = "website gmf-tech"
 authors = [{ name = "Gustavo M Freitas", email = "gustavo@gmf-tech.com" }]
-dependencies = ["flet==0.26.0", "pyecharts==2.0.8"]
+dependencies = ["flet==0.26.0", "pyecharts==2.0.8", "flet-webview==0.1.0"]
 
 [tool.flet]
 org = "com.gmf-tech"                          # --org
