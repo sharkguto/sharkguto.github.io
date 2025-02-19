@@ -172,11 +172,11 @@ def main(page: ft.Page):
     )
 
     page.add(tabs)
-    # page.on_resized = (
-    #     lambda e: set_webview_height(page, chart_webview)
-    #     if e.data == "window_resize"
-    #     else None
-    # )
+    page.on_resized = (
+        lambda e: set_webview_height(page, chart_webview)
+        if e.data == "window_resize"
+        else None
+    )
     page.update()
 
 
