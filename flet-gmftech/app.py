@@ -4,8 +4,13 @@ from pages.services import services_content
 from pages.about import about_content
 from pages.contact import contact_content
 
+# Variáveis globais para header e footer
+header = None
+footer = None
+
 
 def main(page: ft.Page):
+    global header, footer
     # Configurações iniciais da página
     page.title = "GMF-tech - Outsourcing em TI"
     page.bgcolor = ft.Colors.BLUE_GREY_900
@@ -17,24 +22,26 @@ def main(page: ft.Page):
     secondary_color = ft.Colors.AMBER_600
 
     # Função para fechar o diálogo
-    def close_dialog():
-        page.dialog.open = False
+    def close_dialog(e):
+        if page.overlay:  # Verifica se há elementos no overlay
+            dialog = page.overlay[-1]  # Pega o último elemento (o diálogo aberto)
+            page.close(dialog)  # Fecha o diálogo
         page.update()
 
     # Funções de login simuladas
     def login_with_google(e):
         page.snack_bar = ft.SnackBar(ft.Text("Login com Google iniciado..."), open=True)
-        close_dialog()
+        close_dialog(e)
         page.update()
 
     def login_with_apple(e):
         page.snack_bar = ft.SnackBar(ft.Text("Login com Apple iniciado..."), open=True)
-        close_dialog()
+        close_dialog(e)
         page.update()
 
     def login_with_x(e):
         page.snack_bar = ft.SnackBar(ft.Text("Login com X iniciado..."), open=True)
-        close_dialog()
+        close_dialog(e)
         page.update()
 
     # Funções para navegação entre páginas
@@ -50,9 +57,9 @@ def main(page: ft.Page):
     def go_to_contact(e):
         page.go("/contact")
 
-    # Função para abrir o diálogo de login
     def handle_login_click(e):
         login_dialog = ft.AlertDialog(
+            modal=True,
             title=ft.Text("Login na Plataforma de Cursos", size=20, weight="bold"),
             content=ft.Column(
                 [
@@ -107,107 +114,122 @@ def main(page: ft.Page):
                 tight=True,
                 spacing=10,
             ),
-            actions=[ft.TextButton("Cancelar", on_click=lambda e: close_dialog())],
+            actions=[ft.TextButton("Cancelar", on_click=lambda e: close_dialog(e))],
             actions_alignment="end",
         )
-
-        page.dialog = login_dialog
+        page.overlay.append(login_dialog)
         login_dialog.open = True
         page.update()
 
-    # Header fixo e responsivo
-    header = ft.Container(
-        content=ft.Column(
-            [
-                ft.Row(
-                    [
-                        ft.Text(
-                            "GMF-tech",
-                            size=30 if page.window.width > 600 else 20,
-                            weight="bold",
-                            color=ft.Colors.WHITE,
-                        ),
-                        ft.Row(
-                            [
-                                ft.TextButton(
-                                    "Início",
-                                    style=ft.ButtonStyle(color=ft.Colors.WHITE),
-                                    on_click=go_to_home,
-                                ),
-                                ft.TextButton(
-                                    "Serviços",
-                                    style=ft.ButtonStyle(color=ft.Colors.WHITE),
-                                    on_click=go_to_services,
-                                ),
-                                ft.TextButton(
-                                    "Sobre",
-                                    style=ft.ButtonStyle(color=ft.Colors.WHITE),
-                                    on_click=go_to_about,
-                                ),
-                                ft.TextButton(
-                                    "Contato",
-                                    style=ft.ButtonStyle(color=ft.Colors.WHITE),
-                                    on_click=go_to_contact,
-                                ),
-                                ft.ElevatedButton(
-                                    "Login",
-                                    bgcolor=secondary_color,
-                                    color=ft.Colors.WHITE,
-                                    on_click=handle_login_click,
-                                    style=ft.ButtonStyle(
-                                        shape=ft.RoundedRectangleBorder(radius=8),
-                                        padding=ft.padding.symmetric(
-                                            horizontal=15
-                                            if page.window.width > 600
-                                            else 10,
-                                            vertical=8
-                                            if page.window.width > 600
-                                            else 5,
+    def create_header():
+        return ft.Container(
+            content=ft.Column(
+                [
+                    ft.Row(
+                        [
+                            ft.Text(
+                                "GMF-tech",
+                                size=30 if page.window.width > 600 else 20,
+                                weight="bold",
+                                color=ft.Colors.WHITE,
+                            ),
+                            ft.Row(
+                                [
+                                    ft.TextButton(
+                                        "Início",
+                                        style=ft.ButtonStyle(color=ft.Colors.WHITE),
+                                        on_click=go_to_home,
+                                    ),
+                                    ft.TextButton(
+                                        "Serviços",
+                                        style=ft.ButtonStyle(color=ft.Colors.WHITE),
+                                        on_click=go_to_services,
+                                    ),
+                                    ft.TextButton(
+                                        "Sobre",
+                                        style=ft.ButtonStyle(color=ft.Colors.WHITE),
+                                        on_click=go_to_about,
+                                    ),
+                                    ft.TextButton(
+                                        "Contato",
+                                        style=ft.ButtonStyle(color=ft.Colors.WHITE),
+                                        on_click=go_to_contact,
+                                    ),
+                                    ft.ElevatedButton(
+                                        "Login",
+                                        bgcolor=secondary_color,
+                                        color=ft.Colors.WHITE,
+                                        on_click=handle_login_click,
+                                        style=ft.ButtonStyle(
+                                            shape=ft.RoundedRectangleBorder(radius=8),
+                                            padding=ft.padding.symmetric(
+                                                horizontal=15
+                                                if page.window.width > 600
+                                                else 10,
+                                                vertical=8
+                                                if page.window.width > 600
+                                                else 5,
+                                            ),
                                         ),
                                     ),
-                                ),
-                            ],
-                            alignment="end" if page.window.width > 600 else "center",
-                            spacing=10 if page.window.width > 600 else 5,
-                            wrap=True,
-                        ),
-                    ],
-                    alignment="spaceBetween" if page.window.width > 600 else "center",
-                )
-            ]
-        ),
-        bgcolor=primary_color,
-        padding=ft.padding.symmetric(horizontal=20),
-        border_radius=ft.border_radius.only(top_left=0, top_right=0),
-    )
+                                ],
+                                alignment="end"
+                                if page.window.width > 600
+                                else "center",
+                                spacing=10 if page.window.width > 600 else 5,
+                                wrap=True,
+                            ),
+                        ],
+                        alignment="spaceBetween"
+                        if page.window.width > 600
+                        else "center",
+                    )
+                ]
+            ),
+            bgcolor=primary_color,
+            padding=ft.padding.symmetric(horizontal=20),
+            border_radius=ft.border_radius.only(top_left=0, top_right=0),
+        )
 
-    # Footer fixo e responsivo
-    footer = ft.Container(
-        content=ft.Column(
-            [
-                ft.Text(
-                    "GMF-tech - Outsourcing em TI",
-                    size=16 if page.window.width > 600 else 14,
-                    color=ft.Colors.WHITE,
-                ),
-                ft.Text(
-                    "contato@gmf-tech.com | (11) 9999-9999",
-                    size=14 if page.window.width > 600 else 12,
-                    color=ft.Colors.GREY_400,
-                ),
-                ft.Text(
-                    "© 2025 GMF-tech. Todos os direitos reservados.",
-                    size=12 if page.window.width > 600 else 10,
-                    color=ft.Colors.GREY_400,
-                ),
-            ],
-            alignment="center",
-            spacing=5,
-        ),
-        bgcolor=primary_color,
-        padding=ft.padding.symmetric(vertical=10, horizontal=20),
-        border_radius=ft.border_radius.only(top_left=0, top_right=0),
-    )
+    def create_footer():
+        return ft.Container(
+            content=ft.Column(
+                [
+                    ft.Text(
+                        "GMF-tech - Outsourcing em TI",
+                        size=16 if page.window.width > 600 else 14,
+                        color=ft.Colors.WHITE,
+                    ),
+                    ft.Text(
+                        "contato@gmf-tech.com | (11) 9999-9999",
+                        size=14 if page.window.width > 600 else 12,
+                        color=ft.Colors.GREY_400,
+                    ),
+                    ft.Text(
+                        "© 2025 GMF-tech. Todos os direitos reservados.",
+                        size=12 if page.window.width > 600 else 10,
+                        color=ft.Colors.GREY_400,
+                    ),
+                ],
+                alignment="center",
+                spacing=5 if page.window.width > 600 else 3,
+            ),
+            bgcolor=primary_color,
+            padding=ft.padding.symmetric(vertical=10, horizontal=20),
+            border_radius=ft.border_radius.only(top_left=0, top_right=0),
+        )
+
+    # Inicializar header e footer
+    header = create_header()
+    footer = create_footer()
+
+    # Listener para redimensionamento da janela
+    def on_resize(e):
+        header.content = create_header().content
+        footer.content = create_footer().content
+        page.update()
+
+    page.on_resize = on_resize
 
     # Renderizar diferentes páginas com base na rota
     def route_change(route):
