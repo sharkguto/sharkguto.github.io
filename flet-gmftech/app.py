@@ -33,6 +33,19 @@ def main(page: ft.Page):
         close_dialog()
         page.update()
 
+    # Funções para navegação entre páginas
+    def go_to_home(e):
+        page.go("/")
+
+    def go_to_services(e):
+        page.go("/services")
+
+    def go_to_about(e):
+        page.go("/about")
+
+    def go_to_contact(e):
+        page.go("/contact")
+
     # Função para abrir o diálogo de login
     def handle_login_click(e):
         login_dialog = ft.AlertDialog(
@@ -45,7 +58,7 @@ def main(page: ft.Page):
                     ft.ElevatedButton(
                         content=ft.Row(
                             [
-                                ft.Icon(ft.icons.ACCOUNT_CIRCLE, color=ft.Colors.WHITE),
+                                ft.Icon(ft.Icons.ACCOUNT_CIRCLE, color=ft.Colors.WHITE),
                                 ft.Text("Login com Google", color=ft.Colors.WHITE),
                             ]
                         ),
@@ -59,7 +72,7 @@ def main(page: ft.Page):
                     ft.ElevatedButton(
                         content=ft.Row(
                             [
-                                ft.Icon(ft.icons.APPLE, color=ft.Colors.WHITE),
+                                ft.Icon(ft.Icons.APPLE, color=ft.Colors.WHITE),
                                 ft.Text("Login com Apple", color=ft.Colors.WHITE),
                             ]
                         ),
@@ -74,7 +87,7 @@ def main(page: ft.Page):
                         content=ft.Row(
                             [
                                 ft.Icon(
-                                    ft.icons.ALTERNATE_EMAIL, color=ft.Colors.WHITE
+                                    ft.Icons.ALTERNATE_EMAIL, color=ft.Colors.WHITE
                                 ),
                                 ft.Text("Login com X", color=ft.Colors.WHITE),
                             ]
@@ -98,7 +111,7 @@ def main(page: ft.Page):
         login_dialog.open = True
         page.update()
 
-    # Header/Navegação com botão de login (responsivo)
+    # Header fixo (mantido em todas as páginas)
     header = ft.Container(
         content=ft.Row(
             [
@@ -106,16 +119,24 @@ def main(page: ft.Page):
                 ft.Row(
                     [
                         ft.TextButton(
-                            "Início", style=ft.ButtonStyle(color=ft.Colors.WHITE)
+                            "Início",
+                            style=ft.ButtonStyle(color=ft.Colors.WHITE),
+                            on_click=go_to_home,
                         ),
                         ft.TextButton(
-                            "Serviços", style=ft.ButtonStyle(color=ft.Colors.WHITE)
+                            "Serviços",
+                            style=ft.ButtonStyle(color=ft.Colors.WHITE),
+                            on_click=go_to_services,
                         ),
                         ft.TextButton(
-                            "Sobre", style=ft.ButtonStyle(color=ft.Colors.WHITE)
+                            "Sobre",
+                            style=ft.ButtonStyle(color=ft.Colors.WHITE),
+                            on_click=go_to_about,
                         ),
                         ft.TextButton(
-                            "Contato", style=ft.ButtonStyle(color=ft.Colors.WHITE)
+                            "Contato",
+                            style=ft.ButtonStyle(color=ft.Colors.WHITE),
+                            on_click=go_to_contact,
                         ),
                         ft.ElevatedButton(
                             "Login",
@@ -139,135 +160,7 @@ def main(page: ft.Page):
         border_radius=ft.border_radius.only(top_left=0, top_right=0),
     )
 
-    # Hero Section (responsivo)
-    hero = ft.Container(
-        content=ft.Column(
-            [
-                ft.Text(
-                    "Soluções de TI Sob Medida",
-                    size=48,
-                    weight="bold",
-                    color=ft.Colors.WHITE,
-                    text_align="center",
-                ),
-                ft.Text(
-                    "Aceleramos seu sucesso com outsourcing especializado",
-                    size=20,
-                    color=ft.Colors.GREY_300,
-                    text_align="center",
-                ),
-                ft.ElevatedButton(
-                    "Fale Conosco",
-                    bgcolor=secondary_color,
-                    color=ft.Colors.WHITE,
-                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=8)),
-                ),
-            ],
-            alignment="center",
-            horizontal_alignment="center",
-            spacing=20,
-        ),
-        padding=ft.padding.symmetric(vertical=60, horizontal=20),
-        bgcolor=primary_color,
-        height=400 if page.window.width > 600 else 300,  # Ajuste dinâmico da altura
-        alignment=ft.alignment.center,
-    )
-
-    # Seção de Serviços (responsivo)
-    services = ft.Container(
-        content=ft.Column(
-            [
-                ft.Text("Nossos Serviços", size=36, weight="bold", text_align="center"),
-                ft.Row(
-                    [
-                        ft.Card(
-                            content=ft.Container(
-                                content=ft.Column(
-                                    [
-                                        ft.Icon(
-                                            ft.icons.DEVELOPER_BOARD,
-                                            size=40,
-                                            color=primary_color,
-                                        ),
-                                        ft.Text(
-                                            "Desenvolvimento", weight="bold", size=20
-                                        ),
-                                        ft.Text(
-                                            "Equipes dedicadas para seus projetos",
-                                            color=ft.Colors.GREY_700,
-                                        ),
-                                    ],
-                                    alignment="center",
-                                    spacing=10,
-                                ),
-                                padding=20,
-                            ),
-                            elevation=5,
-                            width=300
-                            if page.window.width > 900
-                            else 250,  # Ajuste dinâmico da largura
-                            margin=ft.margin.all(10),
-                        ),
-                        ft.Card(
-                            content=ft.Container(
-                                content=ft.Column(
-                                    [
-                                        ft.Icon(
-                                            ft.icons.SUPPORT_AGENT,
-                                            size=40,
-                                            color=primary_color,
-                                        ),
-                                        ft.Text("Suporte TI", weight="bold", size=20),
-                                        ft.Text(
-                                            "Atendimento 24/7 para sua empresa",
-                                            color=ft.Colors.GREY_700,
-                                        ),
-                                    ],
-                                    alignment="center",
-                                    spacing=10,
-                                ),
-                                padding=20,
-                            ),
-                            elevation=5,
-                            width=300 if page.window.width > 900 else 250,
-                            margin=ft.margin.all(10),
-                        ),
-                        ft.Card(
-                            content=ft.Container(
-                                content=ft.Column(
-                                    [
-                                        ft.Icon(
-                                            ft.icons.CLOUD, size=40, color=primary_color
-                                        ),
-                                        ft.Text(
-                                            "Cloud Services", weight="bold", size=20
-                                        ),
-                                        ft.Text(
-                                            "Soluções em nuvem escaláveis",
-                                            color=ft.Colors.GREY_700,
-                                        ),
-                                    ],
-                                    alignment="center",
-                                    spacing=10,
-                                ),
-                                padding=20,
-                            ),
-                            elevation=5,
-                            width=300 if page.window.width > 900 else 250,
-                            margin=ft.margin.all(10),
-                        ),
-                    ],
-                    alignment="center",
-                    wrap=True,
-                    spacing=20,
-                ),
-            ]
-        ),
-        padding=ft.padding.symmetric(vertical=50, horizontal=20),
-        bgcolor=ft.Colors.WHITE,
-    )
-
-    # Footer (responsivo)
+    # Footer fixo (mantido em todas as páginas)
     footer = ft.Container(
         content=ft.Column(
             [
@@ -288,8 +181,245 @@ def main(page: ft.Page):
         border_radius=ft.border_radius.only(top_left=0, top_right=0),
     )
 
-    # Adicionando todos os componentes à página
-    page.add(header, hero, services, footer)
+    # Renderizar diferentes páginas com base na rota
+    def route_change(route):
+        page.views.clear()
+
+        # Conteúdo principal (varia por rota)
+        main_content = None
+
+        if page.route == "/":
+            # Página Inicial (apenas Hero Section)
+            main_content = ft.Column(
+                [
+                    ft.Container(
+                        content=ft.Column(
+                            [
+                                ft.Text(
+                                    "Soluções de TI Sob Medida",
+                                    size=48,
+                                    weight="bold",
+                                    color=ft.Colors.WHITE,
+                                    text_align="center",
+                                ),
+                                ft.Text(
+                                    "Aceleramos seu sucesso com outsourcing especializado",
+                                    size=20,
+                                    color=ft.Colors.GREY_300,
+                                    text_align="center",
+                                ),
+                                ft.ElevatedButton(
+                                    "Fale Conosco",
+                                    bgcolor=secondary_color,
+                                    color=ft.Colors.WHITE,
+                                    style=ft.ButtonStyle(
+                                        shape=ft.RoundedRectangleBorder(radius=8)
+                                    ),
+                                ),
+                            ],
+                            alignment="center",
+                            horizontal_alignment="center",
+                            spacing=20,
+                        ),
+                        padding=ft.padding.symmetric(vertical=60, horizontal=20),
+                        bgcolor=primary_color,
+                        height=400 if page.window.width > 600 else 300,
+                        alignment=ft.alignment.center,
+                    )
+                ]
+            )
+        elif page.route == "/services":
+            # Página de Serviços (cards de "Nossos Serviços")
+            main_content = ft.Column(
+                [
+                    ft.Container(
+                        content=ft.Column(
+                            [
+                                ft.Text(
+                                    "Nossos Serviços",
+                                    size=36,
+                                    weight="bold",
+                                    text_align="center",
+                                ),
+                                ft.Row(
+                                    [
+                                        ft.Card(
+                                            content=ft.Container(
+                                                content=ft.Column(
+                                                    [
+                                                        ft.Icon(
+                                                            ft.Icons.DEVELOPER_BOARD,
+                                                            size=40,
+                                                            color=primary_color,
+                                                        ),
+                                                        ft.Text(
+                                                            "Desenvolvimento",
+                                                            weight="bold",
+                                                            size=20,
+                                                        ),
+                                                        ft.Text(
+                                                            "Equipes dedicadas para seus projetos",
+                                                            color=ft.Colors.GREY_700,
+                                                        ),
+                                                    ],
+                                                    alignment="center",
+                                                    spacing=10,
+                                                ),
+                                                padding=20,
+                                            ),
+                                            elevation=5,
+                                            width=300
+                                            if page.window.width > 900
+                                            else 250,
+                                            margin=ft.margin.all(10),
+                                        ),
+                                        ft.Card(
+                                            content=ft.Container(
+                                                content=ft.Column(
+                                                    [
+                                                        ft.Icon(
+                                                            ft.Icons.SUPPORT_AGENT,
+                                                            size=40,
+                                                            color=primary_color,
+                                                        ),
+                                                        ft.Text(
+                                                            "Suporte TI",
+                                                            weight="bold",
+                                                            size=20,
+                                                        ),
+                                                        ft.Text(
+                                                            "Atendimento 24/7 para sua empresa",
+                                                            color=ft.Colors.GREY_700,
+                                                        ),
+                                                    ],
+                                                    alignment="center",
+                                                    spacing=10,
+                                                ),
+                                                padding=20,
+                                            ),
+                                            elevation=5,
+                                            width=300
+                                            if page.window.width > 900
+                                            else 250,
+                                            margin=ft.margin.all(10),
+                                        ),
+                                        ft.Card(
+                                            content=ft.Container(
+                                                content=ft.Column(
+                                                    [
+                                                        ft.Icon(
+                                                            ft.Icons.CLOUD,
+                                                            size=40,
+                                                            color=primary_color,
+                                                        ),
+                                                        ft.Text(
+                                                            "Cloud Services",
+                                                            weight="bold",
+                                                            size=20,
+                                                        ),
+                                                        ft.Text(
+                                                            "Soluções em nuvem escaláveis",
+                                                            color=ft.Colors.GREY_700,
+                                                        ),
+                                                    ],
+                                                    alignment="center",
+                                                    spacing=10,
+                                                ),
+                                                padding=20,
+                                            ),
+                                            elevation=5,
+                                            width=300
+                                            if page.window.width > 900
+                                            else 250,
+                                            margin=ft.margin.all(10),
+                                        ),
+                                    ],
+                                    alignment="center",
+                                    wrap=True,
+                                    spacing=20,
+                                ),
+                            ]
+                        ),
+                        padding=ft.padding.symmetric(vertical=50, horizontal=20),
+                        bgcolor=ft.Colors.WHITE,
+                    )
+                ]
+            )
+        elif page.route == "/about":
+            # Página Sobre
+            main_content = ft.Column(
+                [
+                    ft.Container(
+                        content=ft.Text(
+                            "Página Sobre",
+                            size=30,
+                            weight="bold",
+                            color=ft.Colors.WHITE,
+                            text_align="center",
+                        ),
+                        padding=20,
+                        bgcolor=ft.Colors.WHITE,
+                    ),
+                    ft.Container(
+                        content=ft.Text(
+                            "Saiba mais sobre a GMF-tech...",
+                            size=20,
+                            color=ft.Colors.GREY_300,
+                        ),
+                        padding=20,
+                        bgcolor=ft.Colors.WHITE,
+                    ),
+                ]
+            )
+        elif page.route == "/contact":
+            # Página Contato
+            main_content = ft.Column(
+                [
+                    ft.Container(
+                        content=ft.Text(
+                            "Página Contato",
+                            size=30,
+                            weight="bold",
+                            color=ft.Colors.WHITE,
+                            text_align="center",
+                        ),
+                        padding=20,
+                        bgcolor=ft.Colors.WHITE,
+                    ),
+                    ft.Container(
+                        content=ft.Text(
+                            "Entre em contato com a GMF-tech...",
+                            size=20,
+                            color=ft.Colors.GREY_300,
+                        ),
+                        padding=20,
+                        bgcolor=ft.Colors.WHITE,
+                    ),
+                ]
+            )
+
+        # Adicionar o header fixo, o conteúdo principal e o footer à view
+        if main_content:
+            page.views.append(
+                ft.View(
+                    route if route else "/",
+                    [
+                        header,  # Header fixo no topo
+                        ft.Container(
+                            content=main_content,
+                            expand=True,  # Permite que o conteúdo ocupe o espaço disponível
+                            bgcolor=ft.Colors.WHITE,  # Fundo branco para o conteúdo principal
+                        ),
+                        footer,  # Footer fixo na base
+                    ],
+                )
+            )
+
+        page.update()
+
+    # Adicionando o listener para mudanças de rota
+    page.on_route_change = route_change
+    page.go(page.route if page.route else "/")
 
 
 # Executando o app
