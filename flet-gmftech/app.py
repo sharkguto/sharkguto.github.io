@@ -252,7 +252,7 @@ def main(page: ft.Page):
     page.on_resized = on_resize
 
     def route_change(route):
-        page.views.clear()
+        page.controls.clear()
 
         main_content = None
         if page.route == "/":
@@ -265,33 +265,22 @@ def main(page: ft.Page):
             main_content = contact_content(page)
 
         if main_content:
-            # Container com opacidade para o conteúdo principal
-            content_container = ft.Container(
-                content=main_content,
-                expand=True,
-                bgcolor=ft.Colors.WHITE,
-                opacity=0,  # Começa invisível
+            page.controls.append(
+                ft.Column(
+                    [
+                        header,
+                        ft.Container(
+                            content=main_content,
+                            expand=True,
+                            bgcolor=ft.Colors.WHITE,
+                        ),
+                        footer,
+                    ],
+                    expand=True,  # Faz o Column principal preencher a tela
+                    spacing=0,
+                )
             )
-
-            # Nova view
-            new_view = ft.View(
-                route if route else "/",
-                [
-                    header,
-                    content_container,
-                    footer,
-                ],
-            )
-            page.views.append(new_view)
-
-            # Animação de fade-in
-            def animate_opacity():
-                for i in range(1, 11):  # Fade em 200ms
-                    content_container.opacity = i / 10
-                    page.update()
-                    time.sleep(0.02)
-
-            threading.Thread(target=animate_opacity).start()
+        page.update()
 
     page.on_route_change = route_change
     page.go(page.route if page.route else "/")
