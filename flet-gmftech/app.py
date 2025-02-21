@@ -199,6 +199,11 @@ def main(page: ft.Page):
         )
 
     def create_footer():
+        # Calcula a altura máxima do footer como 15% da altura da janela
+        max_height = (
+            page.window.height * 0.15 if page.window.height else 100
+        )  # Valor padrão caso a altura não esteja disponível
+
         return ft.Container(
             content=ft.Column(
                 [
@@ -218,14 +223,15 @@ def main(page: ft.Page):
                         color=ft.Colors.GREY_400,
                     ),
                 ],
-                alignment="center",  # Centraliza os textos verticalmente na coluna
+                alignment="center",
                 spacing=5 if page.window.width > 600 else 3,
             ),
-            bgcolor=primary_color,
+            bgcolor=primary_color,  # Substitua primary_color pela cor definida no seu projeto
             padding=ft.padding.symmetric(vertical=10, horizontal=20),
             border_radius=ft.border_radius.only(top_left=0, top_right=0),
-            alignment=ft.alignment.center,  # Centraliza o conteúdo horizontalmente no container
-            expand=True,  # Faz o container ocupar toda a largura disponível
+            alignment=ft.alignment.center,
+            height=max_height,  # Limita a altura a 15% da tela
+            expand=False,  # Impede que o container expanda além do necessário
         )
 
     # Inicializar header e footer
