@@ -24,23 +24,26 @@ def main(page: ft.Page):
     # Função para fechar o diálogo
     def close_dialog(e):
         if page.overlay:  # Verifica se há elementos no overlay
-            dialog = page.overlay[-1]  # Pega o último elemento (o diálogo aberto)
-            page.close(dialog)  # Fecha o diálogo
+            # dialog = page.overlay[-1]  # Pega o último elemento (o diálogo aberto)
+            page.close(page.login_dialog)  # Fecha o diálogo
         page.update()
 
     # Funções de login simuladas
     def login_with_google(e):
         page.snack_bar = ft.SnackBar(ft.Text("Login com Google iniciado..."), open=True)
+        page.open(page.snack_bar)
         close_dialog(e)
         page.update()
 
     def login_with_apple(e):
         page.snack_bar = ft.SnackBar(ft.Text("Login com Apple iniciado..."), open=True)
+        page.open(page.snack_bar)
         close_dialog(e)
         page.update()
 
     def login_with_x(e):
         page.snack_bar = ft.SnackBar(ft.Text("Login com X iniciado..."), open=True)
+        page.open(page.snack_bar)
         close_dialog(e)
         page.update()
 
@@ -58,7 +61,7 @@ def main(page: ft.Page):
         page.go("/contact")
 
     def handle_login_click(e):
-        login_dialog = ft.AlertDialog(
+        page.login_dialog = ft.AlertDialog(
             modal=True,
             title=ft.Text("Login na Plataforma de Cursos", size=20, weight="bold"),
             content=ft.Column(
@@ -117,8 +120,8 @@ def main(page: ft.Page):
             actions=[ft.TextButton("Cancelar", on_click=lambda e: close_dialog(e))],
             actions_alignment="end",
         )
-        page.overlay.append(login_dialog)
-        login_dialog.open = True
+        page.overlay.append(page.login_dialog)
+        page.login_dialog.open = True
         page.update()
 
     def create_header():
