@@ -124,8 +124,8 @@ def main(page: ft.Page):
         page.login_dialog.open = True
         page.update()
 
-    def create_header():
-        # Itens do menu para o PopupMenuButton
+    def create_header(is_mobile):
+        # Itens do menu para o mobile (submenu ou NavigationBar)
         navigation_items = [
             ft.PopupMenuItem(text="Início", on_click=go_to_home),
             ft.PopupMenuItem(text="Serviços", on_click=go_to_services),
@@ -134,9 +134,9 @@ def main(page: ft.Page):
             ft.PopupMenuItem(text="Login", on_click=handle_login_click),
         ]
 
-        # Condição para telas grandes ou pequenas
-        if page.window.width > 600:
-            # Navegação para telas grandes
+        # Verifica o tamanho da tela
+        if not is_mobile:
+            # Header para desktop: textos ao longo da barra
             navigation_controls = ft.Row(
                 [
                     ft.TextButton(
@@ -161,7 +161,7 @@ def main(page: ft.Page):
                     ),
                     ft.ElevatedButton(
                         "Login",
-                        bgcolor=secondary_color,
+                        bgcolor=secondary_color,  # Substitua secondary_color pela cor definida no seu projeto
                         color=ft.Colors.WHITE,
                         on_click=handle_login_click,
                         style=ft.ButtonStyle(
@@ -174,9 +174,9 @@ def main(page: ft.Page):
                 spacing=10,
             )
         else:
-            # Menu hamburguer para telas menores
+            # Header para mobile: menu compacto (exemplo com PopupMenuButton)
             navigation_controls = ft.PopupMenuButton(
-                icon=ft.icons.MENU,
+                icon=ft.Icons.MENU,
                 items=navigation_items,
             )
 
@@ -191,9 +191,9 @@ def main(page: ft.Page):
                     ),
                     navigation_controls,
                 ],
-                alignment="spaceBetween",  # Alinha o logo à esquerda e os controles à direita
+                alignment="spaceBetween",
             ),
-            bgcolor=primary_color,
+            bgcolor=primary_color,  # Substitua primary_color pela cor definida no seu projeto
             padding=ft.padding.symmetric(horizontal=20),
             border_radius=ft.border_radius.only(top_left=0, top_right=0),
         )
@@ -234,17 +234,20 @@ def main(page: ft.Page):
             expand=False,  # Impede que o container expanda além do necessário
         )
 
+    is_mobile = page.width <= 600
+
     # Inicializar header e footer
-    header = create_header()
+    header = create_header(is_mobile)
     footer = create_footer()
 
     # Listener para redimensionamento da janela
     def on_resize(e):
-        header.content = create_header().content
         footer.content = create_footer().content
+        is_mobile = page.width <= 600
+        header.content = create_header(is_mobile).content
         page.update()
 
-    page.on_resize = on_resize
+    page.on_resized = on_resize
 
     # Renderizar diferentes páginas com base na rota
     def route_change(route):
@@ -284,6 +287,13 @@ def main(page: ft.Page):
     # Adicionando o listener para mudanças de rota
     page.on_route_change = route_change
     page.go(page.route if page.route else "/")
+
+    # # Chama on_resize uma vez após o carregamento da página
+    # def on_page_load(e):
+    #     on_resize(None)
+
+    # Usa um evento como on_route_change para garantir o carregamento inicial
+    # page.on_route_change = on_page_load
 
 
 # Executando o app
