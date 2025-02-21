@@ -1,8 +1,10 @@
+import threading
 import flet as ft
 from pages.home import home_content
 from pages.services import services_content
 from pages.about import about_content
 from pages.contact import contact_content
+import time
 
 # Variáveis globais para header e footer
 header = None
@@ -249,13 +251,10 @@ def main(page: ft.Page):
 
     page.on_resized = on_resize
 
-    # Renderizar diferentes páginas com base na rota
     def route_change(route):
         page.views.clear()
 
-        # Conteúdo principal (varia por rota)
         main_content = None
-
         if page.route == "/":
             main_content = home_content(page)
         elif page.route == "/services":
@@ -265,26 +264,35 @@ def main(page: ft.Page):
         elif page.route == "/contact":
             main_content = contact_content(page)
 
-        # Adicionar o header fixo, o conteúdo principal e o footer à view
         if main_content:
-            page.views.append(
-                ft.View(
-                    route if route else "/",
-                    [
-                        header,  # Header fixo no topo
-                        ft.Container(
-                            content=main_content,
-                            expand=True,  # Permite que o conteúdo ocupe o espaço disponível
-                            bgcolor=ft.Colors.WHITE,  # Fundo branco para o conteúdo principal
-                        ),
-                        footer,  # Footer fixo na base
-                    ],
-                )
+            # Container com opacidade para o conteúdo principal
+            content_container = ft.Container(
+                content=main_content,
+                expand=True,
+                bgcolor=ft.Colors.WHITE,
+                opacity=0,  # Começa invisível
             )
 
-        page.update()
+            # Nova view
+            new_view = ft.View(
+                route if route else "/",
+                [
+                    header,
+                    content_container,
+                    footer,
+                ],
+            )
+            page.views.append(new_view)
 
-    # Adicionando o listener para mudanças de rota
+            # Animação de fade-in
+            def animate_opacity():
+                for i in range(1, 11):  # Fade em 200ms
+                    content_container.opacity = i / 10
+                    page.update()
+                    time.sleep(0.02)
+
+            threading.Thread(target=animate_opacity).start()
+
     page.on_route_change = route_change
     page.go(page.route if page.route else "/")
 
