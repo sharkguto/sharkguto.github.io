@@ -32,15 +32,15 @@ def home_content(page):
                     on_click=go_to_contact,
                 ),
             ],
-            alignment="center",  # Alinha verticalmente no centro
-            horizontal_alignment="center",  # Alinha horizontalmente no centro
+            alignment="center",
+            horizontal_alignment="center",
             spacing=20 if page.window.width > 600 else 10,
-            expand=True,  # Faz o Column interno preencher o Container
+            expand=True,  # Preenche o Container internamente
         ),
-        # padding=ft.padding.symmetric(
-        #     vertical=60 if page.window.width > 600 else 30, horizontal=20
-        # ),
+        padding=ft.padding.symmetric(
+            vertical=60 if page.window.width > 600 else 30, horizontal=20
+        ),
         bgcolor=primary_color,
-        expand=True,  # Faz o Container preencher o espaço disponível no layout pai
+        expand=True,  # Preenche o espaço disponível no layout pai
         alignment=ft.alignment.center,
     )

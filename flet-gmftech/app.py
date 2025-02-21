@@ -128,6 +128,9 @@ def main(page: ft.Page):
 
     def create_header(is_mobile):
         # Itens do menu para o mobile (submenu ou NavigationBar)
+        max_height = (
+            page.height * 0.08 if page.height else 50
+        )  # 8% da altura, com fallback
         navigation_items = [
             ft.PopupMenuItem(text="Início", on_click=go_to_home),
             ft.PopupMenuItem(text="Serviços", on_click=go_to_services),
@@ -187,7 +190,7 @@ def main(page: ft.Page):
                 [
                     ft.Text(
                         "GMF-tech",
-                        size=30 if page.window.width > 600 else 20,
+                        size=30 if page.width > 600 else 20,
                         weight="bold",
                         color=ft.Colors.WHITE,
                     ),
@@ -198,12 +201,13 @@ def main(page: ft.Page):
             bgcolor=primary_color,  # Substitua primary_color pela cor definida no seu projeto
             padding=ft.padding.symmetric(horizontal=20),
             border_radius=ft.border_radius.only(top_left=0, top_right=0),
+            height=max_height,
         )
 
     def create_footer():
         # Calcula a altura máxima do footer como 15% da altura da janela
         max_height = (
-            page.window.height * 0.15 if page.window.height else 100
+            page.height * 0.15 if page.height else 100
         )  # Valor padrão caso a altura não esteja disponível
 
         return ft.Container(
@@ -211,22 +215,22 @@ def main(page: ft.Page):
                 [
                     ft.Text(
                         "GMF-tech - Outsourcing em TI",
-                        size=16 if page.window.width > 600 else 14,
+                        size=16 if page.width > 600 else 14,
                         color=ft.Colors.WHITE,
                     ),
                     ft.Text(
                         "contato@gmf-tech.com | (11) 9999-9999",
-                        size=14 if page.window.width > 600 else 12,
+                        size=14 if page.width > 600 else 12,
                         color=ft.Colors.GREY_400,
                     ),
                     ft.Text(
                         "© 2025 GMF-tech. Todos os direitos reservados.",
-                        size=12 if page.window.width > 600 else 10,
+                        size=12 if page.width > 600 else 10,
                         color=ft.Colors.GREY_400,
                     ),
                 ],
                 alignment="center",
-                spacing=5 if page.window.width > 600 else 3,
+                spacing=5 if page.width > 600 else 3,
             ),
             bgcolor=primary_color,  # Substitua primary_color pela cor definida no seu projeto
             padding=ft.padding.symmetric(vertical=10, horizontal=20),
@@ -247,37 +251,48 @@ def main(page: ft.Page):
         footer.content = create_footer().content
         is_mobile = page.width <= 600
         header.content = create_header(is_mobile).content
+        header.height = page.height * 0.08 if page.height else 50
+        footer.height = page.height * 0.15 if page.height else 100
         page.update()
 
     page.on_resized = on_resize
 
-    def route_change(route):
+    def route_change(route_event):
         page.controls.clear()
 
         main_content = None
-        if page.route == "/":
+        if route_event.route == "/":
             main_content = home_content(page)
-        elif page.route == "/services":
+        elif route_event.route == "/services":
             main_content = services_content(page)
-        elif page.route == "/about":
+        elif route_event.route == "/about":
             main_content = about_content(page)
-        elif page.route == "/contact":
+        elif route_event.route == "/contact":
             main_content = contact_content(page)
+
+        fill_height = (
+            (page.height * 0.77)
+            if page.height
+            else (page.height - (header.height + footer.height))
+        )
 
         if main_content:
             page.controls.append(
                 ft.Column(
                     [
-                        header,
+                        header,  # Altura fixa em 8%
                         ft.Container(
                             content=main_content,
-                            expand=True,
+                            expand=True,  # Expande para ocupar o espaço restante
                             bgcolor=ft.Colors.WHITE,
+                            height=fill_height,
+                            # width=page.width,
+                            adaptive=True,
                         ),
-                        footer,
+                        footer,  # Altura fixa em 15%
                     ],
-                    expand=True,  # Faz o Column principal preencher a tela
-                    spacing=0,
+                    expand=True,  # Faz o Column principal preencher toda a tela
+                    spacing=0,  # Remove espaçamento entre os elementos
                 )
             )
         page.update()
