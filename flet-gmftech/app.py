@@ -125,69 +125,73 @@ def main(page: ft.Page):
         page.update()
 
     def create_header():
-        return ft.Container(
-            content=ft.Column(
+        # Itens do menu para o PopupMenuButton
+        navigation_items = [
+            ft.PopupMenuItem(text="Início", on_click=go_to_home),
+            ft.PopupMenuItem(text="Serviços", on_click=go_to_services),
+            ft.PopupMenuItem(text="Sobre", on_click=go_to_about),
+            ft.PopupMenuItem(text="Contato", on_click=go_to_contact),
+            ft.PopupMenuItem(text="Login", on_click=handle_login_click),
+        ]
+
+        # Condição para telas grandes ou pequenas
+        if page.window.width > 600:
+            # Navegação para telas grandes
+            navigation_controls = ft.Row(
                 [
-                    ft.Row(
-                        [
-                            ft.Text(
-                                "GMF-tech",
-                                size=30 if page.window.width > 600 else 20,
-                                weight="bold",
-                                color=ft.Colors.WHITE,
-                            ),
-                            ft.Row(
-                                [
-                                    ft.TextButton(
-                                        "Início",
-                                        style=ft.ButtonStyle(color=ft.Colors.WHITE),
-                                        on_click=go_to_home,
-                                    ),
-                                    ft.TextButton(
-                                        "Serviços",
-                                        style=ft.ButtonStyle(color=ft.Colors.WHITE),
-                                        on_click=go_to_services,
-                                    ),
-                                    ft.TextButton(
-                                        "Sobre",
-                                        style=ft.ButtonStyle(color=ft.Colors.WHITE),
-                                        on_click=go_to_about,
-                                    ),
-                                    ft.TextButton(
-                                        "Contato",
-                                        style=ft.ButtonStyle(color=ft.Colors.WHITE),
-                                        on_click=go_to_contact,
-                                    ),
-                                    ft.ElevatedButton(
-                                        "Login",
-                                        bgcolor=secondary_color,
-                                        color=ft.Colors.WHITE,
-                                        on_click=handle_login_click,
-                                        style=ft.ButtonStyle(
-                                            shape=ft.RoundedRectangleBorder(radius=8),
-                                            padding=ft.padding.symmetric(
-                                                horizontal=15
-                                                if page.window.width > 600
-                                                else 10,
-                                                vertical=8
-                                                if page.window.width > 600
-                                                else 5,
-                                            ),
-                                        ),
-                                    ),
-                                ],
-                                alignment="end"
-                                if page.window.width > 600
-                                else "center",
-                                spacing=10 if page.window.width > 600 else 5,
-                                wrap=True,
-                            ),
-                        ],
-                        alignment="spaceBetween"
-                        if page.window.width > 600
-                        else "center",
-                    )
-                ]
+                    ft.TextButton(
+                        "Início",
+                        style=ft.ButtonStyle(color=ft.Colors.WHITE),
+                        on_click=go_to_home,
+                    ),
+                    ft.TextButton(
+                        "Serviços",
+                        style=ft.ButtonStyle(color=ft.Colors.WHITE),
+                        on_click=go_to_services,
+                    ),
+                    ft.TextButton(
+                        "Sobre",
+                        style=ft.ButtonStyle(color=ft.Colors.WHITE),
+                        on_click=go_to_about,
+                    ),
+                    ft.TextButton(
+                        "Contato",
+                        style=ft.ButtonStyle(color=ft.Colors.WHITE),
+                        on_click=go_to_contact,
+                    ),
+                    ft.ElevatedButton(
+                        "Login",
+                        bgcolor=secondary_color,
+                        color=ft.Colors.WHITE,
+                        on_click=handle_login_click,
+                        style=ft.ButtonStyle(
+                            shape=ft.RoundedRectangleBorder(radius=8),
+                            padding=ft.padding.symmetric(horizontal=15, vertical=8),
+                        ),
+                    ),
+                ],
+                alignment="end",
+                spacing=10,
+            )
+        else:
+            # Menu hamburguer para telas menores
+            navigation_controls = ft.PopupMenuButton(
+                icon=ft.icons.MENU,
+                items=navigation_items,
+            )
+
+        return ft.Container(
+            content=ft.Row(
+                [
+                    ft.Text(
+                        "GMF-tech",
+                        size=30 if page.window.width > 600 else 20,
+                        weight="bold",
+                        color=ft.Colors.WHITE,
+                    ),
+                    navigation_controls,
+                ],
+                alignment="spaceBetween",  # Alinha o logo à esquerda e os controles à direita
             ),
             bgcolor=primary_color,
             padding=ft.padding.symmetric(horizontal=20),
@@ -214,12 +218,14 @@ def main(page: ft.Page):
                         color=ft.Colors.GREY_400,
                     ),
                 ],
-                alignment="center",
+                alignment="center",  # Centraliza os textos verticalmente na coluna
                 spacing=5 if page.window.width > 600 else 3,
             ),
             bgcolor=primary_color,
             padding=ft.padding.symmetric(vertical=10, horizontal=20),
             border_radius=ft.border_radius.only(top_left=0, top_right=0),
+            alignment=ft.alignment.center,  # Centraliza o conteúdo horizontalmente no container
+            expand=True,  # Faz o container ocupar toda a largura disponível
         )
 
     # Inicializar header e footer
