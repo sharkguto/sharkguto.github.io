@@ -7,7 +7,7 @@
 import flet as ft
 import base64
 from pyecharts import options as opts
-from pyecharts.charts import Bar
+from pyecharts.charts import Bar, Line
 from pyecharts.globals import ThemeType
 import requests
 import threading
@@ -29,27 +29,52 @@ def fetch_usd_brl_data():
         return []
 
 
-# Função para criar o gráfico com Pyecharts
+# Função para criar o gráfico com Pyecharts (com 2 colunas e linha de variação)
 def create_chart(data):
     dates = [
         datetime.fromtimestamp(int(entry["timestamp"])).strftime("%d/%m")
         for entry in data[::-1]
     ]
     highs = [float(entry["high"]) for entry in data[::-1]]
+    lows = [float(entry["low"]) for entry in data[::-1]]
+    pct_changes = [float(entry["pctChange"]) for entry in data[::-1]]
 
     bar = (
         Bar(
-            init_opts=opts.InitOpts(width="100%", height="300px", theme=ThemeType.LIGHT)
+            init_opts=opts.InitOpts(width="100%", height="400px", theme=ThemeType.LIGHT)
         )
         .add_xaxis(dates)
         .add_yaxis("Máxima (BRL)", highs, color="#1e88e5")
+        .add_yaxis("Mínima (BRL)", lows, color="#ef5350")
+        .extend_axis(
+            yaxis=opts.AxisOpts(
+                name="Variação (%)",
+                position="right",
+                axislabel_opts=opts.LabelOpts(formatter="{value}%"),
+            )
+        )
         .set_global_opts(
-            title_opts=opts.TitleOpts(title="USD/BRL - 15 Dias"),
+            title_opts=opts.TitleOpts(title="Cotação USD/BRL - Últimos 15 Dias"),
             xaxis_opts=opts.AxisOpts(axislabel_opts=opts.LabelOpts(rotate=45)),
-            tooltip_opts=opts.TooltipOpts(trigger="axis"),
+            legend_opts=opts.LegendOpts(pos_top="5%"),
+            tooltip_opts=opts.TooltipOpts(trigger="axis", axis_pointer_type="cross"),
         )
     )
 
+    line = (
+        Line()
+        .add_xaxis(dates)
+        .add_yaxis(
+            "Variação (%)",
+            pct_changes,
+            yaxis_index=1,
+            color="#26a69a",
+            linestyle_opts=opts.LineStyleOpts(width=2),
+            label_opts=opts.LabelOpts(is_show=False),
+        )
+    )
+
+    bar.overlap(line)
     html = bar.render_embed()
     return base64.b64encode(html.encode("utf-8")).decode("utf-8")
 
@@ -111,7 +136,9 @@ def currency_chart_content(page):
         content=ft.Column(
             [
                 ft.Text("Iniciando...", color=ft.Colors.GREY_600),
-                ft.ProgressBar(width=300, color=primary_color),
+                ft.ProgressBar(
+                    width=300 if page.width > 600 else 200, color=primary_color
+                ),
             ],
             alignment="center",
             horizontal_alignment="center",
@@ -125,9 +152,15 @@ def currency_chart_content(page):
             [
                 ft.Text(
                     "Cotação USD/BRL",
-                    size=24,
+                    size=36 if page.width > 600 else 24,
                     weight="bold",
                     color=primary_color,
+                    text_align="center",
+                ),
+                ft.Text(
+                    "Últimos 15 dias",
+                    size=20 if page.width > 600 else 16,
+                    color=ft.Colors.GREY_700,
                     text_align="center",
                 ),
                 chart_container,
@@ -135,15 +168,18 @@ def currency_chart_content(page):
                     "Voltar para Home",
                     bgcolor=secondary_color,
                     color=ft.Colors.WHITE,
+                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=8)),
                     on_click=go_to_home,
                 ),
             ],
             alignment="center",
             horizontal_alignment="center",
-            spacing=20,
+            spacing=20 if page.width > 600 else 10,
             expand=True,
         ),
-        padding=ft.padding.all(20),
+        padding=ft.padding.symmetric(
+            vertical=50 if page.width > 600 else 30, horizontal=20
+        ),
         bgcolor=ft.Colors.WHITE,
         expand=True,
         alignment=ft.alignment.center,
