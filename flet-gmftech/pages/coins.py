@@ -10,11 +10,11 @@ from pyecharts import options as opts
 from pyecharts.charts import Bar, Line
 from pyecharts.globals import ThemeType
 import requests
-import threading
 from datetime import datetime
+import time
 
 
-# Função para buscar os dados da API
+# Função para buscar os dados da API usando requests
 def fetch_usd_brl_data():
     url = "https://economia.awesomeapi.com.br/json/daily/USD-BRL/15"
     try:
@@ -39,7 +39,6 @@ def create_chart(data):
     lows = [float(entry["low"]) for entry in data[::-1]]
     pct_changes = [float(entry["pctChange"]) for entry in data[::-1]]
 
-    # Criar o gráfico de barras com máxima e mínima lado a lado
     bar = (
         Bar(
             init_opts=opts.InitOpts(width="100%", height="400px", theme=ThemeType.LIGHT)
@@ -49,16 +48,16 @@ def create_chart(data):
             "Mínima (BRL)",
             lows,
             color="#ef5350",
-            bar_width="40%",  # Largura das barras
-            category_gap="20%",  # Espaço entre barras da mesma categoria
+            bar_width="40%",
+            category_gap="20%",
             itemstyle_opts=opts.ItemStyleOpts(opacity=0.7),
         )
         .add_yaxis(
             "Máxima (BRL)",
             highs,
             color="#1e88e5",
-            bar_width="40%",  # Largura das barras
-            category_gap="20%",  # Espaço entre barras da mesma categoria
+            bar_width="40%",
+            category_gap="20%",
             itemstyle_opts=opts.ItemStyleOpts(opacity=0.7),
         )
         .extend_axis(
@@ -76,7 +75,6 @@ def create_chart(data):
         )
     )
 
-    # Criar a linha de variação para ficar "na frente"
     line = (
         Line()
         .add_xaxis(dates)
@@ -85,30 +83,34 @@ def create_chart(data):
             pct_changes,
             yaxis_index=1,
             color="#26a69a",
-            linestyle_opts=opts.LineStyleOpts(width=4, opacity=1),  # Linha destacada
+            linestyle_opts=opts.LineStyleOpts(width=4, opacity=1),
             label_opts=opts.LabelOpts(is_show=False),
-            z_level=1,  # Colocar a linha na frente das barras
+            z_level=1,
         )
     )
 
-    # Sobrepor a linha às barras
     bar.overlap(line)
     html = bar.render_embed()
     return base64.b64encode(html.encode("utf-8")).decode("utf-8")
 
 
-# Função para carregar o gráfico em uma thread separada
+# Função para carregar o gráfico com progresso simulado
 def load_chart(page, chart_container):
+    # Exibir mensagem de carregamento inicial
+    progress_ring = ft.ProgressRing(
+        width=32, height=32, stroke_width=4, color=ft.Colors.INDIGO_700
+    )
     chart_container.content = ft.Column(
         [
             ft.Text("Carregando dados...", color=ft.Colors.GREY_600),
-            ft.ProgressBar(width=300, color=ft.Colors.INDIGO_700),
+            progress_ring,
         ],
         alignment="center",
         horizontal_alignment="center",
     )
     page.update()
 
+    # Buscar os dados
     data = fetch_usd_brl_data()
     if not data:
         chart_container.content = ft.Text(
@@ -117,16 +119,25 @@ def load_chart(page, chart_container):
         page.update()
         return
 
+    # Atualizar para renderização com progresso
     chart_container.content = ft.Column(
         [
             ft.Text("Renderizando gráfico...", color=ft.Colors.GREY_600),
-            ft.ProgressBar(width=300, color=ft.Colors.INDIGO_700),
+            progress_ring,
         ],
         alignment="center",
         horizontal_alignment="center",
     )
     page.update()
 
+    # Simular progresso incremental (0 a 100%)
+    steps = 101  # De 0 a 100
+    for i in range(steps):
+        progress_ring.value = i / 100.0  # Progresso de 0.0 a 1.0
+        time.sleep(0.02)  # Simulação de atraso
+        page.update()  # Atualizar a página inteira, pois o ProgressRing já está vinculado
+
+    # Criar e exibir o gráfico
     encoded_html = create_chart(data)
     data_url = f"data:text/html;base64,{encoded_html}"
     chart_webview = ft.WebView(
@@ -147,16 +158,9 @@ def currency_chart_content(page):
         page.go("/")
 
     chart_container = ft.Container(
-        content=ft.Column(
-            [
-                ft.Text("Iniciando...", color=ft.Colors.GREY_600),
-                ft.ProgressBar(
-                    width=300 if page.width > 600 else 200, color=primary_color
-                ),
-            ],
-            alignment="center",
-            horizontal_alignment="center",
-        ),
+        content=ft.Text(
+            "Iniciando...", color=ft.Colors.GREY_600
+        ),  # Placeholder inicial
         alignment=ft.alignment.center,
         expand=True,
     )
@@ -199,5 +203,7 @@ def currency_chart_content(page):
         alignment=ft.alignment.center,
     )
 
-    threading.Thread(target=load_chart, args=(page, chart_container)).start()
+    # Carregar o gráfico de forma síncrona com progresso simulado
+    load_chart(page, chart_container)
+
     return content
