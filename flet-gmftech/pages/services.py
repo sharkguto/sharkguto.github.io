@@ -37,7 +37,6 @@ def services_content(page):
                 padding=20,
             ),
             elevation=5,
-            # Largura dinâmica: 80% da tela dividido pelo número de cards por linha
             width=page.width * 0.8 / 3
             if page.width > 900
             else page.width * 0.8 / 2
@@ -49,39 +48,50 @@ def services_content(page):
     # Lista de serviços
     services = [
         (
-            ft.Icons.DEVELOPER_BOARD,
             "Desenvolvimento",
+            ft.Icons.DEVELOPER_BOARD,
             "Equipes dedicadas para seus projetos",
         ),
-        (ft.Icons.SUPPORT_AGENT, "Suporte TI", "Atendimento 24/7 para sua empresa"),
-        (ft.Icons.CLOUD, "Cloud Services", "Soluções em nuvem escaláveis"),
+        ("Suporte TI", ft.Icons.SUPPORT_AGENT, "Atendimento 24/7 para sua empresa"),
+        ("Cloud AWS", ft.Icons.CLOUD, "Soluções escaláveis com Amazon Web Services"),
+        ("DevOps", ft.Icons.SETTINGS, "Integração e entrega contínua para agilidade"),
+        ("Ansible", ft.Icons.AUTO_FIX_HIGH, "Automação de infraestrutura simplificada"),
+        ("Automação", ft.Icons.BUILD, "Processos otimizados com scripts inteligentes"),
+        ("Python Backend", ft.Icons.CODE, "APIs robustas e escaláveis com Python"),
+        ("Web com Flet", ft.Icons.WEB, "Aplicações web modernas e responsivas"),
+        ("Mobile com Kivy", ft.Icons.PHONE_ANDROID, "Apps móveis multiplataforma"),
     ]
 
     # Criar os cards
     cards = [create_card(icon, title, desc) for icon, title, desc in services]
 
-    # Conteúdo da página de serviços
+    # Conteúdo da página de serviços com rolagem
     return ft.Container(
-        content=ft.Column(
-            [
-                ft.Text(
-                    "Nossos Serviços",
-                    size=36 if page.width > 600 else 24,
-                    weight="bold",
-                    text_align="center",
-                ),
-                ft.ResponsiveRow(
-                    controls=cards,
+        content=ft.ListView(
+            controls=[
+                ft.Column(
+                    [
+                        ft.Text(
+                            "Nossos Serviços",
+                            size=36 if page.width > 600 else 24,
+                            weight="bold",
+                            text_align="center",
+                        ),
+                        ft.ResponsiveRow(
+                            controls=cards,
+                            alignment="center",
+                            spacing=20 if page.width > 600 else 10,
+                        ),
+                    ],
                     alignment="center",
                     spacing=20 if page.width > 600 else 10,
-                ),
+                )
             ],
-            alignment="center",
-            spacing=20 if page.width > 600 else 10,
+            expand=True,  # Preenche o espaço disponível
         ),
         padding=ft.padding.symmetric(
             vertical=50 if page.width > 600 else 30, horizontal=20
         ),
         bgcolor=ft.Colors.WHITE,
-        expand=True,  # Preenche o espaço disponível (80% da tela)
+        expand=True,
     )
