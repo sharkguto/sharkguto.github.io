@@ -63,7 +63,7 @@ def services_content(page):
     ]
 
     # Criar os cards
-    cards = [create_card(icon, title, desc) for icon, title, desc in services]
+    cards = [create_card(icon, title, desc) for title, icon, desc in services]
 
     # Conteúdo da página de serviços com rolagem
     return ft.Container(
