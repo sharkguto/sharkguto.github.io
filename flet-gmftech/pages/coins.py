@@ -9,24 +9,24 @@ import base64
 from pyecharts import options as opts
 from pyecharts.charts import Bar, Line
 from pyecharts.globals import ThemeType
-import requests
+import aiohttp
 from datetime import datetime
-import time
 
 
-# Função para buscar os dados da API usando requests
-def fetch_usd_brl_data():
+# Função assíncrona para buscar os dados da API usando aiohttp
+async def fetch_usd_brl_data():
     url = "https://economia.awesomeapi.com.br/json/daily/USD-BRL/15"
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            return response.json()
-        else:
-            print(f"Erro: status code {response.status_code}")
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.get(url) as response:
+                if response.status == 200:
+                    return await response.json()
+                else:
+                    print(f"Erro: status code {response.status}")
+                    return []
+        except Exception as e:
+            print(f"Erro ao buscar dados: {e}")
             return []
-    except Exception as e:
-        print(f"Erro ao buscar dados: {e}")
-        return []
 
 
 # Função para criar o gráfico com Pyecharts
@@ -94,9 +94,9 @@ def create_chart(data):
     return base64.b64encode(html.encode("utf-8")).decode("utf-8")
 
 
-# Função para carregar o gráfico com progresso simulado
-def load_chart(page, chart_container):
-    # Exibir mensagem de carregamento inicial
+# Função assíncrona para carregar o gráfico
+async def load_chart(page, chart_container):
+    # Exibir mensagem de carregamento
     progress_ring = ft.ProgressRing(
         width=32, height=32, stroke_width=4, color=ft.Colors.INDIGO_700
     )
@@ -111,7 +111,7 @@ def load_chart(page, chart_container):
     page.update()
 
     # Buscar os dados
-    data = fetch_usd_brl_data()
+    data = await fetch_usd_brl_data()
     if not data:
         chart_container.content = ft.Text(
             "Erro ao carregar dados", color=ft.Colors.RED_400
@@ -119,7 +119,7 @@ def load_chart(page, chart_container):
         page.update()
         return
 
-    # Atualizar para renderização com progresso
+    # Atualizar para renderização
     chart_container.content = ft.Column(
         [
             ft.Text("Renderizando gráfico...", color=ft.Colors.GREY_600),
@@ -129,13 +129,6 @@ def load_chart(page, chart_container):
         horizontal_alignment="center",
     )
     page.update()
-
-    # Simular progresso incremental (0 a 100%)
-    steps = 101  # De 0 a 100
-    for i in range(steps):
-        progress_ring.value = i / 100.0  # Progresso de 0.0 a 1.0
-        time.sleep(0.02)  # Simulação de atraso
-        page.update()  # Atualizar a página inteira, pois o ProgressRing já está vinculado
 
     # Criar e exibir o gráfico
     encoded_html = create_chart(data)
@@ -157,53 +150,58 @@ def currency_chart_content(page):
     def go_to_home(e):
         page.go("/")
 
-    chart_container = ft.Container(
-        content=ft.Text(
-            "Iniciando...", color=ft.Colors.GREY_600
-        ),  # Placeholder inicial
-        alignment=ft.alignment.center,
-        expand=True,
+    # Interface inicial com ProgressRing
+    progress_ring = ft.ProgressRing(
+        width=32, height=32, stroke_width=4, color=primary_color
     )
-
-    content = ft.Container(
+    chart_container = ft.Container(
         content=ft.Column(
-            [
-                ft.Text(
-                    "Cotação USD/BRL",
-                    size=36 if page.width > 600 else 24,
-                    weight="bold",
-                    color=primary_color,
-                    text_align="center",
-                ),
-                ft.Text(
-                    "Últimos 15 dias",
-                    size=20 if page.width > 600 else 16,
-                    color=ft.Colors.GREY_700,
-                    text_align="center",
-                ),
-                chart_container,
-                ft.ElevatedButton(
-                    "Voltar para Home",
-                    bgcolor=secondary_color,
-                    color=ft.Colors.WHITE,
-                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=8)),
-                    on_click=go_to_home,
-                ),
-            ],
+            [ft.Text("Aguardando...", color=ft.Colors.GREY_600), progress_ring],
             alignment="center",
             horizontal_alignment="center",
-            spacing=20 if page.width > 600 else 10,
-            expand=True,
         ),
-        padding=ft.padding.symmetric(
-            vertical=50 if page.width > 600 else 30, horizontal=20
-        ),
-        bgcolor=ft.Colors.WHITE,
-        expand=True,
         alignment=ft.alignment.center,
+        expand=True,
     )
 
-    # Carregar o gráfico de forma síncrona com progresso simulado
-    load_chart(page, chart_container)
+    content = ft.Column(
+        [
+            ft.Text(
+                "Cotação USD/BRL",
+                size=36 if page.width > 600 else 24,
+                weight="bold",
+                color=primary_color,
+                text_align="center",
+            ),
+            ft.Text(
+                "Últimos 15 dias",
+                size=20 if page.width > 600 else 16,
+                color=ft.Colors.GREY_700,
+                text_align="center",
+            ),
+            chart_container,
+            ft.ElevatedButton(
+                "Voltar para Home",
+                bgcolor=secondary_color,
+                color=ft.Colors.WHITE,
+                style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=8)),
+                on_click=go_to_home,
+            ),
+        ],
+        alignment="center",
+        horizontal_alignment="center",
+        spacing=20 if page.width > 600 else 10,
+        expand=True,
+    )
+
+    # Adicionar o conteúdo à página antes de iniciar o carregamento assíncrono
+    page.controls.append(content)
+    page.update()
+
+    # Iniciar o carregamento do gráfico assincronamente
+    page.run_task(load_chart, page, chart_container)
+
+    # Remover o conteúdo de page.controls após a construção inicial
+    page.controls.remove(content)
 
     return content
