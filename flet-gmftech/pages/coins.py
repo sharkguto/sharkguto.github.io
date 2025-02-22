@@ -29,7 +29,7 @@ def fetch_usd_brl_data():
         return []
 
 
-# Função para criar o gráfico com Pyecharts (com 2 colunas e linha de variação)
+# Função para criar o gráfico com Pyecharts
 def create_chart(data):
     dates = [
         datetime.fromtimestamp(int(entry["timestamp"])).strftime("%d/%m")
@@ -39,13 +39,28 @@ def create_chart(data):
     lows = [float(entry["low"]) for entry in data[::-1]]
     pct_changes = [float(entry["pctChange"]) for entry in data[::-1]]
 
+    # Criar o gráfico de barras com máxima e mínima lado a lado
     bar = (
         Bar(
             init_opts=opts.InitOpts(width="100%", height="400px", theme=ThemeType.LIGHT)
         )
         .add_xaxis(dates)
-        .add_yaxis("Máxima (BRL)", highs, color="#1e88e5")
-        .add_yaxis("Mínima (BRL)", lows, color="#ef5350")
+        .add_yaxis(
+            "Mínima (BRL)",
+            lows,
+            color="#ef5350",
+            bar_width="40%",  # Largura das barras
+            category_gap="20%",  # Espaço entre barras da mesma categoria
+            itemstyle_opts=opts.ItemStyleOpts(opacity=0.7),
+        )
+        .add_yaxis(
+            "Máxima (BRL)",
+            highs,
+            color="#1e88e5",
+            bar_width="40%",  # Largura das barras
+            category_gap="20%",  # Espaço entre barras da mesma categoria
+            itemstyle_opts=opts.ItemStyleOpts(opacity=0.7),
+        )
         .extend_axis(
             yaxis=opts.AxisOpts(
                 name="Variação (%)",
@@ -61,6 +76,7 @@ def create_chart(data):
         )
     )
 
+    # Criar a linha de variação para ficar "na frente"
     line = (
         Line()
         .add_xaxis(dates)
@@ -69,11 +85,13 @@ def create_chart(data):
             pct_changes,
             yaxis_index=1,
             color="#26a69a",
-            linestyle_opts=opts.LineStyleOpts(width=2),
+            linestyle_opts=opts.LineStyleOpts(width=4, opacity=1),  # Linha destacada
             label_opts=opts.LabelOpts(is_show=False),
+            z_level=1,  # Colocar a linha na frente das barras
         )
     )
 
+    # Sobrepor a linha às barras
     bar.overlap(line)
     html = bar.render_embed()
     return base64.b64encode(html.encode("utf-8")).decode("utf-8")
@@ -81,7 +99,6 @@ def create_chart(data):
 
 # Função para carregar o gráfico em uma thread separada
 def load_chart(page, chart_container):
-    # Exibir mensagem de carregamento
     chart_container.content = ft.Column(
         [
             ft.Text("Carregando dados...", color=ft.Colors.GREY_600),
@@ -92,7 +109,6 @@ def load_chart(page, chart_container):
     )
     page.update()
 
-    # Buscar os dados
     data = fetch_usd_brl_data()
     if not data:
         chart_container.content = ft.Text(
@@ -101,7 +117,6 @@ def load_chart(page, chart_container):
         page.update()
         return
 
-    # Atualizar para "renderizando gráfico"
     chart_container.content = ft.Column(
         [
             ft.Text("Renderizando gráfico...", color=ft.Colors.GREY_600),
@@ -112,7 +127,6 @@ def load_chart(page, chart_container):
     )
     page.update()
 
-    # Criar e exibir o gráfico
     encoded_html = create_chart(data)
     data_url = f"data:text/html;base64,{encoded_html}"
     chart_webview = ft.WebView(
@@ -185,7 +199,5 @@ def currency_chart_content(page):
         alignment=ft.alignment.center,
     )
 
-    # Executar o carregamento em uma thread separada
     threading.Thread(target=load_chart, args=(page, chart_container)).start()
-
     return content
