@@ -11,6 +11,7 @@ from pages.home import home_content
 from pages.services import services_content
 from pages.about import about_content
 from pages.contact import contact_content
+from pages.coins import currency_chart_content
 
 # Variáveis globais para header e footer
 header = None
@@ -67,6 +68,9 @@ def main(page: ft.Page):
 
     def go_to_contact(e):
         page.go("/contact")
+
+    def go_to_coins(e):
+        page.go("/coins")
 
     def handle_login_click(e):
         page.login_dialog = ft.AlertDialog(
@@ -142,6 +146,7 @@ def main(page: ft.Page):
             ft.PopupMenuItem(text="Serviços", on_click=go_to_services),
             ft.PopupMenuItem(text="Sobre", on_click=go_to_about),
             ft.PopupMenuItem(text="Contato", on_click=go_to_contact),
+            ft.PopupMenuItem(text="Cotação", on_click=go_to_coins),
             ft.PopupMenuItem(text="Login", on_click=handle_login_click),
         ]
 
@@ -169,6 +174,11 @@ def main(page: ft.Page):
                         "Contato",
                         style=ft.ButtonStyle(color=ft.Colors.WHITE),
                         on_click=go_to_contact,
+                    ),
+                    ft.TextButton(
+                        "Cotação (echarts + api)",
+                        style=ft.ButtonStyle(color=ft.Colors.WHITE),
+                        on_click=go_to_coins,
                     ),
                     ft.ElevatedButton(
                         "Login",
@@ -281,6 +291,8 @@ def main(page: ft.Page):
             main_content = about_content(page)
         elif route_event.route == "/contact":
             main_content = contact_content(page)
+        elif route_event.route == "/coins":
+            main_content = currency_chart_content(page)
 
         fill_height = (
             (page.height * 0.8)
