@@ -1,10 +1,16 @@
-import threading
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# about.py
+# @Author : Gustavo (gustavo@gmf-tech.com)
+# @Link   :
+
+
 import flet as ft
 from pages.home import home_content
 from pages.services import services_content
 from pages.about import about_content
 from pages.contact import contact_content
-import time
 
 # Variáveis globais para header e footer
 header = None
@@ -252,7 +258,13 @@ def main(page: ft.Page):
         is_mobile = page.width <= 600
         header.content = create_header(is_mobile).content
         header.height = page.height * 0.08 if page.height else 50
-        footer.height = page.height * 0.15 if page.height else 100
+        footer.height = page.height * 0.12 if page.height else 100
+
+        page.controls[0].controls[1].height = (
+            (page.height * 0.8)
+            if page.height
+            else (page.height - (header.height + footer.height))
+        )
         page.update()
 
     page.on_resized = on_resize
@@ -271,7 +283,7 @@ def main(page: ft.Page):
             main_content = contact_content(page)
 
         fill_height = (
-            (page.height * 0.77)
+            (page.height * 0.8)
             if page.height
             else (page.height - (header.height + footer.height))
         )

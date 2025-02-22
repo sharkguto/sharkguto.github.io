@@ -14,6 +14,7 @@ def services_content(page):
     return ft.Column(
         [
             ft.Container(
+                expand=True,  # Preenche o espaço disponível no layout pai
                 content=ft.Column(
                     [
                         ft.Text(
