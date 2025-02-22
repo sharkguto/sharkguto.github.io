@@ -11,14 +11,12 @@ from pyecharts.charts import Bar, Line
 from pyecharts.globals import ThemeType
 import httpx
 from datetime import datetime
-import micropip
 
 
 # Função assíncrona para buscar os dados da API usando httpx
 async def fetch_usd_brl_data():
-    await micropip.install("ssl")  # Install ssl module
     url = "https://economia.awesomeapi.com.br/json/daily/USD-BRL/15"
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(verify=False) as client:
         try:
             response = await client.get(url)
             if response.status_code == 200:
