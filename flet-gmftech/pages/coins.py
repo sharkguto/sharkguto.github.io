@@ -9,21 +9,21 @@ import base64
 from pyecharts import options as opts
 from pyecharts.charts import Bar, Line
 from pyecharts.globals import ThemeType
-import aiohttp
+import httpx
 from datetime import datetime
 
 
-# Função assíncrona para buscar os dados da API usando aiohttp
+# Função assíncrona para buscar os dados da API usando httpx
 async def fetch_usd_brl_data():
     url = "https://economia.awesomeapi.com.br/json/daily/USD-BRL/15"
-    async with aiohttp.ClientSession() as session:
+    async with httpx.AsyncClient() as client:
         try:
-            async with session.get(url) as response:
-                if response.status == 200:
-                    return await response.json()
-                else:
-                    print(f"Erro: status code {response.status}")
-                    return []
+            response = await client.get(url)
+            if response.status_code == 200:
+                return response.json()
+            else:
+                print(f"Erro: status code {response.status_code}")
+                return []
         except Exception as e:
             print(f"Erro ao buscar dados: {e}")
             return []
