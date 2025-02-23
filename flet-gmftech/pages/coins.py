@@ -9,24 +9,47 @@ import base64
 from pyecharts import options as opts
 from pyecharts.charts import Bar, Line
 from pyecharts.globals import ThemeType
-import httpx
+
+try:
+    import pyodide
+    from pyodide.http import pyfetch
+
+    IS_PYODIDE = True
+except ImportError:
+    IS_PYODIDE = False
+    import httpx
+
 from datetime import datetime
 
 
-# Função assíncrona para buscar os dados da API usando httpx
+# Função assíncrona para buscar os dados da API
 async def fetch_usd_brl_data():
     url = "https://economia.awesomeapi.com.br/json/daily/USD-BRL/15"
-    async with httpx.AsyncClient(verify=False) as client:
+    if IS_PYODIDE:
+        # Usar pyfetch no ambiente web
         try:
-            response = await client.get(url)
-            if response.status_code == 200:
-                return response.json()
+            response = await pyfetch(url, method="GET")
+            if response.status == 200:
+                return await response.json()
             else:
-                print(f"Erro: status code {response.status_code}")
+                print(f"Erro: status code {response.status}")
                 return []
         except Exception as e:
             print(f"Erro ao buscar dados: {e}")
             return []
+    else:
+        # Usar httpx no ambiente desktop/servidor
+        async with httpx.AsyncClient(verify=False) as client:
+            try:
+                response = await client.get(url)
+                if response.status_code == 200:
+                    return response.json()
+                else:
+                    print(f"Erro: status code {response.status_code}")
+                    return []
+            except Exception as e:
+                print(f"Erro ao buscar dados: {e}")
+                return []
 
 
 # Função para criar o gráfico com Pyecharts
