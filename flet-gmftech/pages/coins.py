@@ -39,7 +39,7 @@ async def fetch_usd_brl_data():
             return []
     else:
         # Usar httpx no ambiente desktop/servidor
-        async with httpx.AsyncClient(verify=False) as client:
+        async with httpx.AsyncClient() as client:
             try:
                 response = await client.get(url)
                 if response.status_code == 200:
