@@ -11,9 +11,10 @@ from theme import COLORS, get_theme, get_button_style, get_text_style, get_shado
 # Variáveis globais para header e footer
 header = None
 footer = None
+main_content = None
 
 def main(page: ft.Page):
-    global header, footer
+    global header, footer, main_content
     
     # Configurações iniciais da página
     page.title = "GMF-tech - Outsourcing em TI"
@@ -21,9 +22,6 @@ def main(page: ft.Page):
     page.scroll = "auto"
     page.padding = 0
     page.theme_mode = ft.ThemeMode.LIGHT
-    page.fonts = {
-        "Roboto": "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
-    }
     page.theme = get_theme()
 
     # Pré-carregar dados de cotação
@@ -34,6 +32,7 @@ def main(page: ft.Page):
     def close_dialog(e):
         if page.overlay:
             page.close(page.login_dialog)
+            restore_webview(e)
         page.update()
 
     # Funções de login simuladas
@@ -84,6 +83,17 @@ def main(page: ft.Page):
         page.go("/coins")
 
     def handle_login_click(e):
+        global main_content
+        # Esconder o WebView se estiver na página de cotação
+        if page.route == "/coins" and main_content:
+            try:
+                webview = main_content.content.content.controls[0].controls[2].content
+                if isinstance(webview, ft.WebView):
+                    webview.visible = False
+                    page.update()
+            except:
+                pass
+        
         page.login_dialog = ft.AlertDialog(
             modal=True,
             title=ft.Text("Login na Plataforma de Cursos", style=get_text_style(20, weight="bold")),
@@ -130,12 +140,24 @@ def main(page: ft.Page):
                 tight=True,
                 spacing=15,
             ),
-            actions=[ft.TextButton("Cancelar", on_click=lambda e: close_dialog(e))],
+            actions=[ft.TextButton("Cancelar", on_click=close_dialog)],
             actions_alignment="end",
+            on_dismiss=lambda e: restore_webview(e),
         )
         page.overlay.append(page.login_dialog)
         page.login_dialog.open = True
         page.update()
+
+    def restore_webview(e):
+        global main_content
+        if page.route == "/coins" and main_content:
+            try:
+                webview = main_content.content.content.controls[0].controls[2].content
+                if isinstance(webview, ft.WebView):
+                    webview.visible = True
+                    page.update()
+            except:
+                pass
 
     def create_header(is_mobile):
         max_height = page.height * 0.08 if page.height else 60
@@ -146,52 +168,57 @@ def main(page: ft.Page):
             ft.PopupMenuItem(text="Sobre", on_click=go_to_about),
             ft.PopupMenuItem(text="Contato", on_click=go_to_contact),
             ft.PopupMenuItem(text="Cotação", on_click=go_to_coins),
-            ft.PopupMenuItem(text="Login", on_click=handle_login_click),
         ]
 
+        if page.route != "/coins":
+            navigation_items.append(ft.PopupMenuItem(text="Login", on_click=handle_login_click))
+
         if not is_mobile:
-            navigation_controls = ft.Row(
-                [
-                    ft.TextButton(
-                        "Início",
-                        style=ft.ButtonStyle(
-                            color=ft.Colors.WHITE,
-                            overlay_color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
-                        ),
-                        on_click=go_to_home,
+            nav_buttons = [
+                ft.TextButton(
+                    "Início",
+                    style=ft.ButtonStyle(
+                        color=ft.Colors.WHITE,
+                        overlay_color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
                     ),
-                    ft.TextButton(
-                        "Serviços",
-                        style=ft.ButtonStyle(
-                            color=ft.Colors.WHITE,
-                            overlay_color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
-                        ),
-                        on_click=go_to_services,
+                    on_click=go_to_home,
+                ),
+                ft.TextButton(
+                    "Serviços",
+                    style=ft.ButtonStyle(
+                        color=ft.Colors.WHITE,
+                        overlay_color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
                     ),
-                    ft.TextButton(
-                        "Sobre",
-                        style=ft.ButtonStyle(
-                            color=ft.Colors.WHITE,
-                            overlay_color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
-                        ),
-                        on_click=go_to_about,
+                    on_click=go_to_services,
+                ),
+                ft.TextButton(
+                    "Sobre",
+                    style=ft.ButtonStyle(
+                        color=ft.Colors.WHITE,
+                        overlay_color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
                     ),
-                    ft.TextButton(
-                        "Contato",
-                        style=ft.ButtonStyle(
-                            color=ft.Colors.WHITE,
-                            overlay_color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
-                        ),
-                        on_click=go_to_contact,
+                    on_click=go_to_about,
+                ),
+                ft.TextButton(
+                    "Contato",
+                    style=ft.ButtonStyle(
+                        color=ft.Colors.WHITE,
+                        overlay_color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
                     ),
-                    ft.TextButton(
-                        "Cotação",
-                        style=ft.ButtonStyle(
-                            color=ft.Colors.WHITE,
-                            overlay_color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
-                        ),
-                        on_click=go_to_coins,
+                    on_click=go_to_contact,
+                ),
+                ft.TextButton(
+                    "Cotação",
+                    style=ft.ButtonStyle(
+                        color=ft.Colors.WHITE,
+                        overlay_color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
                     ),
+                    on_click=go_to_coins,
+                ),
+            ]
+
+            if page.route != "/coins":
+                nav_buttons.append(
                     ft.ElevatedButton(
                         "Login",
                         bgcolor=COLORS["secondary"],
@@ -202,8 +229,11 @@ def main(page: ft.Page):
                             padding=ft.padding.symmetric(horizontal=20, vertical=10),
                             overlay_color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
                         ),
-                    ),
-                ],
+                    )
+                )
+
+            navigation_controls = ft.Row(
+                nav_buttons,
                 alignment="end",
                 spacing=15,
             )
@@ -220,7 +250,6 @@ def main(page: ft.Page):
                 size=32 if page.width > 600 else 24,
                 weight="bold",
                 color=ft.Colors.WHITE,
-                font_family="Roboto",
             ),
             leading_width=200,
             title=ft.Text(""),
@@ -293,23 +322,26 @@ def main(page: ft.Page):
             shadow=get_shadow(),
         )
 
+    # Criar o header uma única vez
     is_mobile = page.width <= 600
-
-    # Inicializar header e footer
-    header = create_header(is_mobile)
+    page.appbar = create_header(is_mobile)
     footer = create_footer()
 
     # Listener para redimensionamento da janela
     def on_resize(e):
-        footer.content = create_footer().content
-        is_mobile = page.width <= 600
-        page.appbar = create_header(is_mobile)  # Atualiza o AppBar inteiro em vez de só o content
+        global footer
+        footer = create_footer()
         page.update()
 
     page.on_resized = on_resize
 
     def route_change(route_event):
+        global main_content
         page.controls.clear()
+
+        # Atualiza o header quando a rota muda
+        is_mobile = page.width <= 600
+        page.appbar = create_header(is_mobile)
 
         main_content = None
         if route_event.route == "/":
@@ -355,10 +387,6 @@ def main(page: ft.Page):
                     margin=0,
                 )
             )
-            
-            # Define o AppBar como o header fixo da página
-            page.appbar = create_header(page.width <= 600)
-            
         page.update()
 
     page.on_route_change = route_change
