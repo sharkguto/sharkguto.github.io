@@ -75,43 +75,56 @@ def contact_content(page: ft.Page):
     )
 
     return ft.Container(
-        content=ft.Column(
+        content=ft.ListView(
             [
-                ft.Text(
-                    "Entre em Contato",
-                    style=get_text_style(32, weight="bold"),
-                    text_align="center",
-                ),
-                ft.Text(
-                    "Preencha o formulário abaixo e entraremos em contato em breve",
-                    style=get_text_style(16, COLORS["text_secondary"]),
-                    text_align="center",
-                ),
-                ft.Container(
-                    content=ft.Column(
-                        [name, email, message],
-                        spacing=20,
-                    ),
-                    padding=20,
-                    bgcolor=COLORS["surface"],
-                    border_radius=ft.border_radius.all(15),
-                    shadow=get_shadow(),
-                ),
-                ft.ElevatedButton(
-                    "Enviar Mensagem",
-                    on_click=send_message,
-                    style=ft.ButtonStyle(
-                        shape=ft.RoundedRectangleBorder(radius=8),
-                        padding=ft.padding.symmetric(horizontal=30, vertical=15),
-                        overlay_color=ft.colors.with_opacity(0.1, ft.Colors.WHITE),
-                    ),
-                    bgcolor=COLORS["primary"],
-                    color=ft.Colors.WHITE,
+                ft.Column(
+                    [
+                        ft.Text(
+                            "Entre em Contato",
+                            style=get_text_style(32 if page.width > 600 else 24, weight="bold"),
+                            text_align="center",
+                        ),
+                        ft.Text(
+                            "Preencha o formulário abaixo e entraremos em contato em breve",
+                            style=get_text_style(16, COLORS["text_secondary"]),
+                            text_align="center",
+                        ),
+                        ft.Container(
+                            content=ft.Column(
+                                [name, email, message],
+                                spacing=20,
+                            ),
+                            padding=20,
+                            bgcolor=COLORS["surface"],
+                            border_radius=ft.border_radius.all(15),
+                            shadow=get_shadow(),
+                        ),
+                        ft.ElevatedButton(
+                            "Enviar Mensagem",
+                            on_click=send_message,
+                            style=ft.ButtonStyle(
+                                shape=ft.RoundedRectangleBorder(radius=8),
+                                padding=ft.padding.symmetric(
+                                    horizontal=30 if page.width > 600 else 20,
+                                    vertical=15 if page.width > 600 else 10
+                                ),
+                                overlay_color=ft.colors.with_opacity(0.1, ft.Colors.WHITE),
+                            ),
+                            bgcolor=COLORS["primary"],
+                            color=ft.Colors.WHITE,
+                        ),
+                    ],
+                    horizontal_alignment="center",
+                    alignment="center",
+                    spacing=20 if page.width > 600 else 15,
                 ),
             ],
-            horizontal_alignment="center",
-            alignment="center",
+            expand=True,
             spacing=20,
+            padding=ft.padding.symmetric(
+                horizontal=40 if page.width > 600 else 20,
+                vertical=20
+            ),
         ),
-        padding=20,
+        expand=True,
     )
