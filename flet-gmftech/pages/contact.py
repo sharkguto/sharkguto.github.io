@@ -47,28 +47,31 @@ def contact_content(page: ft.Page):
     name = ft.TextField(
         label="Nome",
         hint_text="Seu nome completo",
-        style=get_text_style(16),
         border_radius=8,
         border_color=COLORS["primary"],
+        label_style=get_text_style(16),
+        text_style=get_text_style(16),
     )
 
     email = ft.TextField(
         label="Email",
         hint_text="seu@email.com",
-        style=get_text_style(16),
         border_radius=8,
         border_color=COLORS["primary"],
+        label_style=get_text_style(16),
+        text_style=get_text_style(16),
     )
 
     message = ft.TextField(
         label="Mensagem",
         hint_text="Como podemos ajudar?",
-        style=get_text_style(16),
         border_radius=8,
         border_color=COLORS["primary"],
         multiline=True,
         min_lines=5,
         max_lines=5,
+        label_style=get_text_style(16),
+        text_style=get_text_style(16),
     )
 
     return ft.Container(
