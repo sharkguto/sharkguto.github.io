@@ -9,7 +9,7 @@ import base64
 from pyecharts import options as opts
 from pyecharts.charts import Bar, Line
 from pyecharts.globals import ThemeType
-from app import COLORS
+from theme import COLORS, get_shadow
 
 try:
     import pyodide
@@ -168,42 +168,41 @@ async def load_chart(page, chart_container):
 
 # Função principal do conteúdo da página
 def currency_chart_content(page: ft.Page):
+    chart_container = ft.Container(
+        expand=True,
+        bgcolor=COLORS["surface"],
+        border_radius=ft.border_radius.all(15),
+        shadow=get_shadow(),
+        padding=20,
+        height=400,
+    )
+
+    async def init_chart():
+        await load_chart(page, chart_container)
+
+    # Carregar o gráfico de forma assíncrona
+    page.add_async_callback(init_chart)
+
     return ft.Container(
         content=ft.Column(
             [
                 ft.Text(
-                    "Cotações",
+                    "Cotação USD/BRL",
                     size=32 if page.width > 600 else 24,
                     weight="bold",
                     color=COLORS["text_primary"],
                     text_align="center",
                 ),
-                ft.Container(
-                    content=ft.Column(
-                        [
-                            ft.Text(
-                                "Em desenvolvimento...",
-                                size=20 if page.width > 600 else 16,
-                                color=COLORS["text_secondary"],
-                                text_align="center",
-                            ),
-                            ft.Icon(
-                                ft.icons.CONSTRUCTION,
-                                size=48 if page.width > 600 else 32,
-                                color=COLORS["primary"],
-                            ),
-                        ],
-                        horizontal_alignment="center",
-                        spacing=20,
-                    ),
-                    padding=20,
-                    bgcolor=COLORS["surface"],
-                    border_radius=ft.border_radius.all(15),
-                    shadow=get_shadow(),
+                ft.Text(
+                    "Acompanhe a variação do dólar nos últimos 15 dias",
+                    size=16 if page.width > 600 else 14,
+                    color=COLORS["text_secondary"],
+                    text_align="center",
                 ),
+                chart_container,
             ],
             expand=True,
-            alignment="center",
+            alignment="start",
             spacing=20,
         ),
         expand=True,

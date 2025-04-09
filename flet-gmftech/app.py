@@ -176,7 +176,7 @@ def main(page: ft.Page):
                         "Contato",
                         style=ft.ButtonStyle(
                             color=ft.Colors.WHITE,
-                            overlay_color=ft.Colors.with_opacity(0.1, ft.colors.WHITE),
+                            overlay_color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
                         ),
                         on_click=go_to_contact,
                     ),
@@ -299,7 +299,7 @@ def main(page: ft.Page):
     def on_resize(e):
         footer.content = create_footer().content
         is_mobile = page.width <= 600
-        header.content = create_header(is_mobile).content
+        page.appbar = create_header(is_mobile)  # Atualiza o AppBar inteiro em vez de só o content
         page.update()
 
     page.on_resized = on_resize
