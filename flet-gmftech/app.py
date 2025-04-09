@@ -329,6 +329,9 @@ def main(page: ft.Page):
         elif route_event.route == "/coins":
             from pages.coins import currency_chart_content
             main_content = currency_chart_content(page)
+        elif route_event.route == "/portfolio":
+            from pages.portfolio import portfolio_content
+            main_content = portfolio_content(page)
 
         if main_content:
             page.controls.append(

@@ -12,48 +12,77 @@ from theme import COLORS, get_text_style, get_button_style, get_shadow
 def services_content(page: ft.Page):
     # Função para criar um card
     def create_card(icon, title, description):
+        is_mobile = page.width <= 600
+        card_padding = 15 if is_mobile else 20
+        content_width = page.width - (2 * card_padding) - 40  # Considerando margens e padding do container pai
+        
         return ft.Container(
             content=ft.Column(
                 [
                     ft.Container(
                         content=ft.Icon(
                             icon,
-                            size=40 if page.width > 600 else 32,
+                            size=32 if is_mobile else 40,
                             color=COLORS["primary"],
                         ),
-                        margin=ft.margin.only(bottom=10),
+                        margin=ft.margin.only(bottom=8 if is_mobile else 10),
                     ),
                     ft.Container(
                         content=ft.Text(
                             title,
-                            size=20 if page.width > 600 else 18,
+                            size=16 if is_mobile else 20,
                             weight="bold",
                             color=COLORS["text_primary"],
                             text_align="center",
                         ),
-                        margin=ft.margin.only(bottom=10),
+                        margin=ft.margin.only(bottom=8 if is_mobile else 10),
                     ),
-                    ft.Text(
-                        description,
-                        size=16 if page.width > 600 else 14,
-                        color=COLORS["text_secondary"],
-                        text_align="center",
+                    ft.Container(
+                        content=ft.Text(
+                            description,
+                            size=14 if is_mobile else 16,
+                            color=COLORS["text_secondary"],
+                            text_align="center",
+                            width=content_width if is_mobile else 280,
+                        ),
+                        margin=ft.margin.only(bottom=5),
                     ),
                 ],
                 horizontal_alignment="center",
                 alignment="center",
-                spacing=0,
+                spacing=5,
             ),
-            padding=ft.padding.all(25 if page.width > 600 else 20),
+            padding=ft.padding.all(card_padding),
             bgcolor=COLORS["surface"],
             border_radius=ft.border_radius.all(15),
             shadow=get_shadow(),
-            width=300 if page.width > 600 else None,
-            height=200 if page.width > 600 else 180,
+            width=None,  # Permitir que a largura seja controlada pelo GridView
+            height=None,  # Altura automática
+            margin=ft.margin.all(5),
         )
 
     # Lista de serviços
     services = [
+        {
+            "icon": ft.icons.ASSIGNMENT,
+            "title": "Levantamento de Requisitos",
+            "description": "Análise detalhada e documentação das necessidades do seu projeto.",
+        },
+        {
+            "icon": ft.icons.ARCHITECTURE,
+            "title": "Arquitetura de Software",
+            "description": "Design e planejamento de soluções escaláveis e robustas.",
+        },
+        {
+            "icon": ft.icons.DEVELOPER_BOARD,
+            "title": "IoT com Arduino",
+            "description": "Desenvolvimento de soluções IoT com hardware Arduino.",
+        },
+        {
+            "icon": ft.icons.PRECISION_MANUFACTURING,
+            "title": "Prototipagem Eletrônica",
+            "description": "Simulação e prototipagem com SimulIDE para validação de projetos.",
+        },
         {
             "icon": ft.icons.COMPUTER,
             "title": "Desenvolvimento Web",
@@ -93,6 +122,16 @@ def services_content(page: ft.Page):
             "description": "Banco de dados relacional de alta performance.",
         },
         {
+            "icon": ft.icons.DATA_OBJECT,
+            "title": "ScyllaDB",
+            "description": "Banco NoSQL de alta performance e baixa latência.",
+        },
+        {
+            "icon": ft.icons.MEMORY,
+            "title": "Redis",
+            "description": "Cache distribuído e banco de dados em memória.",
+        },
+        {
             "icon": ft.icons.CLOUD_QUEUE,
             "title": "AWS",
             "description": "Infraestrutura em nuvem escalável e confiável.",
@@ -109,7 +148,7 @@ def services_content(page: ft.Page):
             [
                 ft.Text(
                     "Nossos Serviços",
-                    size=32 if page.width > 600 else 24,
+                    size=24 if page.width > 600 else 20,
                     weight="bold",
                     color=COLORS["text_primary"],
                     text_align="center",
@@ -124,24 +163,24 @@ def services_content(page: ft.Page):
                         for service in services
                     ],
                     runs_count=2 if page.width > 600 else 1,
-                    max_extent=320 if page.width > 600 else 400,
-                    spacing=20 if page.width > 600 else 15,
-                    run_spacing=20 if page.width > 600 else 15,
-                    child_aspect_ratio=1.5,
+                    max_extent=320 if page.width > 600 else page.width,
+                    spacing=8,
+                    run_spacing=8,
+                    child_aspect_ratio=None,
                     padding=ft.padding.symmetric(
-                        horizontal=20 if page.width > 600 else 10,
-                        vertical=10,
+                        horizontal=10,
+                        vertical=8,
                     ),
                 ),
                 ft.Container(
                     content=ft.Text(
                         "Tecnologias",
-                        size=32 if page.width > 600 else 24,
+                        size=24 if page.width > 600 else 20,
                         weight="bold",
                         color=COLORS["text_primary"],
                         text_align="center",
                     ),
-                    margin=ft.margin.only(top=40),
+                    margin=ft.margin.only(top=30),
                 ),
                 ft.GridView(
                     [
@@ -153,18 +192,18 @@ def services_content(page: ft.Page):
                         for tech in technologies
                     ],
                     runs_count=3 if page.width > 900 else (2 if page.width > 600 else 1),
-                    max_extent=320 if page.width > 600 else 400,
-                    spacing=20 if page.width > 600 else 15,
-                    run_spacing=20 if page.width > 600 else 15,
-                    child_aspect_ratio=1.5,
+                    max_extent=320 if page.width > 600 else page.width,
+                    spacing=8,
+                    run_spacing=8,
+                    child_aspect_ratio=None,
                     padding=ft.padding.symmetric(
-                        horizontal=20 if page.width > 600 else 10,
-                        vertical=10,
+                        horizontal=10,
+                        vertical=8,
                     ),
                 ),
             ],
-            scroll=None,  # Desabilita o scroll individual
-            spacing=20 if page.width > 600 else 15,
+            scroll=None,
+            spacing=15,
         ),
-        padding=ft.padding.symmetric(horizontal=20 if page.width > 600 else 10),
+        padding=ft.padding.symmetric(horizontal=10),
     )
