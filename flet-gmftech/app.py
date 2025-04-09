@@ -176,7 +176,7 @@ def main(page: ft.Page):
                         "Contato",
                         style=ft.ButtonStyle(
                             color=ft.Colors.WHITE,
-                            overlay_color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
+                            overlay_color=ft.Colors.with_opacity(0.1, ft.colors.WHITE),
                         ),
                         on_click=go_to_contact,
                     ),
@@ -210,26 +210,20 @@ def main(page: ft.Page):
                 icon_color=ft.Colors.WHITE,
             )
 
-        return ft.Container(
-            content=ft.Row(
-                [
-                    ft.Text(
-                        "GMF-tech",
-                        size=32 if page.width > 600 else 24,
-                        weight="bold",
-                        color=ft.Colors.WHITE,
-                        font_family="Roboto",
-                    ),
-                    navigation_controls,
-                ],
-                alignment="spaceBetween",
-                vertical_alignment="center",
+        return ft.AppBar(
+            leading=ft.Text(
+                "GMF-tech",
+                size=32 if page.width > 600 else 24,
+                weight="bold",
+                color=ft.Colors.WHITE,
+                font_family="Roboto",
             ),
+            leading_width=200,
+            title=ft.Text(""),
+            center_title=False,
             bgcolor=COLORS["primary"],
-            padding=ft.padding.symmetric(horizontal=30),
-            border_radius=ft.border_radius.only(bottom_left=15, bottom_right=15),
-            height=max_height,
-            shadow=get_shadow(),
+            actions=[navigation_controls],
+            toolbar_height=max_height,
         )
 
     def create_footer():
@@ -338,7 +332,6 @@ def main(page: ft.Page):
                 ft.Container(
                     content=ft.Column(
                         [
-                            header,
                             ft.Container(
                                 content=main_content,
                                 expand=True,
@@ -358,6 +351,10 @@ def main(page: ft.Page):
                     margin=0,
                 )
             )
+            
+            # Define o AppBar como o header fixo da página
+            page.appbar = create_header(page.width <= 600)
+            
         page.update()
 
     page.on_route_change = route_change
