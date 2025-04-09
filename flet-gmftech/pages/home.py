@@ -6,42 +6,47 @@ def home_content(page: ft.Page):
     return ft.Container(
         content=ft.Column(
             [
-                ft.Text(
-                    "Bem-vindo à GMF-tech",
-                    style=get_text_style(32 if page.width > 600 else 24, weight="bold"),
-                    text_align="center",
-                ),
-                ft.Text(
-                    "Sua parceira em soluções de TI",
-                    style=get_text_style(24 if page.width > 600 else 18, COLORS["text_secondary"]),
-                    text_align="center",
-                ),
-                ft.ElevatedButton(
-                    "Entre em Contato",
-                    on_click=lambda e: page.go("/contact"),
-                    style=ft.ButtonStyle(
-                        shape=ft.RoundedRectangleBorder(radius=8),
-                        padding=ft.padding.symmetric(
-                            horizontal=30 if page.width > 600 else 20,
-                            vertical=15 if page.width > 600 else 10
-                        ),
-                        overlay_color=ft.colors.with_opacity(0.1, ft.Colors.WHITE),
+                ft.Container(
+                    content=ft.Column(
+                        [
+                            ft.Text(
+                                "Bem-vindo à GMF-tech",
+                                size=32 if page.width > 600 else 24,
+                                weight="bold",
+                                color=COLORS["text_primary"],
+                                text_align="center",
+                            ),
+                            ft.Text(
+                                "Sua parceira em soluções de TI",
+                                size=24 if page.width > 600 else 18,
+                                color=COLORS["text_secondary"],
+                                text_align="center",
+                            ),
+                            ft.Container(
+                                content=ft.ElevatedButton(
+                                    text="Entre em Contato",
+                                    style=get_button_style(),
+                                    on_click=lambda e: page.go("/contact"),
+                                ),
+                                padding=ft.padding.only(top=20 if page.width > 600 else 15),
+                            ),
+                        ],
+                        horizontal_alignment="center",
+                        alignment="center",
+                        expand=True,
                     ),
-                    bgcolor=COLORS["secondary"],
-                    color=ft.Colors.WHITE,
+                    padding=ft.padding.symmetric(
+                        horizontal=40 if page.width > 600 else 20,
+                        vertical=40 if page.width > 600 else 20,
+                    ),
+                    bgcolor=COLORS["surface"],
+                    border_radius=ft.border_radius.all(15),
+                    shadow=get_shadow(),
+                    expand=True,
                 ),
             ],
-            horizontal_alignment="center",
+            expand=True,
             alignment="center",
-            spacing=20 if page.width > 600 else 15,
         ),
-        padding=ft.padding.symmetric(
-            horizontal=40 if page.width > 600 else 20,
-            vertical=60 if page.width > 600 else 30
-        ),
-        bgcolor=COLORS["surface"],
-        border_radius=ft.border_radius.all(15),
-        shadow=get_shadow(),
         expand=True,
-        alignment=ft.alignment.center,
     )

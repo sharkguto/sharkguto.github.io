@@ -15,15 +15,30 @@ def services_content(page: ft.Page):
         return ft.Container(
             content=ft.Column(
                 [
-                    ft.Icon(icon, color=COLORS["primary"], size=40),
-                    ft.Text(title, style=get_text_style(20, weight="bold")),
-                    ft.Text(description, style=get_text_style(16, COLORS["text_secondary"])),
+                    ft.Icon(
+                        icon,
+                        size=40 if page.width > 600 else 30,
+                        color=COLORS["primary"],
+                    ),
+                    ft.Text(
+                        title,
+                        size=20 if page.width > 600 else 16,
+                        weight="bold",
+                        color=COLORS["text_primary"],
+                        text_align="center",
+                    ),
+                    ft.Text(
+                        description,
+                        size=16 if page.width > 600 else 14,
+                        color=COLORS["text_secondary"],
+                        text_align="center",
+                    ),
                 ],
                 horizontal_alignment="center",
                 alignment="center",
-                spacing=10,
+                spacing=10 if page.width > 600 else 8,
             ),
-            padding=20,
+            padding=ft.padding.all(20 if page.width > 600 else 15),
             bgcolor=COLORS["surface"],
             border_radius=ft.border_radius.all(15),
             shadow=get_shadow(),
@@ -33,24 +48,24 @@ def services_content(page: ft.Page):
     # Lista de serviços
     services = [
         {
-            "icon": ft.Icons.CODE,
-            "title": "Desenvolvimento de Software",
-            "description": "Soluções personalizadas para seu negócio",
+            "icon": ft.icons.COMPUTER,
+            "title": "Desenvolvimento Web",
+            "description": "Criamos sites e aplicações web modernas e responsivas.",
         },
         {
-            "icon": ft.Icons.CLOUD,
+            "icon": ft.icons.PHONE_ANDROID,
+            "title": "Desenvolvimento Mobile",
+            "description": "Desenvolvemos aplicativos nativos e híbridos para iOS e Android.",
+        },
+        {
+            "icon": ft.icons.CLOUD,
             "title": "Cloud Computing",
-            "description": "Infraestrutura escalável e segura",
+            "description": "Soluções em nuvem para escalabilidade e performance.",
         },
         {
-            "icon": ft.Icons.SECURITY,
-            "title": "Segurança da Informação",
-            "description": "Proteção para seus dados e sistemas",
-        },
-        {
-            "icon": ft.Icons.SUPPORT_AGENT,
-            "title": "Suporte Técnico",
-            "description": "Assistência especializada 24/7",
+            "icon": ft.icons.SECURITY,
+            "title": "Segurança",
+            "description": "Proteção e segurança para seus dados e aplicações.",
         },
     ]
 
@@ -59,29 +74,37 @@ def services_content(page: ft.Page):
 
     # Conteúdo da página de serviços com rolagem
     return ft.Container(
-        content=ft.ListView(
+        content=ft.Column(
             [
                 ft.Text(
                     "Nossos Serviços",
-                    style=get_text_style(32, weight="bold"),
+                    size=32 if page.width > 600 else 24,
+                    weight="bold",
+                    color=COLORS["text_primary"],
                     text_align="center",
                 ),
-                ft.GridView(
-                    [
-                        card
-                        for card in cards
-                    ],
-                    runs_count=2 if page.width > 600 else 1,
-                    max_extent=300,
-                    spacing=20,
-                    run_spacing=20,
-                    padding=20,
+                ft.Container(
+                    content=ft.GridView(
+                        [
+                            card
+                            for card in cards
+                        ],
+                        runs_count=2 if page.width > 600 else 1,
+                        max_extent=300,
+                        spacing=20 if page.width > 600 else 15,
+                        run_spacing=20 if page.width > 600 else 15,
+                        expand=True,
+                    ),
+                    padding=ft.padding.symmetric(
+                        horizontal=40 if page.width > 600 else 20,
+                        vertical=20 if page.width > 600 else 15,
+                    ),
+                    expand=True,
                 ),
             ],
-            spacing=20,
-            padding=20,
+            expand=True,
+            alignment="center",
+            spacing=20 if page.width > 600 else 15,
         ),
-        bgcolor=COLORS["surface"],
-        border_radius=ft.border_radius.all(15),
-        shadow=get_shadow(),
+        expand=True,
     )

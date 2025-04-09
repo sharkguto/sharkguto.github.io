@@ -152,7 +152,7 @@ def main(page: ft.Page):
                         "Início",
                         style=ft.ButtonStyle(
                             color=ft.Colors.WHITE,
-                            overlay_color=ft.colors.with_opacity(0.1, ft.Colors.WHITE),
+                            overlay_color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
                         ),
                         on_click=go_to_home,
                     ),
@@ -160,7 +160,7 @@ def main(page: ft.Page):
                         "Serviços",
                         style=ft.ButtonStyle(
                             color=ft.Colors.WHITE,
-                            overlay_color=ft.colors.with_opacity(0.1, ft.Colors.WHITE),
+                            overlay_color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
                         ),
                         on_click=go_to_services,
                     ),
@@ -168,7 +168,7 @@ def main(page: ft.Page):
                         "Sobre",
                         style=ft.ButtonStyle(
                             color=ft.Colors.WHITE,
-                            overlay_color=ft.colors.with_opacity(0.1, ft.Colors.WHITE),
+                            overlay_color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
                         ),
                         on_click=go_to_about,
                     ),
@@ -176,7 +176,7 @@ def main(page: ft.Page):
                         "Contato",
                         style=ft.ButtonStyle(
                             color=ft.Colors.WHITE,
-                            overlay_color=ft.colors.with_opacity(0.1, ft.Colors.WHITE),
+                            overlay_color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
                         ),
                         on_click=go_to_contact,
                     ),
@@ -184,7 +184,7 @@ def main(page: ft.Page):
                         "Cotação",
                         style=ft.ButtonStyle(
                             color=ft.Colors.WHITE,
-                            overlay_color=ft.colors.with_opacity(0.1, ft.Colors.WHITE),
+                            overlay_color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
                         ),
                         on_click=go_to_coins,
                     ),
@@ -196,7 +196,7 @@ def main(page: ft.Page):
                         style=ft.ButtonStyle(
                             shape=ft.RoundedRectangleBorder(radius=8),
                             padding=ft.padding.symmetric(horizontal=20, vertical=10),
-                            overlay_color=ft.colors.with_opacity(0.1, ft.Colors.WHITE),
+                            overlay_color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
                         ),
                     ),
                 ],
@@ -233,8 +233,6 @@ def main(page: ft.Page):
         )
 
     def create_footer():
-        max_height = page.height * 0.15 if page.height else 120
-
         return ft.Container(
             content=ft.Column(
                 [
@@ -244,50 +242,56 @@ def main(page: ft.Page):
                         color=ft.Colors.WHITE,
                         weight="bold",
                         font_family="Roboto",
+                        text_align="center",
                     ),
                     ft.Text(
                         "contato@gmf-tech.com | (11) 9999-9999",
                         size=16 if page.width > 600 else 14,
                         color=ft.Colors.GREY_300,
+                        text_align="center",
                     ),
                     ft.Text(
                         "© 2025 GMF-tech. Todos os direitos reservados.",
                         size=14 if page.width > 600 else 12,
                         color=ft.Colors.GREY_400,
+                        text_align="center",
                     ),
                     ft.Row(
                         [
                             ft.IconButton(
                                 icon=ft.Icons.FACEBOOK,
                                 icon_color=ft.Colors.WHITE,
-                                icon_size=24,
+                                icon_size=24 if page.width > 600 else 20,
                                 tooltip="Facebook",
                             ),
                             ft.IconButton(
                                 icon=ft.Icons.PUBLIC,
                                 icon_color=ft.Colors.WHITE,
-                                icon_size=24,
+                                icon_size=24 if page.width > 600 else 20,
                                 tooltip="LinkedIn",
                             ),
                             ft.IconButton(
                                 icon=ft.Icons.PUBLIC,
                                 icon_color=ft.Colors.WHITE,
-                                icon_size=24,
+                                icon_size=24 if page.width > 600 else 20,
                                 tooltip="Twitter",
                             ),
                         ],
                         alignment="center",
-                        spacing=20,
+                        spacing=20 if page.width > 600 else 15,
                     ),
                 ],
                 alignment="center",
-                spacing=10,
+                spacing=10 if page.width > 600 else 8,
+                horizontal_alignment="center",
             ),
             bgcolor=COLORS["primary"],
-            padding=ft.padding.symmetric(vertical=20, horizontal=30),
+            padding=ft.padding.symmetric(
+                vertical=20 if page.width > 600 else 15,
+                horizontal=30 if page.width > 600 else 20
+            ),
             border_radius=ft.border_radius.only(top_left=15, top_right=15),
             alignment=ft.alignment.center,
-            height=max_height,
             shadow=get_shadow(),
         )
 
@@ -302,14 +306,6 @@ def main(page: ft.Page):
         footer.content = create_footer().content
         is_mobile = page.width <= 600
         header.content = create_header(is_mobile).content
-        header.height = page.height * 0.08 if page.height else 60
-        footer.height = page.height * 0.15 if page.height else 120
-
-        page.controls[0].controls[1].height = (
-            (page.height * 0.77)
-            if page.height
-            else (page.height - (header.height + footer.height))
-        )
         page.update()
 
     page.on_resized = on_resize
@@ -334,30 +330,29 @@ def main(page: ft.Page):
             from pages.coins import currency_chart_content
             main_content = currency_chart_content(page)
 
-        fill_height = (
-            (page.height * 0.77)
-            if page.height
-            else (page.height - (header.height + footer.height))
-        )
-
         if main_content:
             page.controls.append(
-                ft.Column(
-                    [
-                        header,
-                        ft.Container(
-                            content=main_content,
-                            expand=True,
-                            bgcolor=COLORS["surface"],
-                            height=fill_height,
-                            padding=ft.padding.symmetric(horizontal=30, vertical=20),
-                            border_radius=ft.border_radius.all(15),
-                            shadow=get_shadow(),
-                        ),
-                        footer,
-                    ],
+                ft.Container(
+                    content=ft.Column(
+                        [
+                            header,
+                            ft.Container(
+                                content=main_content,
+                                expand=True,
+                                bgcolor=COLORS["surface"],
+                                padding=ft.padding.symmetric(horizontal=30, vertical=20),
+                                border_radius=ft.border_radius.all(15),
+                                shadow=get_shadow(),
+                            ),
+                            footer,
+                        ],
+                        expand=True,
+                        spacing=0,
+                        scroll=ft.ScrollMode.AUTO,
+                    ),
                     expand=True,
-                    spacing=0,
+                    padding=0,
+                    margin=0,
                 )
             )
         page.update()
