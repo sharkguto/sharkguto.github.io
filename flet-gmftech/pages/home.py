@@ -1,46 +1,33 @@
 import flet as ft
+from theme import COLORS, get_text_style, get_button_style
 
 
-def home_content(page):
-    primary_color = ft.Colors.INDIGO_700
-    secondary_color = ft.Colors.AMBER_600
-
-    def go_to_contact(e):
-        page.go("/contact")
-
-    return ft.Container(
-        content=ft.Column(
-            [
-                ft.Text(
-                    "Soluções de TI Sob Medida",
-                    size=48 if page.window.width > 600 else 30,
-                    weight="bold",
-                    color=ft.Colors.WHITE,
-                    text_align="center",
+def home_content(page: ft.Page):
+    return ft.Column(
+        [
+            ft.Text(
+                "Bem-vindo à GMF-tech",
+                style=get_text_style(32, weight="bold"),
+                text_align="center",
+            ),
+            ft.Text(
+                "Sua parceira em soluções de TI",
+                style=get_text_style(24, COLORS["text_secondary"]),
+                text_align="center",
+            ),
+            ft.ElevatedButton(
+                "Entre em Contato",
+                on_click=lambda e: page.go("/contact"),
+                style=ft.ButtonStyle(
+                    shape=ft.RoundedRectangleBorder(radius=8),
+                    padding=ft.padding.symmetric(horizontal=30, vertical=15),
+                    overlay_color=ft.colors.with_opacity(0.1, ft.Colors.WHITE),
                 ),
-                ft.Text(
-                    "Aceleramos seu sucesso com outsourcing especializado",
-                    size=20 if page.window.width > 600 else 16,
-                    color=ft.Colors.GREY_300,
-                    text_align="center",
-                ),
-                ft.ElevatedButton(
-                    "Fale Conosco",
-                    bgcolor=secondary_color,
-                    color=ft.Colors.WHITE,
-                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=8)),
-                    on_click=go_to_contact,
-                ),
-            ],
-            alignment="center",
-            horizontal_alignment="center",
-            spacing=20 if page.window.width > 600 else 10,
-            expand=True,  # Preenche o Container internamente
-        ),
-        padding=ft.padding.symmetric(
-            vertical=60 if page.window.width > 600 else 30, horizontal=20
-        ),
-        bgcolor=primary_color,
-        expand=True,  # Preenche o espaço disponível no layout pai
-        alignment=ft.alignment.center,
+                bgcolor=COLORS["secondary"],
+                color=ft.Colors.WHITE,
+            ),
+        ],
+        horizontal_alignment="center",
+        alignment="center",
+        spacing=20,
     )

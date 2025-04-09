@@ -9,6 +9,7 @@ import base64
 from pyecharts import options as opts
 from pyecharts.charts import Bar, Line
 from pyecharts.globals import ThemeType
+from app import COLORS
 
 try:
     import pyodide
@@ -70,7 +71,7 @@ def create_chart(data):
         .add_yaxis(
             "Mínima (BRL)",
             lows,
-            color="#ef5350",
+            color=COLORS["error"],
             bar_width="40%",
             category_gap="20%",
             itemstyle_opts=opts.ItemStyleOpts(opacity=0.7),
@@ -78,7 +79,7 @@ def create_chart(data):
         .add_yaxis(
             "Máxima (BRL)",
             highs,
-            color="#1e88e5",
+            color=COLORS["accent"],
             bar_width="40%",
             category_gap="20%",
             itemstyle_opts=opts.ItemStyleOpts(opacity=0.7),
@@ -105,7 +106,7 @@ def create_chart(data):
             "Variação (%)",
             pct_changes,
             yaxis_index=1,
-            color="#26a69a",
+            color=COLORS["success"],
             linestyle_opts=opts.LineStyleOpts(width=4, opacity=1),
             label_opts=opts.LabelOpts(is_show=False),
             z_level=1,
@@ -121,11 +122,11 @@ def create_chart(data):
 async def load_chart(page, chart_container):
     # Exibir mensagem de carregamento
     progress_ring = ft.ProgressRing(
-        width=32, height=32, stroke_width=4, color=ft.Colors.INDIGO_700
+        width=32, height=32, stroke_width=4, color=COLORS["primary"]
     )
     chart_container.content = ft.Column(
         [
-            ft.Text("Carregando dados...", color=ft.Colors.GREY_600),
+            ft.Text("Carregando dados...", color=COLORS["text_secondary"], font_family="Roboto"),
             progress_ring,
         ],
         alignment="center",
@@ -137,7 +138,7 @@ async def load_chart(page, chart_container):
     data = await fetch_usd_brl_data()
     if not data:
         chart_container.content = ft.Text(
-            "Erro ao carregar dados", color=ft.Colors.RED_400
+            "Erro ao carregar dados", color=COLORS["error"], font_family="Roboto"
         )
         page.update()
         return
@@ -145,7 +146,7 @@ async def load_chart(page, chart_container):
     # Atualizar para renderização
     chart_container.content = ft.Column(
         [
-            ft.Text("Renderizando gráfico...", color=ft.Colors.GREY_600),
+            ft.Text("Renderizando gráfico...", color=COLORS["text_secondary"], font_family="Roboto"),
             progress_ring,
         ],
         alignment="center",
@@ -159,7 +160,7 @@ async def load_chart(page, chart_container):
     chart_webview = ft.WebView(
         url=data_url,
         expand=True,
-        bgcolor=ft.Colors.WHITE,
+        bgcolor=COLORS["surface"],
     )
     chart_container.content = chart_webview
     page.update()
@@ -167,19 +168,16 @@ async def load_chart(page, chart_container):
 
 # Função principal do conteúdo da página
 def currency_chart_content(page):
-    primary_color = ft.Colors.INDIGO_700
-    secondary_color = ft.Colors.AMBER_600
-
     def go_to_home(e):
         page.go("/")
 
     # Interface inicial com ProgressRing
     progress_ring = ft.ProgressRing(
-        width=32, height=32, stroke_width=4, color=primary_color
+        width=32, height=32, stroke_width=4, color=COLORS["primary"]
     )
     chart_container = ft.Container(
         content=ft.Column(
-            [ft.Text("Aguardando...", color=ft.Colors.GREY_600), progress_ring],
+            [ft.Text("Aguardando...", color=COLORS["text_secondary"], font_family="Roboto"), progress_ring],
             alignment="center",
             horizontal_alignment="center",
         ),
@@ -193,27 +191,33 @@ def currency_chart_content(page):
                 "Cotação USD/BRL",
                 size=36 if page.width > 600 else 24,
                 weight="bold",
-                color=primary_color,
+                color=COLORS["text_primary"],
                 text_align="center",
+                font_family="Roboto",
             ),
             ft.Text(
                 "Últimos 15 dias",
-                size=20 if page.width > 600 else 16,
-                color=ft.Colors.GREY_700,
+                size=24 if page.width > 600 else 18,
+                color=COLORS["text_secondary"],
                 text_align="center",
+                font_family="Roboto",
             ),
             chart_container,
             ft.ElevatedButton(
                 "Voltar para Home",
-                bgcolor=secondary_color,
+                bgcolor=COLORS["secondary"],
                 color=ft.Colors.WHITE,
-                style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=8)),
+                style=ft.ButtonStyle(
+                    shape=ft.RoundedRectangleBorder(radius=8),
+                    padding=ft.padding.symmetric(horizontal=30, vertical=15),
+                    overlay_color=ft.colors.with_opacity(0.1, ft.Colors.WHITE),
+                ),
                 on_click=go_to_home,
             ),
         ],
         alignment="center",
         horizontal_alignment="center",
-        spacing=20 if page.width > 600 else 10,
+        spacing=30 if page.width > 600 else 20,
         expand=True,
     )
 

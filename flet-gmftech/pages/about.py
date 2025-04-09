@@ -6,12 +6,10 @@
 # @Link   :
 
 import flet as ft
+from theme import COLORS, get_text_style, get_button_style, get_shadow
 
 
-def about_content(page):
-    primary_color = ft.Colors.INDIGO_700  # Usado para texto ou detalhes, não fundo
-    secondary_color = ft.Colors.AMBER_600
-
+def about_content(page: ft.Page):
     def go_to_home(e):
         page.go("/")
 
@@ -19,45 +17,55 @@ def about_content(page):
         content=ft.Column(
             [
                 ft.Text(
-                    "Página Sobre",
-                    size=48 if page.window.width > 600 else 30,
-                    weight="bold",
-                    color=primary_color,  # Texto em azul escuro
+                    "Sobre a GMF-tech",
+                    style=get_text_style(32, weight="bold"),
                     text_align="center",
                 ),
                 ft.Text(
-                    "Saiba mais sobre a GMF-tech",
-                    size=20 if page.window.width > 600 else 16,
-                    color=ft.Colors.GREY_700,  # Cinza escuro para contraste no fundo branco
+                    "Nossa história e missão",
+                    style=get_text_style(16, COLORS["text_secondary"]),
                     text_align="center",
                 ),
                 ft.Container(
-                    content=ft.Text(
-                        "Somos uma empresa especializada em soluções de TI sob medida, "
-                        "focada em outsourcing e aceleração de negócios através da tecnologia.",
-                        size=16 if page.window.width > 600 else 14,
-                        color=ft.Colors.BLACK,
-                        text_align="center",
+                    content=ft.Column(
+                        [
+                            ft.Text(
+                                "A GMF-tech é uma empresa especializada em soluções de TI, focada em fornecer serviços de alta qualidade para nossos clientes.",
+                                style=get_text_style(16),
+                                text_align="center",
+                            ),
+                            ft.Text(
+                                "Nossa missão é ajudar empresas a alcançarem seu potencial máximo através da tecnologia, oferecendo soluções personalizadas e suporte excepcional.",
+                                style=get_text_style(16),
+                                text_align="center",
+                            ),
+                        ],
+                        spacing=20,
                     ),
                     padding=20,
+                    bgcolor=COLORS["surface"],
+                    border_radius=ft.border_radius.all(15),
+                    shadow=get_shadow(),
                 ),
                 ft.ElevatedButton(
                     "Voltar para Home",
-                    bgcolor=secondary_color,
+                    bgcolor=COLORS["secondary"],
                     color=ft.Colors.WHITE,
-                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=8)),
+                    style=ft.ButtonStyle(
+                        shape=ft.RoundedRectangleBorder(radius=8),
+                        padding=ft.padding.symmetric(horizontal=30, vertical=15),
+                        overlay_color=ft.colors.with_opacity(0.1, ft.Colors.WHITE),
+                    ),
                     on_click=go_to_home,
                 ),
             ],
-            alignment="center",
             horizontal_alignment="center",
-            spacing=20 if page.window.width > 600 else 10,
-            expand=True,  # Preenche o Container internamente
+            alignment="center",
+            spacing=20,
         ),
-        padding=ft.padding.symmetric(
-            vertical=60 if page.window.width > 600 else 30, horizontal=20
-        ),
-        bgcolor=ft.Colors.WHITE,  # Fundo branco conforme solicitado
-        expand=True,  # Preenche o espaço disponível no layout pai
+        padding=20,
+        bgcolor=COLORS["surface"],
+        expand=True,
         alignment=ft.alignment.center,
+        border_radius=ft.border_radius.all(15),
     )

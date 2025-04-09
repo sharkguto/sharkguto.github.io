@@ -4,7 +4,7 @@ version = "1.0.0"
 description = "website gmf-tech"
 authors = [{ name = "Gustavo M Freitas", email = "gustavo@gmf-tech.com" }]
 dependencies = [
-    "flet==0.26.0",
+    "flet==0.27.6",
     "pyecharts==2.0.8",
     "flet-webview==0.1.0",
     "httpx==0.28.1",

@@ -5,6 +5,7 @@
 # @Author : Gustavo (gustavo@gmf-tech.com)
 # @Link   :
 import flet as ft
+from theme import COLORS, get_text_style, get_button_style, get_shadow
 
 
 def send_email(name, email, message):
@@ -12,110 +13,102 @@ def send_email(name, email, message):
     return True, "Enviado com sucesso"
 
 
-def contact_content(page):
-    primary_color = ft.Colors.INDIGO_700
-    secondary_color = ft.Colors.AMBER_600
-
-    # Campos do formulário
-    name_field = ft.TextField(
-        label="Nome",
-        width=300,
-        bgcolor=ft.Colors.WHITE,
-        color=ft.Colors.BLACK,
-        border_radius=8,
-    )
-    email_field = ft.TextField(
-        label="E-mail",
-        width=300,
-        bgcolor=ft.Colors.WHITE,
-        color=ft.Colors.BLACK,
-        border_radius=8,
-    )
-    message_field = ft.TextField(
-        label="Mensagem",
-        width=300,
-        multiline=True,
-        min_lines=4,
-        bgcolor=ft.Colors.WHITE,
-        color=ft.Colors.BLACK,
-        border_radius=8,
-    )
-    status_text = ft.Text("", color=ft.Colors.WHITE)
-
-    def go_to_home(e):
-        page.go("/")
-
-    def submit_form(e):
-        if not name_field.value or not email_field.value or not message_field.value:
-            status_text.value = "Por favor, preencha todos os campos!"
-            status_text.color = ft.Colors.RED_400
-        else:
-            success, message = send_email(
-                name_field.value, email_field.value, message_field.value
+def contact_content(page: ft.Page):
+    def send_message(e):
+        if not name.value or not email.value or not message.value:
+            page.snack_bar = ft.SnackBar(
+                content=ft.Text(
+                    "Por favor, preencha todos os campos",
+                    style=get_text_style(16, ft.Colors.WHITE),
+                ),
+                bgcolor=COLORS["error"],
             )
-            status_text.value = message
-            status_text.color = ft.Colors.GREEN_400 if success else ft.Colors.RED_400
-            if success:
-                name_field.value = ""
-                email_field.value = ""
-                message_field.value = ""
+            page.snack_bar.open = True
+            page.update()
+            return
+
+        # Simulação de envio de mensagem
+        page.snack_bar = ft.SnackBar(
+            content=ft.Text(
+                "Mensagem enviada com sucesso!",
+                style=get_text_style(16, ft.Colors.WHITE),
+            ),
+            bgcolor=COLORS["success"],
+        )
+        page.snack_bar.open = True
         page.update()
+
+        # Limpar campos
+        name.value = ""
+        email.value = ""
+        message.value = ""
+        page.update()
+
+    name = ft.TextField(
+        label="Nome",
+        hint_text="Seu nome completo",
+        style=get_text_style(16),
+        border_radius=8,
+        border_color=COLORS["primary"],
+    )
+
+    email = ft.TextField(
+        label="Email",
+        hint_text="seu@email.com",
+        style=get_text_style(16),
+        border_radius=8,
+        border_color=COLORS["primary"],
+    )
+
+    message = ft.TextField(
+        label="Mensagem",
+        hint_text="Como podemos ajudar?",
+        style=get_text_style(16),
+        border_radius=8,
+        border_color=COLORS["primary"],
+        multiline=True,
+        min_lines=5,
+        max_lines=5,
+    )
 
     return ft.Container(
         content=ft.Column(
             [
                 ft.Text(
-                    "Página de Contato",
-                    size=48 if page.window.width > 600 else 30,
-                    weight="bold",
-                    color=ft.Colors.WHITE,
+                    "Entre em Contato",
+                    style=get_text_style(32, weight="bold"),
                     text_align="center",
                 ),
                 ft.Text(
-                    "Entre em contato com a GMF-tech",
-                    size=20 if page.window.width > 600 else 16,
-                    color=ft.Colors.GREY_300,
+                    "Preencha o formulário abaixo e entraremos em contato em breve",
+                    style=get_text_style(16, COLORS["text_secondary"]),
                     text_align="center",
                 ),
                 ft.Container(
                     content=ft.Column(
-                        [
-                            name_field,
-                            email_field,
-                            message_field,
-                            ft.ElevatedButton(
-                                "Enviar Mensagem",
-                                bgcolor=secondary_color,
-                                color=ft.Colors.WHITE,
-                                style=ft.ButtonStyle(
-                                    shape=ft.RoundedRectangleBorder(radius=8)
-                                ),
-                                on_click=submit_form,
-                            ),
-                            status_text,
-                        ],
-                        spacing=15,
-                        alignment="center",
+                        [name, email, message],
+                        spacing=20,
                     ),
                     padding=20,
+                    bgcolor=COLORS["surface"],
+                    border_radius=ft.border_radius.all(15),
+                    shadow=get_shadow(),
                 ),
                 ft.ElevatedButton(
-                    "Voltar para Home",
-                    bgcolor=secondary_color,
+                    "Enviar Mensagem",
+                    on_click=send_message,
+                    style=ft.ButtonStyle(
+                        shape=ft.RoundedRectangleBorder(radius=8),
+                        padding=ft.padding.symmetric(horizontal=30, vertical=15),
+                        overlay_color=ft.colors.with_opacity(0.1, ft.Colors.WHITE),
+                    ),
+                    bgcolor=COLORS["primary"],
                     color=ft.Colors.WHITE,
-                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=8)),
-                    on_click=go_to_home,
                 ),
             ],
-            alignment="center",
             horizontal_alignment="center",
-            spacing=20 if page.window.width > 600 else 10,
-            expand=True,
+            alignment="center",
+            spacing=20,
         ),
-        padding=ft.padding.symmetric(
-            vertical=60 if page.window.width > 600 else 30, horizontal=20
-        ),
-        bgcolor=primary_color,
-        expand=True,
-        alignment=ft.alignment.center,
+        padding=20,
     )

@@ -6,92 +6,82 @@
 # @Link   :
 
 import flet as ft
+from theme import COLORS, get_text_style, get_button_style, get_shadow
 
 
-def services_content(page):
-    primary_color = ft.Colors.INDIGO_700
-
+def services_content(page: ft.Page):
     # Função para criar um card
     def create_card(icon, title, description):
-        return ft.Card(
-            content=ft.Container(
-                content=ft.Column(
-                    [
-                        ft.Icon(
-                            icon,
-                            size=40 if page.width > 600 else 30,
-                            color=primary_color,
-                        ),
-                        ft.Text(
-                            title, weight="bold", size=20 if page.width > 600 else 16
-                        ),
-                        ft.Text(
-                            description,
-                            size=14 if page.width > 600 else 12,
-                            color=ft.Colors.GREY_700,
-                        ),
-                    ],
-                    alignment="center",
-                    spacing=10,
-                ),
-                padding=20,
+        return ft.Container(
+            content=ft.Column(
+                [
+                    ft.Icon(icon, color=COLORS["primary"], size=40),
+                    ft.Text(title, style=get_text_style(20, weight="bold")),
+                    ft.Text(description, style=get_text_style(16, COLORS["text_secondary"])),
+                ],
+                horizontal_alignment="center",
+                alignment="center",
+                spacing=10,
             ),
-            elevation=5,
-            width=page.width * 0.8 / 3
-            if page.width > 900
-            else page.width * 0.8 / 2
-            if page.width > 600
-            else page.width * 0.8,
-            margin=ft.margin.all(10),
+            padding=20,
+            bgcolor=COLORS["surface"],
+            border_radius=ft.border_radius.all(15),
+            shadow=get_shadow(),
+            expand=True,
         )
 
     # Lista de serviços
     services = [
-        (
-            "Desenvolvimento",
-            ft.Icons.DEVELOPER_BOARD,
-            "Equipes dedicadas para seus projetos",
-        ),
-        ("Suporte TI", ft.Icons.SUPPORT_AGENT, "Atendimento 24/7 para sua empresa"),
-        ("Cloud AWS", ft.Icons.CLOUD, "Soluções escaláveis com Amazon Web Services"),
-        ("DevOps", ft.Icons.SETTINGS, "Integração e entrega contínua para agilidade"),
-        ("Ansible", ft.Icons.AUTO_FIX_HIGH, "Automação de infraestrutura simplificada"),
-        ("Automação", ft.Icons.BUILD, "Processos otimizados com scripts inteligentes"),
-        ("Python Backend", ft.Icons.CODE, "APIs robustas e escaláveis com Python"),
-        ("Web com Flet", ft.Icons.WEB, "Aplicações web modernas e responsivas"),
-        ("Mobile com Kivy", ft.Icons.PHONE_ANDROID, "Apps móveis multiplataforma"),
+        {
+            "icon": ft.Icons.CODE,
+            "title": "Desenvolvimento de Software",
+            "description": "Soluções personalizadas para seu negócio",
+        },
+        {
+            "icon": ft.Icons.CLOUD,
+            "title": "Cloud Computing",
+            "description": "Infraestrutura escalável e segura",
+        },
+        {
+            "icon": ft.Icons.SECURITY,
+            "title": "Segurança da Informação",
+            "description": "Proteção para seus dados e sistemas",
+        },
+        {
+            "icon": ft.Icons.SUPPORT_AGENT,
+            "title": "Suporte Técnico",
+            "description": "Assistência especializada 24/7",
+        },
     ]
 
     # Criar os cards
-    cards = [create_card(icon, title, desc) for title, icon, desc in services]
+    cards = [create_card(service["icon"], service["title"], service["description"]) for service in services]
 
     # Conteúdo da página de serviços com rolagem
     return ft.Container(
         content=ft.ListView(
-            controls=[
-                ft.Column(
+            [
+                ft.Text(
+                    "Nossos Serviços",
+                    style=get_text_style(32, weight="bold"),
+                    text_align="center",
+                ),
+                ft.GridView(
                     [
-                        ft.Text(
-                            "Nossos Serviços",
-                            size=36 if page.width > 600 else 24,
-                            weight="bold",
-                            text_align="center",
-                        ),
-                        ft.ResponsiveRow(
-                            controls=cards,
-                            alignment="center",
-                            spacing=20 if page.width > 600 else 10,
-                        ),
+                        card
+                        for card in cards
                     ],
-                    alignment="center",
-                    spacing=20 if page.width > 600 else 10,
-                )
+                    runs_count=2 if page.width > 600 else 1,
+                    max_extent=300,
+                    spacing=20,
+                    run_spacing=20,
+                    padding=20,
+                ),
             ],
-            expand=True,  # Preenche o espaço disponível
+            spacing=20,
+            padding=20,
         ),
-        padding=ft.padding.symmetric(
-            vertical=50 if page.width > 600 else 30, horizontal=20
-        ),
-        bgcolor=ft.Colors.WHITE,
-        expand=True,
+        bgcolor=COLORS["surface"],
+        border_radius=ft.border_radius.all(15),
+        shadow=get_shadow(),
     )
