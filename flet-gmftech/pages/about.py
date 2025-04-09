@@ -17,27 +17,47 @@ def about_content(page: ft.Page):
         content=ft.Column(
             [
                 ft.Text(
-                    "Sobre a GMF-tech",
-                    style=get_text_style(32, weight="bold"),
-                    text_align="center",
-                ),
-                ft.Text(
-                    "Nossa história e missão",
-                    style=get_text_style(16, COLORS["text_secondary"]),
+                    "Sobre Nós",
+                    size=32 if page.width > 600 else 24,
+                    weight="bold",
+                    color=COLORS["text_primary"],
                     text_align="center",
                 ),
                 ft.Container(
                     content=ft.Column(
                         [
                             ft.Text(
-                                "A GMF-tech é uma empresa especializada em soluções de TI, focada em fornecer serviços de alta qualidade para nossos clientes.",
-                                style=get_text_style(16),
-                                text_align="center",
+                                "Nossa História",
+                                size=24 if page.width > 600 else 20,
+                                weight="bold",
+                                color=COLORS["text_primary"],
                             ),
                             ft.Text(
-                                "Nossa missão é ajudar empresas a alcançarem seu potencial máximo através da tecnologia, oferecendo soluções personalizadas e suporte excepcional.",
-                                style=get_text_style(16),
-                                text_align="center",
+                                "A GMF-tech nasceu da paixão por tecnologia e da vontade de transformar negócios através de soluções inovadoras.",
+                                size=16,
+                                color=COLORS["text_secondary"],
+                            ),
+                            ft.Text(
+                                "Nossa Missão",
+                                size=24 if page.width > 600 else 20,
+                                weight="bold",
+                                color=COLORS["text_primary"],
+                            ),
+                            ft.Text(
+                                "Fornecer soluções tecnológicas de alta qualidade que impulsionem o sucesso de nossos clientes.",
+                                size=16,
+                                color=COLORS["text_secondary"],
+                            ),
+                            ft.Text(
+                                "Nossos Valores",
+                                size=24 if page.width > 600 else 20,
+                                weight="bold",
+                                color=COLORS["text_primary"],
+                            ),
+                            ft.Text(
+                                "• Inovação\n• Qualidade\n• Compromisso\n• Transparência\n• Excelência",
+                                size=16,
+                                color=COLORS["text_secondary"],
                             ),
                         ],
                         spacing=20,
@@ -59,13 +79,11 @@ def about_content(page: ft.Page):
                     on_click=go_to_home,
                 ),
             ],
-            horizontal_alignment="center",
+            expand=True,
             alignment="center",
             spacing=20,
         ),
-        padding=20,
-        bgcolor=COLORS["surface"],
         expand=True,
-        alignment=ft.alignment.center,
-        border_radius=ft.border_radius.all(15),
+        height=max(page.height - 160 if page.height else 400, 400),  # Altura mínima de 400px
+        padding=ft.padding.symmetric(horizontal=40 if page.width > 600 else 20),
     )

@@ -167,68 +167,46 @@ async def load_chart(page, chart_container):
 
 
 # Função principal do conteúdo da página
-def currency_chart_content(page):
-    def go_to_home(e):
-        page.go("/")
-
-    # Interface inicial com ProgressRing
-    progress_ring = ft.ProgressRing(
-        width=32, height=32, stroke_width=4, color=COLORS["primary"]
-    )
-    chart_container = ft.Container(
+def currency_chart_content(page: ft.Page):
+    return ft.Container(
         content=ft.Column(
-            [ft.Text("Aguardando...", color=COLORS["text_secondary"], font_family="Roboto"), progress_ring],
-            alignment="center",
-            horizontal_alignment="center",
-        ),
-        alignment=ft.alignment.center,
-        expand=True,
-    )
-
-    content = ft.Column(
-        [
-            ft.Text(
-                "Cotação USD/BRL",
-                size=36 if page.width > 600 else 24,
-                weight="bold",
-                color=COLORS["text_primary"],
-                text_align="center",
-                font_family="Roboto",
-            ),
-            ft.Text(
-                "Últimos 15 dias",
-                size=24 if page.width > 600 else 18,
-                color=COLORS["text_secondary"],
-                text_align="center",
-                font_family="Roboto",
-            ),
-            chart_container,
-            ft.ElevatedButton(
-                "Voltar para Home",
-                bgcolor=COLORS["secondary"],
-                color=ft.Colors.WHITE,
-                style=ft.ButtonStyle(
-                    shape=ft.RoundedRectangleBorder(radius=8),
-                    padding=ft.padding.symmetric(horizontal=30, vertical=15),
-                    overlay_color=ft.colors.with_opacity(0.1, ft.Colors.WHITE),
+            [
+                ft.Text(
+                    "Cotações",
+                    size=32 if page.width > 600 else 24,
+                    weight="bold",
+                    color=COLORS["text_primary"],
+                    text_align="center",
                 ),
-                on_click=go_to_home,
-            ),
-        ],
-        alignment="center",
-        horizontal_alignment="center",
-        spacing=30 if page.width > 600 else 20,
+                ft.Container(
+                    content=ft.Column(
+                        [
+                            ft.Text(
+                                "Em desenvolvimento...",
+                                size=20 if page.width > 600 else 16,
+                                color=COLORS["text_secondary"],
+                                text_align="center",
+                            ),
+                            ft.Icon(
+                                ft.icons.CONSTRUCTION,
+                                size=48 if page.width > 600 else 32,
+                                color=COLORS["primary"],
+                            ),
+                        ],
+                        horizontal_alignment="center",
+                        spacing=20,
+                    ),
+                    padding=20,
+                    bgcolor=COLORS["surface"],
+                    border_radius=ft.border_radius.all(15),
+                    shadow=get_shadow(),
+                ),
+            ],
+            expand=True,
+            alignment="center",
+            spacing=20,
+        ),
         expand=True,
+        height=max(page.height - 160 if page.height else 400, 400),  # Altura mínima de 400px
+        padding=ft.padding.symmetric(horizontal=40 if page.width > 600 else 20),
     )
-
-    # Adicionar o conteúdo à página antes de iniciar o carregamento assíncrono
-    page.controls.append(content)
-    page.update()
-
-    # Iniciar o carregamento do gráfico assincronamente
-    page.run_task(load_chart, page, chart_container)
-
-    # Remover o conteúdo de page.controls após a construção inicial
-    page.controls.remove(content)
-
-    return content

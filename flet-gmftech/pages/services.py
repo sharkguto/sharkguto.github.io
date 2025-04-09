@@ -107,4 +107,6 @@ def services_content(page: ft.Page):
             spacing=20 if page.width > 600 else 15,
         ),
         expand=True,
+        height=max(page.height - 160 if page.height else 400, 400),  # Altura mínima de 400px
+        padding=ft.padding.symmetric(horizontal=40 if page.width > 600 else 20),
     )
