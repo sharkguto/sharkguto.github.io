@@ -141,6 +141,11 @@ def services_content(page: ft.Page):
             "title": "Azure DevOps",
             "description": "CI/CD e gestão ágil de projetos.",
         },
+        {
+            "icon": ft.icons.INSERT_CHART,
+            "title": "Apache ECharts",
+            "description": "Biblioteca de visualização de dados interativa e responsiva.",
+        },
     ]
 
     return ft.Container(

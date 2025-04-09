@@ -26,6 +26,10 @@ def main(page: ft.Page):
     }
     page.theme = get_theme()
 
+    # Pré-carregar dados de cotação
+    from pages.coins import preload_data
+    page.run_task(preload_data)
+
     # Função para fechar o diálogo
     def close_dialog(e):
         if page.overlay:

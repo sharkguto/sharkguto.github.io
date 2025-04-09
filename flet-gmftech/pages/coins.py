@@ -21,40 +21,76 @@ except ImportError:
     import httpx
 
 from datetime import datetime
+import asyncio
 
+# Cache global para os dados
+_cached_data = None
+_last_update = None
+_is_fetching = False
 
 # Função assíncrona para buscar os dados da API
-async def fetch_usd_brl_data():
-    url = "https://economia.awesomeapi.com.br/json/daily/USD-BRL/15"
-    if IS_PYODIDE:
-        # Usar pyfetch no ambiente web
-        try:
-            response = await pyfetch(url, method="GET")
-            if response.status == 200:
-                return await response.json()
-            else:
-                print(f"Erro: status code {response.status}")
-                return []
-        except Exception as e:
-            print(f"Erro ao buscar dados: {e}")
-            return []
-    else:
-        # Usar httpx no ambiente desktop/servidor
-        async with httpx.AsyncClient() as client:
-            try:
-                response = await client.get(url)
-                if response.status_code == 200:
-                    return response.json()
-                else:
-                    print(f"Erro: status code {response.status_code}")
-                    return []
-            except Exception as e:
-                print(f"Erro ao buscar dados: {e}")
-                return []
+async def fetch_usd_brl_data(force_refresh=False):
+    global _cached_data, _last_update, _is_fetching
+    
+    # Se já estiver buscando dados, aguarda
+    while _is_fetching:
+        await asyncio.sleep(0.1)
+    
+    # Verifica se tem cache válido (menos de 5 minutos)
+    now = datetime.now()
+    if not force_refresh and _cached_data and _last_update:
+        delta = now - _last_update
+        if delta.total_seconds() < 300:  # 5 minutos
+            return _cached_data
 
+    _is_fetching = True
+    try:
+        url = "https://economia.awesomeapi.com.br/json/daily/USD-BRL/15"
+        max_retries = 3
+        retry_count = 0
+
+        while retry_count < max_retries:
+            try:
+                if IS_PYODIDE:
+                    response = await pyfetch(url, method="GET")
+                    if response.status == 200:
+                        data = await response.json()
+                        _cached_data = data
+                        _last_update = now
+                        return data
+                else:
+                    async with httpx.AsyncClient() as client:
+                        response = await client.get(url)
+                        if response.status_code == 200:
+                            data = response.json()
+                            _cached_data = data
+                            _last_update = now
+                            return data
+                
+                retry_count += 1
+                if retry_count < max_retries:
+                    await asyncio.sleep(1)
+            except Exception as e:
+                print(f"Tentativa {retry_count + 1} falhou: {str(e)}")
+                retry_count += 1
+                if retry_count < max_retries:
+                    await asyncio.sleep(1)
+        
+        # Se chegou aqui, todas as tentativas falharam
+        # Retorna cache antigo se disponível, mesmo que expirado
+        return _cached_data if _cached_data else []
+    finally:
+        _is_fetching = False
+
+# Iniciar o pré-carregamento dos dados
+async def preload_data():
+    await fetch_usd_brl_data()
 
 # Função para criar o gráfico com Pyecharts
 def create_chart(data):
+    if not data:
+        return None
+        
     dates = [
         datetime.fromtimestamp(int(entry["timestamp"])).strftime("%d/%m")
         for entry in data[::-1]
@@ -65,7 +101,13 @@ def create_chart(data):
 
     bar = (
         Bar(
-            init_opts=opts.InitOpts(width="100%", height="400px", theme=ThemeType.LIGHT)
+            init_opts=opts.InitOpts(
+                width="100%",
+                height="400px",
+                theme=ThemeType.LIGHT,
+                animation_opts=opts.AnimationOpts(animation=False),  # Desativa animações
+                js_host="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/",  # Usa CDN em vez de embutir
+            )
         )
         .add_xaxis(dates)
         .add_yaxis(
@@ -117,54 +159,115 @@ def create_chart(data):
     html = bar.render_embed()
     return base64.b64encode(html.encode("utf-8")).decode("utf-8")
 
-
 # Função assíncrona para carregar o gráfico
 async def load_chart(page, chart_container):
-    # Exibir mensagem de carregamento
-    progress_ring = ft.ProgressRing(
-        width=32, height=32, stroke_width=4, color=COLORS["primary"]
-    )
-    chart_container.content = ft.Column(
-        [
-            ft.Text("Carregando dados...", color=COLORS["text_secondary"], font_family="Roboto"),
-            progress_ring,
-        ],
-        alignment="center",
-        horizontal_alignment="center",
-    )
-    page.update()
-
-    # Buscar os dados
-    data = await fetch_usd_brl_data()
-    if not data:
-        chart_container.content = ft.Text(
-            "Erro ao carregar dados", color=COLORS["error"], font_family="Roboto"
+    try:
+        # Exibir mensagem de carregamento
+        progress_ring = ft.ProgressRing(
+            width=32, height=32, stroke_width=4, color=COLORS["primary"]
+        )
+        chart_container.content = ft.Column(
+            [
+                ft.Text("Carregando dados...", color=COLORS["text_secondary"], font_family="Roboto"),
+                progress_ring,
+            ],
+            alignment="center",
+            horizontal_alignment="center",
         )
         page.update()
-        return
 
-    # Atualizar para renderização
-    chart_container.content = ft.Column(
-        [
-            ft.Text("Renderizando gráfico...", color=COLORS["text_secondary"], font_family="Roboto"),
-            progress_ring,
-        ],
-        alignment="center",
-        horizontal_alignment="center",
-    )
-    page.update()
+        # Buscar os dados (usa cache se disponível)
+        data = await fetch_usd_brl_data()
+        if not data:
+            chart_container.content = ft.Column(
+                [
+                    ft.Text(
+                        "Erro ao carregar dados",
+                        color=COLORS["error"],
+                        size=16,
+                        font_family="Roboto",
+                        text_align="center",
+                    ),
+                    ft.ElevatedButton(
+                        "Tentar Novamente",
+                        on_click=lambda _: page.run_task(lambda: load_chart(page, chart_container)),
+                        bgcolor=COLORS["primary"],
+                        color=ft.Colors.WHITE,
+                    ),
+                ],
+                alignment="center",
+                horizontal_alignment="center",
+                spacing=20,
+            )
+            page.update()
+            return
 
-    # Criar e exibir o gráfico
-    encoded_html = create_chart(data)
-    data_url = f"data:text/html;base64,{encoded_html}"
-    chart_webview = ft.WebView(
-        url=data_url,
-        expand=True,
-        bgcolor=COLORS["surface"],
-    )
-    chart_container.content = chart_webview
-    page.update()
+        # Atualizar para renderização
+        chart_container.content = ft.Column(
+            [
+                ft.Text("Renderizando gráfico...", color=COLORS["text_secondary"], font_family="Roboto"),
+                progress_ring,
+            ],
+            alignment="center",
+            horizontal_alignment="center",
+        )
+        page.update()
 
+        # Criar e exibir o gráfico
+        encoded_html = create_chart(data)
+        if encoded_html:
+            data_url = f"data:text/html;base64,{encoded_html}"
+            chart_webview = ft.WebView(
+                url=data_url,
+                expand=True,
+                bgcolor=COLORS["surface"],
+            )
+            chart_container.content = chart_webview
+        else:
+            chart_container.content = ft.Column(
+                [
+                    ft.Text(
+                        "Erro ao renderizar gráfico",
+                        color=COLORS["error"],
+                        size=16,
+                        font_family="Roboto",
+                        text_align="center",
+                    ),
+                    ft.ElevatedButton(
+                        "Tentar Novamente",
+                        on_click=lambda _: page.run_task(lambda: load_chart(page, chart_container)),
+                        bgcolor=COLORS["primary"],
+                        color=ft.Colors.WHITE,
+                    ),
+                ],
+                alignment="center",
+                horizontal_alignment="center",
+                spacing=20,
+            )
+        page.update()
+
+    except Exception as e:
+        chart_container.content = ft.Column(
+            [
+                ft.Text(
+                    f"Erro inesperado: {str(e)}",
+                    color=COLORS["error"],
+                    size=16,
+                    font_family="Roboto",
+                    text_align="center",
+                ),
+                ft.ElevatedButton(
+                    "Tentar Novamente",
+                    on_click=lambda _: page.run_task(lambda: load_chart(page, chart_container)),
+                    bgcolor=COLORS["primary"],
+                    color=ft.Colors.WHITE,
+                ),
+            ],
+            alignment="center",
+            horizontal_alignment="center",
+            spacing=20,
+        )
+        page.update()
 
 # Função principal do conteúdo da página
 def currency_chart_content(page: ft.Page):
@@ -177,11 +280,24 @@ def currency_chart_content(page: ft.Page):
         height=400,
     )
 
+    # Inicializar com mensagem de carregamento
+    progress_ring = ft.ProgressRing(
+        width=32, height=32, stroke_width=4, color=COLORS["primary"]
+    )
+    chart_container.content = ft.Column(
+        [
+            ft.Text("Carregando dados...", color=COLORS["text_secondary"], font_family="Roboto"),
+            progress_ring,
+        ],
+        alignment="center",
+        horizontal_alignment="center",
+    )
+
     async def init_chart():
         await load_chart(page, chart_container)
 
     # Carregar o gráfico de forma assíncrona
-    page.add_async_callback(init_chart)
+    page.run_task(init_chart)
 
     return ft.Container(
         content=ft.Column(
