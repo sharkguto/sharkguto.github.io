@@ -19,21 +19,27 @@ def contact_content(page: ft.Page):
         border_color=COLORS["primary"],
         focused_border_color=COLORS["secondary"],
         cursor_color=COLORS["secondary"],
+        width=400 if page.width > 600 else None,
+        text_align="center",
     )
     email_field = ft.TextField(
         label="Email",
         border_color=COLORS["primary"],
         focused_border_color=COLORS["secondary"],
         cursor_color=COLORS["secondary"],
+        width=400 if page.width > 600 else None,
+        text_align="center",
     )
     message_field = ft.TextField(
         label="Mensagem",
         multiline=True,
         min_lines=3,
-        max_lines=5,
+        max_lines=4,
         border_color=COLORS["primary"],
         focused_border_color=COLORS["secondary"],
         cursor_color=COLORS["secondary"],
+        width=400 if page.width > 600 else None,
+        text_align="center",
     )
 
     def handle_submit(e):
@@ -58,41 +64,51 @@ def contact_content(page: ft.Page):
         page.update()
 
     return ft.Container(
-        content=ft.Column(
-            [
-                ft.Text(
-                    "Entre em Contato",
-                    size=32 if page.width > 600 else 24,
-                    weight="bold",
-                    color=COLORS["text_primary"],
-                    text_align="center",
-                ),
-                ft.Container(
-                    content=ft.Column(
-                        [
-                            name_field,
-                            email_field,
-                            message_field,
-                            ft.ElevatedButton(
-                                "Enviar Mensagem",
-                                style=get_button_style(),
-                                on_click=handle_submit,
-                            ),
-                        ],
-                        spacing=20,
+        content=ft.Container(
+            content=ft.Column(
+                [
+                    ft.Text(
+                        "Entre em Contato",
+                        size=32 if page.width > 600 else 24,
+                        weight="bold",
+                        color=COLORS["text_primary"],
+                        text_align="center",
                     ),
-                    padding=20,
-                    bgcolor=COLORS["surface"],
-                    border_radius=ft.border_radius.all(15),
-                    shadow=get_shadow(),
-                    width=400 if page.width > 600 else None,
-                ),
-            ],
+                    ft.Container(
+                        content=ft.Column(
+                            [
+                                name_field,
+                                email_field,
+                                message_field,
+                                ft.Container(
+                                    content=ft.ElevatedButton(
+                                        "Enviar Mensagem",
+                                        style=get_button_style(),
+                                        on_click=handle_submit,
+                                    ),
+                                    alignment=ft.alignment.center,
+                                ),
+                            ],
+                            horizontal_alignment="center",
+                            alignment="center",
+                            spacing=15 if page.width > 600 else 10,
+                        ),
+                        padding=30 if page.width > 600 else 15,
+                        bgcolor=COLORS["surface"],
+                        border_radius=ft.border_radius.all(15),
+                        shadow=get_shadow(),
+                        width=500 if page.width > 600 else None,
+                        alignment=ft.alignment.center,
+                    ),
+                ],
+                horizontal_alignment="center",
+                alignment="center",
+                spacing=20 if page.width > 600 else 10,
+            ),
+            alignment=ft.alignment.center,
             expand=True,
-            alignment="center",
-            spacing=20,
         ),
         expand=True,
-        height=max(page.height - 160 if page.height else 400, 400),  # Altura mínima de 400px
-        padding=ft.padding.symmetric(horizontal=40 if page.width > 600 else 20),
+        height=max(page.height - 160 if page.height else 400, 350),  # Altura mínima menor para mobile
+        alignment=ft.alignment.center,
     )
