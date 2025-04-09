@@ -15,17 +15,23 @@ def services_content(page: ft.Page):
         return ft.Container(
             content=ft.Column(
                 [
-                    ft.Icon(
-                        icon,
-                        size=40 if page.width > 600 else 30,
-                        color=COLORS["primary"],
+                    ft.Container(
+                        content=ft.Icon(
+                            icon,
+                            size=40 if page.width > 600 else 32,
+                            color=COLORS["primary"],
+                        ),
+                        margin=ft.margin.only(bottom=10),
                     ),
-                    ft.Text(
-                        title,
-                        size=20 if page.width > 600 else 16,
-                        weight="bold",
-                        color=COLORS["text_primary"],
-                        text_align="center",
+                    ft.Container(
+                        content=ft.Text(
+                            title,
+                            size=20 if page.width > 600 else 18,
+                            weight="bold",
+                            color=COLORS["text_primary"],
+                            text_align="center",
+                        ),
+                        margin=ft.margin.only(bottom=10),
                     ),
                     ft.Text(
                         description,
@@ -36,13 +42,14 @@ def services_content(page: ft.Page):
                 ],
                 horizontal_alignment="center",
                 alignment="center",
-                spacing=10 if page.width > 600 else 8,
+                spacing=0,
             ),
-            padding=ft.padding.all(20 if page.width > 600 else 15),
+            padding=ft.padding.all(25 if page.width > 600 else 20),
             bgcolor=COLORS["surface"],
             border_radius=ft.border_radius.all(15),
             shadow=get_shadow(),
-            expand=True,
+            width=300 if page.width > 600 else None,
+            height=200 if page.width > 600 else 180,
         )
 
     # Lista de serviços
@@ -69,10 +76,34 @@ def services_content(page: ft.Page):
         },
     ]
 
-    # Criar os cards
-    cards = [create_card(service["icon"], service["title"], service["description"]) for service in services]
+    technologies = [
+        {
+            "icon": ft.icons.CODE,
+            "title": "Python",
+            "description": "Desenvolvimento backend robusto e eficiente.",
+        },
+        {
+            "icon": ft.icons.DEVICES,
+            "title": "Flet",
+            "description": "Apps multiplataforma com WebAssembly.",
+        },
+        {
+            "icon": ft.icons.STORAGE,
+            "title": "PostgreSQL",
+            "description": "Banco de dados relacional de alta performance.",
+        },
+        {
+            "icon": ft.icons.CLOUD_QUEUE,
+            "title": "AWS",
+            "description": "Infraestrutura em nuvem escalável e confiável.",
+        },
+        {
+            "icon": ft.icons.INTEGRATION_INSTRUCTIONS,
+            "title": "Azure DevOps",
+            "description": "CI/CD e gestão ágil de projetos.",
+        },
+    ]
 
-    # Conteúdo da página de serviços com rolagem
     return ft.Container(
         content=ft.Column(
             [
@@ -83,30 +114,57 @@ def services_content(page: ft.Page):
                     color=COLORS["text_primary"],
                     text_align="center",
                 ),
-                ft.Container(
-                    content=ft.GridView(
-                        [
-                            card
-                            for card in cards
-                        ],
-                        runs_count=2 if page.width > 600 else 1,
-                        max_extent=300,
-                        spacing=20 if page.width > 600 else 15,
-                        run_spacing=20 if page.width > 600 else 15,
-                        expand=True,
-                    ),
+                ft.GridView(
+                    [
+                        create_card(
+                            service["icon"],
+                            service["title"],
+                            service["description"],
+                        )
+                        for service in services
+                    ],
+                    runs_count=2 if page.width > 600 else 1,
+                    max_extent=320 if page.width > 600 else 400,
+                    spacing=20 if page.width > 600 else 15,
+                    run_spacing=20 if page.width > 600 else 15,
+                    child_aspect_ratio=1.5,
                     padding=ft.padding.symmetric(
-                        horizontal=40 if page.width > 600 else 20,
-                        vertical=20 if page.width > 600 else 15,
+                        horizontal=20 if page.width > 600 else 10,
+                        vertical=10,
                     ),
-                    expand=True,
+                ),
+                ft.Container(
+                    content=ft.Text(
+                        "Tecnologias",
+                        size=32 if page.width > 600 else 24,
+                        weight="bold",
+                        color=COLORS["text_primary"],
+                        text_align="center",
+                    ),
+                    margin=ft.margin.only(top=40),
+                ),
+                ft.GridView(
+                    [
+                        create_card(
+                            tech["icon"],
+                            tech["title"],
+                            tech["description"],
+                        )
+                        for tech in technologies
+                    ],
+                    runs_count=3 if page.width > 900 else (2 if page.width > 600 else 1),
+                    max_extent=320 if page.width > 600 else 400,
+                    spacing=20 if page.width > 600 else 15,
+                    run_spacing=20 if page.width > 600 else 15,
+                    child_aspect_ratio=1.5,
+                    padding=ft.padding.symmetric(
+                        horizontal=20 if page.width > 600 else 10,
+                        vertical=10,
+                    ),
                 ),
             ],
-            expand=True,
-            alignment="center",
+            scroll=None,  # Desabilita o scroll individual
             spacing=20 if page.width > 600 else 15,
         ),
-        expand=True,
-        height=max(page.height - 160 if page.height else 400, 400),  # Altura mínima de 400px
-        padding=ft.padding.symmetric(horizontal=40 if page.width > 600 else 20),
+        padding=ft.padding.symmetric(horizontal=20 if page.width > 600 else 10),
     )
