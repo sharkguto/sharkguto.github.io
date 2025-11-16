@@ -4,6 +4,20 @@ from theme import COLORS, get_shadow
 def portfolio_content(page: ft.Page):
     projects = [
         {
+            "title": "Velejar Fácil",
+            "description": """
+Plataforma inovadora para controle de embarcações, conectando donos de marinas e usuários finais. Permite o gerenciamento de barcos, reservas e passeios de fim de semana, funcionando como um "Uber de barcos". Principais recursos:
+
+• Gestão de frota para marinas
+• Reserva e aluguel de embarcações por usuários
+• Pagamentos integrados e avaliações
+• Interface intuitiva para web e mobile
+• Segurança e rastreamento em tempo real
+""",
+            "image": "/images/velejar_facil.jpg",
+            "technologies": ["Python", "Flet", "APIs", "Cloud", "Banco de Dados"]
+        },
+        {
             "title": "Sistema de Monitoramento de Cotações",
             "description": """
 Desenvolvemos uma solução robusta e em tempo real para monitoramento de cotações de moedas, 

@@ -245,11 +245,14 @@ def main(page: ft.Page):
             )
 
         return ft.AppBar(
-            leading=ft.Text(
-                "GMF-tech",
-                size=32 if page.width > 600 else 24,
-                weight="bold",
-                color=ft.Colors.WHITE,
+            leading=ft.Container(
+                content=ft.Text(
+                    "GMF-tech",
+                    size=32 if page.width > 600 else 24,
+                    weight="bold",
+                    color=ft.Colors.WHITE,
+                ),
+                padding=ft.padding.only(left=20),
             ),
             leading_width=200,
             title=ft.Text(""),

@@ -14,7 +14,7 @@ dependencies = [
 org = "com.gmf-tech"                          # --org
 product = "GMF tech website"                  # --product
 company = "GMF tech"                          # --company
-copyright = "Copyright (C) 2024 by sharkguto" # --copyright
+copyright = "Copyright (C) 2026 by sharkguto" # --copyright
 build_number = 1                              # --build-number
 
 [tool.flet.web]
