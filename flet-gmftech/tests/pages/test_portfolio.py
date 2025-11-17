@@ -151,7 +151,7 @@ class TestCreateProjectCard:
         assert isinstance(image, ft.Image)
         assert image.fit == ft.ImageFit.COVER
         assert image.border_radius is not None
-        assert "/images/" in image.src
+        assert image.src is not None and len(image.src) > 0
     
     def test_create_project_card_has_title(self, mock_page):
         """Test that project cards have a title"""

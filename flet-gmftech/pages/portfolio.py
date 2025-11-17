@@ -15,7 +15,7 @@ Plataforma inovadora para controle de embarcações, conectando donos de marinas
 • Interface intuitiva para web e mobile
 • Segurança e rastreamento em tempo real
 """,
-            "image": "/images/velejar_facil.jpg",
+            "image": "/velejar_facil.png",
             "technologies": ["Python", "Flet", "APIs", "Cloud", "Banco de Dados"]
         },
         {
@@ -31,7 +31,7 @@ transações por segundo, oferecendo:
 • Escalabilidade horizontal automática
 • Interface moderna e responsiva
 """,
-            "image": "/images/chart-project.jpg",
+            "image": "/chart-project.jpg",
             "technologies": ["Python", "ScyllaDB", "Flet", "Docker", "Kubernetes"]
         },
         {
@@ -48,7 +48,7 @@ Criação de uma presença digital moderna e profissional para a GMF-tech, com f
 O site foi desenvolvido utilizando as melhores práticas de desenvolvimento web e SEO, 
 resultando em uma experiência excepcional para os usuários.
 """,
-            "image": "/images/website-project.jpg",
+            "image": "/website-project.jpg",
             "technologies": ["Python", "Flet", "Material Design", "Git", "CI/CD"]
         }
     ]
