@@ -6,12 +6,33 @@
 # @Link   :
 
 import flet as ft
-from theme import COLORS, get_text_style, get_button_style, get_shadow
+from theme import COLORS, get_text_style, get_button_style, get_shadow, get_responsive_font_size, get_responsive_padding, get_responsive_spacing
+from utils.responsive import ResponsiveConfig, Breakpoint
 
 
 def about_content(page: ft.Page):
     def go_to_home(e):
         page.go("/")
+
+    # Detect current breakpoint
+    width = page.width if page.width else 1024
+    breakpoint = ResponsiveConfig.get_breakpoint(width)
+    
+    # Calculate responsive values
+    title_size = get_responsive_font_size(32, width)
+    section_title_size = get_responsive_font_size(24, width)
+    body_text_size = get_responsive_font_size(16, width)
+    container_padding = get_responsive_padding(30, width)
+    section_spacing = get_responsive_spacing(20, width)
+    inner_spacing = get_responsive_spacing(15, width)
+    
+    # Calculate container max-width based on breakpoint
+    if breakpoint == Breakpoint.MOBILE:
+        container_max_width = None  # Full width on mobile
+    elif breakpoint == Breakpoint.TABLET:
+        container_max_width = 700
+    else:  # DESKTOP
+        container_max_width = 800
 
     return ft.Container(
         content=ft.Container(
@@ -19,7 +40,7 @@ def about_content(page: ft.Page):
                 [
                     ft.Text(
                         "Sobre Nós",
-                        size=32 if page.width > 600 else 24,
+                        size=title_size,
                         weight="bold",
                         color=COLORS["text_primary"],
                         text_align="center",
@@ -29,59 +50,59 @@ def about_content(page: ft.Page):
                             [
                                 ft.Text(
                                     "Nossa História",
-                                    size=24 if page.width > 600 else 20,
+                                    size=section_title_size,
                                     weight="bold",
                                     color=COLORS["text_primary"],
                                     text_align="center",
                                 ),
                                 ft.Text(
                                     "A GMF-tech nasceu da paixão por tecnologia e da vontade de transformar negócios através de soluções inovadoras.",
-                                    size=16,
+                                    size=body_text_size,
                                     color=COLORS["text_secondary"],
                                     text_align="center",
                                 ),
                                 ft.Text(
                                     "Nossa Missão",
-                                    size=24 if page.width > 600 else 20,
+                                    size=section_title_size,
                                     weight="bold",
                                     color=COLORS["text_primary"],
                                     text_align="center",
                                 ),
                                 ft.Text(
                                     "Fornecer soluções tecnológicas de alta qualidade que impulsionem o sucesso de nossos clientes.",
-                                    size=16,
+                                    size=body_text_size,
                                     color=COLORS["text_secondary"],
                                     text_align="center",
                                 ),
                                 ft.Text(
                                     "Nossos Valores",
-                                    size=24 if page.width > 600 else 20,
+                                    size=section_title_size,
                                     weight="bold",
                                     color=COLORS["text_primary"],
                                     text_align="center",
                                 ),
                                 ft.Text(
                                     "• Inovação\n• Qualidade\n• Compromisso\n• Transparência\n• Excelência",
-                                    size=16,
+                                    size=body_text_size,
                                     color=COLORS["text_secondary"],
                                     text_align="center",
                                 ),
                             ],
                             horizontal_alignment="center",
                             alignment="center",
-                            spacing=15 if page.width > 600 else 10,
+                            spacing=inner_spacing,
                         ),
-                        padding=30 if page.width > 600 else 15,
+                        padding=container_padding,
                         bgcolor=COLORS["surface"],
                         border_radius=ft.border_radius.all(15),
                         shadow=get_shadow(),
-                        width=600 if page.width > 600 else None,
+                        width=container_max_width,
                         alignment=ft.alignment.center,
                     ),
                 ],
                 horizontal_alignment="center",
                 alignment="center",
-                spacing=20 if page.width > 600 else 10,
+                spacing=section_spacing,
             ),
             alignment=ft.alignment.center,
             expand=True,

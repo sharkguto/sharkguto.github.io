@@ -6,6 +6,7 @@
 # @Link   :
 
 import flet as ft
+from utils.responsive import ResponsiveConfig
 
 # Paleta de cores moderna
 COLORS = {
@@ -57,4 +58,58 @@ def get_shadow():
         blur_radius=15,
         color=ft.Colors.with_opacity(0.1, ft.Colors.BLACK),
         offset=ft.Offset(0, 0),
-    ) 
+    )
+
+# Responsive helper functions
+def get_responsive_font_size(base_size: int, width: int) -> int:
+    """
+    Calculate responsive font size based on screen width.
+    
+    Args:
+        base_size: Base font size in pixels
+        width: Screen width in pixels
+        
+    Returns:
+        Scaled font size as integer
+    """
+    if width is None or width <= 0:
+        width = 1024  # Default to desktop width
+    
+    breakpoint = ResponsiveConfig.get_breakpoint(width)
+    return ResponsiveConfig.get_font_size(base_size, breakpoint)
+
+
+def get_responsive_padding(base_padding: int, width: int) -> int:
+    """
+    Calculate responsive padding based on screen width.
+    
+    Args:
+        base_padding: Base padding in pixels
+        width: Screen width in pixels
+        
+    Returns:
+        Scaled padding as integer
+    """
+    if width is None or width <= 0:
+        width = 1024  # Default to desktop width
+    
+    breakpoint = ResponsiveConfig.get_breakpoint(width)
+    return ResponsiveConfig.get_spacing(base_padding, breakpoint)
+
+
+def get_responsive_spacing(base_spacing: int, width: int) -> int:
+    """
+    Calculate responsive spacing based on screen width.
+    
+    Args:
+        base_spacing: Base spacing in pixels
+        width: Screen width in pixels
+        
+    Returns:
+        Scaled spacing as integer
+    """
+    if width is None or width <= 0:
+        width = 1024  # Default to desktop width
+    
+    breakpoint = ResponsiveConfig.get_breakpoint(width)
+    return ResponsiveConfig.get_spacing(base_spacing, breakpoint) 

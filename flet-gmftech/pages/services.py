@@ -6,15 +6,26 @@
 # @Link   :
 
 import flet as ft
-from theme import COLORS, get_text_style, get_button_style, get_shadow
+from theme import COLORS, get_text_style, get_button_style, get_shadow, get_responsive_font_size, get_responsive_padding
+from utils.responsive import ResponsiveConfig
 
 
 def services_content(page: ft.Page):
+    # Detect breakpoint for responsive layout
+    breakpoint = ResponsiveConfig.get_breakpoint(page.width)
+    
     # Função para criar um card
     def create_card(icon, title, description):
-        is_mobile = page.width <= 600
-        card_padding = 15 if is_mobile else 20
-        content_width = page.width - (2 * card_padding) - 40  # Considerando margens e padding do container pai
+        # Use responsive padding instead of hardcoded values
+        card_padding = get_responsive_padding(20, page.width)
+        
+        # Use responsive font sizes
+        icon_size = get_responsive_font_size(40, page.width)
+        title_size = get_responsive_font_size(20, page.width)
+        description_size = get_responsive_font_size(16, page.width)
+        
+        # Use responsive spacing
+        bottom_spacing = get_responsive_padding(10, page.width)
         
         return ft.Container(
             content=ft.Column(
@@ -22,28 +33,27 @@ def services_content(page: ft.Page):
                     ft.Container(
                         content=ft.Icon(
                             icon,
-                            size=32 if is_mobile else 40,
+                            size=icon_size,
                             color=COLORS["primary"],
                         ),
-                        margin=ft.margin.only(bottom=8 if is_mobile else 10),
+                        margin=ft.margin.only(bottom=bottom_spacing),
                     ),
                     ft.Container(
                         content=ft.Text(
                             title,
-                            size=16 if is_mobile else 20,
+                            size=title_size,
                             weight="bold",
                             color=COLORS["text_primary"],
                             text_align="center",
                         ),
-                        margin=ft.margin.only(bottom=8 if is_mobile else 10),
+                        margin=ft.margin.only(bottom=bottom_spacing),
                     ),
                     ft.Container(
                         content=ft.Text(
                             description,
-                            size=14 if is_mobile else 16,
+                            size=description_size,
                             color=COLORS["text_secondary"],
                             text_align="center",
-                            width=content_width if is_mobile else 280,
                         ),
                         margin=ft.margin.only(bottom=5),
                     ),
@@ -148,12 +158,28 @@ def services_content(page: ft.Page):
         },
     ]
 
+    # Use responsive grid columns based on breakpoint
+    services_grid_columns = ResponsiveConfig.get_grid_columns(breakpoint)
+    # For services, use 1 column on mobile, 2 on tablet/desktop
+    if breakpoint == ResponsiveConfig.get_breakpoint(page.width):
+        services_runs_count = 1 if breakpoint.value == "mobile" else 2
+    
+    # For technologies, use full responsive grid (1, 2, 3)
+    tech_grid_columns = ResponsiveConfig.get_grid_columns(breakpoint)
+    
+    # Use responsive title size
+    title_size = get_responsive_font_size(24, page.width)
+    
+    # Use responsive spacing
+    grid_spacing = get_responsive_padding(8, page.width)
+    section_spacing = get_responsive_padding(30, page.width)
+    
     return ft.Container(
         content=ft.Column(
             [
                 ft.Text(
                     "Nossos Serviços",
-                    size=24 if page.width > 600 else 20,
+                    size=title_size,
                     weight="bold",
                     color=COLORS["text_primary"],
                     text_align="center",
@@ -167,10 +193,10 @@ def services_content(page: ft.Page):
                         )
                         for service in services
                     ],
-                    runs_count=2 if page.width > 600 else 1,
-                    max_extent=320 if page.width > 600 else page.width,
-                    spacing=8,
-                    run_spacing=8,
+                    runs_count=services_runs_count,
+                    max_extent=400,
+                    spacing=grid_spacing,
+                    run_spacing=grid_spacing,
                     child_aspect_ratio=None,
                     padding=ft.padding.symmetric(
                         horizontal=10,
@@ -180,12 +206,12 @@ def services_content(page: ft.Page):
                 ft.Container(
                     content=ft.Text(
                         "Tecnologias",
-                        size=24 if page.width > 600 else 20,
+                        size=title_size,
                         weight="bold",
                         color=COLORS["text_primary"],
                         text_align="center",
                     ),
-                    margin=ft.margin.only(top=30),
+                    margin=ft.margin.only(top=section_spacing),
                 ),
                 ft.GridView(
                     [
@@ -196,10 +222,10 @@ def services_content(page: ft.Page):
                         )
                         for tech in technologies
                     ],
-                    runs_count=3 if page.width > 900 else (2 if page.width > 600 else 1),
-                    max_extent=320 if page.width > 600 else page.width,
-                    spacing=8,
-                    run_spacing=8,
+                    runs_count=tech_grid_columns,
+                    max_extent=400,
+                    spacing=grid_spacing,
+                    run_spacing=grid_spacing,
                     child_aspect_ratio=None,
                     padding=ft.padding.symmetric(
                         horizontal=10,

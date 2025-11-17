@@ -5,7 +5,8 @@
 # @Author : Gustavo (gustavo@gmf-tech.com)
 # @Link   :
 import flet as ft
-from theme import COLORS, get_text_style, get_button_style, get_shadow
+from theme import COLORS, get_text_style, get_button_style, get_shadow, get_responsive_font_size, get_responsive_padding, get_responsive_spacing
+from utils.responsive import ResponsiveConfig, Breakpoint
 
 
 def send_email(name, email, message):
@@ -14,12 +15,24 @@ def send_email(name, email, message):
 
 
 def contact_content(page: ft.Page):
+    # Detect breakpoint for responsive layout
+    breakpoint = ResponsiveConfig.get_breakpoint(page.width)
+    
+    # Calculate responsive values
+    title_font_size = get_responsive_font_size(32, page.width)
+    container_padding = get_responsive_padding(30, page.width)
+    field_spacing = get_responsive_spacing(15, page.width)
+    section_spacing = get_responsive_spacing(20, page.width)
+    
+    # Form field width: 100% on mobile, 400px on desktop
+    field_width = None if breakpoint == Breakpoint.MOBILE else 400
+    
     name_field = ft.TextField(
         label="Nome",
         border_color=COLORS["primary"],
         focused_border_color=COLORS["secondary"],
         cursor_color=COLORS["secondary"],
-        width=400 if page.width > 600 else None,
+        width=field_width,
         text_align="center",
     )
     email_field = ft.TextField(
@@ -27,7 +40,7 @@ def contact_content(page: ft.Page):
         border_color=COLORS["primary"],
         focused_border_color=COLORS["secondary"],
         cursor_color=COLORS["secondary"],
-        width=400 if page.width > 600 else None,
+        width=field_width,
         text_align="center",
     )
     message_field = ft.TextField(
@@ -38,7 +51,7 @@ def contact_content(page: ft.Page):
         border_color=COLORS["primary"],
         focused_border_color=COLORS["secondary"],
         cursor_color=COLORS["secondary"],
-        width=400 if page.width > 600 else None,
+        width=field_width,
         text_align="center",
     )
 
@@ -69,7 +82,7 @@ def contact_content(page: ft.Page):
                 [
                     ft.Text(
                         "Entre em Contato",
-                        size=32 if page.width > 600 else 24,
+                        size=title_font_size,
                         weight="bold",
                         color=COLORS["text_primary"],
                         text_align="center",
@@ -91,24 +104,24 @@ def contact_content(page: ft.Page):
                             ],
                             horizontal_alignment="center",
                             alignment="center",
-                            spacing=15 if page.width > 600 else 10,
+                            spacing=field_spacing,
                         ),
-                        padding=30 if page.width > 600 else 15,
+                        padding=container_padding,
                         bgcolor=COLORS["surface"],
                         border_radius=ft.border_radius.all(15),
                         shadow=get_shadow(),
-                        width=500 if page.width > 600 else None,
+                        width=500 if breakpoint != Breakpoint.MOBILE else None,
                         alignment=ft.alignment.center,
                     ),
                 ],
                 horizontal_alignment="center",
                 alignment="center",
-                spacing=20 if page.width > 600 else 10,
+                spacing=section_spacing,
             ),
             alignment=ft.alignment.center,
             expand=True,
         ),
         expand=True,
-        height=max(page.height - 160 if page.height else 400, 350),  # Altura mínima menor para mobile
+        height=max(page.height - 160 if page.height else 400, 350),
         alignment=ft.alignment.center,
     )

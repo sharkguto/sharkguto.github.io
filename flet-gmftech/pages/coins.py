@@ -9,7 +9,8 @@ import base64
 from pyecharts import options as opts
 from pyecharts.charts import Bar, Line
 from pyecharts.globals import ThemeType
-from theme import COLORS, get_shadow, get_text_style
+from theme import COLORS, get_shadow, get_text_style, get_responsive_font_size, get_responsive_padding
+from utils.responsive import ResponsiveConfig
 
 try:
     import pyodide
@@ -81,13 +82,13 @@ async def fetch_usd_brl_data(force_refresh=False):
         _is_fetching = False
 
 # Função para criar o gráfico com Pyecharts
-def create_chart(data):
+def create_chart(data, chart_height="400px"):
     global _cached_chart
     
     if not data:
         return None
 
-    # Se já temos um gráfico em cache para esses dados, retorna ele
+    # Se já temos um gráfico em cache para esses dados e mesma altura, retorna ele
     if _cached_chart and _cached_data == data:
         return _cached_chart
         
@@ -103,7 +104,7 @@ def create_chart(data):
         Bar(
             init_opts=opts.InitOpts(
                 width="100%",
-                height="400px",
+                height=chart_height,
                 theme=ThemeType.LIGHT,
                 animation_opts=opts.AnimationOpts(animation=False),
                 js_host="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/",
@@ -163,17 +164,22 @@ def create_chart(data):
     return _cached_chart
 
 # Função assíncrona para carregar o gráfico
-async def load_chart(page, chart_container, error_button):
+async def load_chart(page, chart_container, error_button, chart_height):
     try:
         # Buscar os dados (usa cache se disponível)
         data = await fetch_usd_brl_data()
+        
+        # Detect breakpoint for responsive error messages
+        breakpoint = ResponsiveConfig.get_breakpoint(page.width if page.width else 1024)
+        error_font_size = get_responsive_font_size(16, page.width if page.width else 1024)
+        
         if not data:
             chart_container.content = ft.Column(
                 [
                     ft.Text(
                         "Erro ao carregar dados",
                         color=COLORS["error"],
-                        size=16,
+                        size=error_font_size,
                         font_family="Roboto",
                         text_align="center",
                     ),
@@ -187,7 +193,7 @@ async def load_chart(page, chart_container, error_button):
             return
 
         # Criar e exibir o gráfico
-        encoded_html = create_chart(data)
+        encoded_html = create_chart(data, chart_height)
         if encoded_html:
             data_url = f"data:text/html;base64,{encoded_html}"
             chart_webview = ft.WebView(
@@ -203,7 +209,7 @@ async def load_chart(page, chart_container, error_button):
                     ft.Text(
                         "Erro ao renderizar gráfico",
                         color=COLORS["error"],
-                        size=16,
+                        size=error_font_size,
                         font_family="Roboto",
                         text_align="center",
                     ),
@@ -221,7 +227,7 @@ async def load_chart(page, chart_container, error_button):
                 ft.Text(
                     f"Erro inesperado: {str(e)}",
                     color=COLORS["error"],
-                    size=16,
+                    size=error_font_size,
                     font_family="Roboto",
                     text_align="center",
                 ),
@@ -235,6 +241,26 @@ async def load_chart(page, chart_container, error_button):
 
 # Função principal do conteúdo da página
 def currency_chart_content(page: ft.Page):
+    # Detect breakpoint for responsive design
+    width = page.width if page.width else 1024
+    breakpoint = ResponsiveConfig.get_breakpoint(width)
+    
+    # Responsive values
+    title_size = get_responsive_font_size(32, width)
+    subtitle_size = get_responsive_font_size(16, width)
+    container_padding = get_responsive_padding(20, width)
+    horizontal_padding = get_responsive_padding(40, width)
+    spacing = get_responsive_padding(20, width)
+    
+    # Chart height based on breakpoint (mobile: 300px, tablet: 350px, desktop: 400px)
+    chart_heights = {
+        ResponsiveConfig.get_breakpoint(400): 300,   # Mobile
+        ResponsiveConfig.get_breakpoint(768): 350,   # Tablet
+        ResponsiveConfig.get_breakpoint(1920): 400   # Desktop
+    }
+    chart_height = chart_heights.get(breakpoint, 400)
+    chart_height_str = f"{chart_height}px"
+    
     # Definir o botão de erro primeiro
     error_button = ft.ElevatedButton(
         "Tentar Novamente",
@@ -247,31 +273,39 @@ def currency_chart_content(page: ft.Page):
         bgcolor=COLORS["surface"],
         border_radius=ft.border_radius.all(15),
         shadow=get_shadow(),
-        padding=20,
-        height=400,
+        padding=container_padding,
+        height=chart_height,
     )
 
-    # Inicializar com mensagem de carregamento
+    # Inicializar com mensagem de carregamento - properly centered
+    loading_font_size = get_responsive_font_size(16, width)
     progress_ring = ft.ProgressRing(
         width=32, height=32, stroke_width=4, color=COLORS["primary"]
     )
     chart_container.content = ft.Column(
         [
-            ft.Text("Carregando dados...", color=COLORS["text_secondary"], font_family="Roboto"),
+            ft.Text(
+                "Carregando dados...", 
+                color=COLORS["text_secondary"], 
+                font_family="Roboto",
+                size=loading_font_size,
+                text_align="center"
+            ),
             progress_ring,
         ],
         alignment="center",
         horizontal_alignment="center",
+        expand=True,
     )
 
     async def retry_load_chart(e):
-        await load_chart(page, chart_container, error_button)
+        await load_chart(page, chart_container, error_button, chart_height_str)
 
     error_button.on_click = retry_load_chart
 
     # Inicialização do gráfico
     async def init_chart():
-        await load_chart(page, chart_container, error_button)
+        await load_chart(page, chart_container, error_button, chart_height_str)
 
     # Carregar o gráfico de forma assíncrona
     page.run_task(init_chart)
@@ -283,14 +317,14 @@ def currency_chart_content(page: ft.Page):
                     [
                         ft.Text(
                             "Cotação USD/BRL",
-                            size=32 if page.width > 600 else 24,
+                            size=title_size,
                             weight="bold",
                             color=COLORS["text_primary"],
                             text_align="center",
                         ),
                         ft.Text(
                             "Acompanhe a variação do dólar nos últimos 15 dias",
-                            size=16 if page.width > 600 else 14,
+                            size=subtitle_size,
                             color=COLORS["text_secondary"],
                             text_align="center",
                         ),
@@ -298,7 +332,7 @@ def currency_chart_content(page: ft.Page):
                     ],
                     expand=True,
                     alignment="start",
-                    spacing=20,
+                    spacing=spacing,
                 ),
                 ft.Container(
                     expand=True,
@@ -309,5 +343,5 @@ def currency_chart_content(page: ft.Page):
         ),
         expand=True,
         height=max(page.height - 160 if page.height else 400, 400),
-        padding=ft.padding.symmetric(horizontal=40 if page.width > 600 else 20),
+        padding=ft.padding.symmetric(horizontal=horizontal_padding),
     )

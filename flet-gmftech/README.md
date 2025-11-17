@@ -87,6 +87,8 @@ gmf_tech/
 ├── theme.py              # Configurações de tema e estilos
 ├── requirements.txt      # Dependências do projeto
 ├── pyproject.toml       # Configurações do projeto e build
+├── pytest.ini           # Configuração do pytest
+├── .coveragerc          # Configuração de cobertura de testes
 ├── pages/               # Módulos das páginas
 │   ├── __init__.py
 │   ├── home.py         # Página inicial
@@ -95,6 +97,22 @@ gmf_tech/
 │   ├── contact.py      # Página de contato
 │   ├── coins.py        # Página de cotação
 │   └── portfolio.py    # Página de portfólio
+├── utils/              # Utilitários
+│   ├── __init__.py
+│   └── responsive.py   # Sistema de responsividade
+├── tests/              # Testes unitários
+│   ├── __init__.py
+│   ├── conftest.py     # Fixtures compartilhadas
+│   ├── test_app.py     # Testes do app principal
+│   ├── test_theme.py   # Testes do módulo de tema
+│   ├── test_responsive.py  # Testes do sistema responsivo
+│   └── pages/          # Testes das páginas
+│       ├── test_home.py
+│       ├── test_services.py
+│       ├── test_about.py
+│       ├── test_contact.py
+│       ├── test_coins.py
+│       └── test_portfolio.py
 ├── assets/             # Recursos estáticos
 │   ├── favicon.ico
 │   ├── favicon.png
@@ -125,10 +143,186 @@ A página de cotação consome dados da API pública:
 
 ## 📱 Responsividade
 
-A aplicação é totalmente responsiva e se adapta a diferentes tamanhos de tela:
-- **Desktop**: Layout completo com navegação horizontal
-- **Tablet**: Layout adaptado com ajustes de espaçamento
-- **Mobile**: Menu hambúrguer e layout vertical otimizado
+A aplicação é totalmente responsiva e se adapta a diferentes tamanhos de tela usando um sistema de breakpoints centralizado.
+
+### Breakpoints
+
+O sistema de responsividade utiliza três breakpoints principais:
+
+| Breakpoint | Largura | Descrição |
+|------------|---------|-----------|
+| **Mobile** | ≤ 600px | Layout vertical, menu hambúrguer, 1 coluna |
+| **Tablet** | 601-900px | Layout adaptado, 2 colunas, elementos redimensionados |
+| **Desktop** | > 900px | Layout completo, navegação horizontal, 3 colunas |
+
+### Características por Breakpoint
+
+**Mobile (≤ 600px)**:
+- Menu hambúrguer (PopupMenuButton)
+- Grid de serviços: 1 coluna
+- Grid de portfólio: 1 coluna
+- Imagens: largura máxima (viewport - 80px)
+- Gráfico de cotações: altura 300px
+- Campos de formulário: largura 100%
+- Font scale: 0.85x
+
+**Tablet (601-900px)**:
+- Navegação horizontal compacta
+- Grid de serviços: 2 colunas
+- Grid de portfólio: 2 colunas
+- Imagens: largura proporcional
+- Gráfico de cotações: altura 350px
+- Campos de formulário: largura 100%
+- Font scale: 0.95x
+
+**Desktop (> 900px)**:
+- Navegação horizontal completa
+- Grid de serviços: 3 colunas
+- Grid de portfólio: 2 colunas (imagens 400px)
+- Imagens: tamanho otimizado
+- Gráfico de cotações: altura 400px
+- Campos de formulário: largura 400px
+- Font scale: 1.0x
+
+### Usando o Sistema Responsivo
+
+O módulo `utils/responsive.py` fornece utilitários para trabalhar com responsividade:
+
+```python
+from utils.responsive import ResponsiveConfig, Breakpoint
+
+# Detectar breakpoint atual
+breakpoint = ResponsiveConfig.get_breakpoint(page.width)
+
+# Obter tamanho de fonte responsivo
+font_size = ResponsiveConfig.get_font_size(base_size=16, breakpoint=breakpoint)
+
+# Obter espaçamento responsivo
+spacing = ResponsiveConfig.get_spacing(base_spacing=20, breakpoint=breakpoint)
+
+# Obter número de colunas para grid
+columns = ResponsiveConfig.get_grid_columns(breakpoint)
+
+# Obter padding do container
+padding = ResponsiveConfig.get_container_padding(breakpoint)
+```
+
+O módulo `theme.py` também oferece funções responsivas convenientes:
+
+```python
+from theme import get_responsive_font_size, get_responsive_padding, get_responsive_spacing
+
+# Calcular valores responsivos baseado na largura da página
+font_size = get_responsive_font_size(base_size=16, width=page.width)
+padding = get_responsive_padding(base_padding=20, width=page.width)
+spacing = get_responsive_spacing(base_spacing=10, width=page.width)
+```
+
+## 🧪 Testes
+
+O projeto possui uma suite completa de testes unitários para garantir a qualidade e confiabilidade do código.
+
+### Executando os Testes
+
+Para executar todos os testes:
+```bash
+pytest
+```
+
+Para executar com saída detalhada:
+```bash
+pytest -v
+```
+
+Para executar testes específicos:
+```bash
+# Testar apenas o módulo de tema
+pytest tests/test_theme.py
+
+# Testar apenas a página home
+pytest tests/pages/test_home.py
+
+# Testar apenas o sistema responsivo
+pytest tests/test_responsive.py
+```
+
+### Cobertura de Testes
+
+Para gerar relatório de cobertura:
+```bash
+pytest --cov=. --cov-report=html --cov-report=term
+```
+
+Isso irá:
+- Exibir um resumo de cobertura no terminal
+- Gerar um relatório HTML detalhado em `htmlcov/index.html`
+
+Para visualizar o relatório HTML:
+```bash
+# Linux/Mac
+open htmlcov/index.html
+
+# Windows
+start htmlcov/index.html
+```
+
+### Estrutura dos Testes
+
+Os testes estão organizados espelhando a estrutura do código fonte:
+
+- **tests/test_app.py**: Testes do aplicativo principal (header, footer, navegação, login)
+- **tests/test_theme.py**: Testes das funções de tema e estilos
+- **tests/test_responsive.py**: Testes do sistema de responsividade
+- **tests/pages/**: Testes de cada página individual
+- **tests/conftest.py**: Fixtures compartilhadas (mocks de Page, breakpoints, etc.)
+
+### Fixtures Disponíveis
+
+O arquivo `conftest.py` fornece fixtures reutilizáveis:
+
+```python
+# Mock de página genérica
+def test_something(mock_page):
+    content = home_content(mock_page)
+    assert content is not None
+
+# Mock de página mobile (400px)
+def test_mobile_layout(mobile_page):
+    content = services_content(mobile_page)
+    # Verificar layout mobile
+
+# Mock de página tablet (768px)
+def test_tablet_layout(tablet_page):
+    content = services_content(tablet_page)
+    # Verificar layout tablet
+
+# Mock de página desktop (1920px)
+def test_desktop_layout(desktop_page):
+    content = services_content(desktop_page)
+    # Verificar layout desktop
+
+# Cores do tema
+def test_colors(theme_colors):
+    assert theme_colors["primary"] == "#1a237e"
+```
+
+### Métricas de Qualidade
+
+O projeto mantém os seguintes padrões de qualidade:
+
+- ✅ Cobertura de código: ≥ 80%
+- ✅ Todos os testes passando: 0 falhas
+- ✅ Tempo de execução: < 30 segundos
+- ✅ Testes para todas as páginas e componentes principais
+
+### Executando Testes em CI/CD
+
+Para integração contínua, use:
+```bash
+pytest --cov=. --cov-report=xml --cov-report=term
+```
+
+Isso gera um relatório XML compatível com ferramentas de CI/CD como GitHub Actions, GitLab CI, Jenkins, etc.
 
 ## 🔒 Segurança
 
