@@ -74,42 +74,42 @@ def services_content(page: ft.Page):
     # Lista de serviços
     services = [
         {
-            "icon": ft.icons.ASSIGNMENT,
+            "icon": ft.Icons.ASSIGNMENT,
             "title": "Levantamento de Requisitos",
             "description": "Análise detalhada e documentação das necessidades do seu projeto.",
         },
         {
-            "icon": ft.icons.ARCHITECTURE,
+            "icon": ft.Icons.ARCHITECTURE,
             "title": "Arquitetura de Software",
             "description": "Design e planejamento de soluções escaláveis e robustas.",
         },
         {
-            "icon": ft.icons.DEVELOPER_BOARD,
+            "icon": ft.Icons.DEVELOPER_BOARD,
             "title": "IoT com Arduino",
             "description": "Desenvolvimento de soluções IoT com hardware Arduino.",
         },
         {
-            "icon": ft.icons.PRECISION_MANUFACTURING,
+            "icon": ft.Icons.PRECISION_MANUFACTURING,
             "title": "Prototipagem Eletrônica",
             "description": "Simulação e prototipagem com SimulIDE para validação de projetos.",
         },
         {
-            "icon": ft.icons.COMPUTER,
+            "icon": ft.Icons.COMPUTER,
             "title": "Desenvolvimento Web",
             "description": "Criamos sites e aplicações web modernas e responsivas.",
         },
         {
-            "icon": ft.icons.PHONE_ANDROID,
+            "icon": ft.Icons.PHONE_ANDROID,
             "title": "Desenvolvimento Mobile",
             "description": "Desenvolvemos aplicativos nativos e híbridos para iOS e Android.",
         },
         {
-            "icon": ft.icons.CLOUD,
+            "icon": ft.Icons.CLOUD,
             "title": "Cloud Computing",
             "description": "Soluções em nuvem para escalabilidade e performance.",
         },
         {
-            "icon": ft.icons.SECURITY,
+            "icon": ft.Icons.SECURITY,
             "title": "Segurança",
             "description": "Proteção e segurança para seus dados e aplicações.",
         },
@@ -117,42 +117,42 @@ def services_content(page: ft.Page):
 
     technologies = [
         {
-            "icon": ft.icons.CODE,
+            "icon": ft.Icons.CODE,
             "title": "Python",
             "description": "Desenvolvimento backend robusto e eficiente.",
         },
         {
-            "icon": ft.icons.DEVICES,
+            "icon": ft.Icons.DEVICES,
             "title": "Flet",
             "description": "Apps multiplataforma com WebAssembly.",
         },
         {
-            "icon": ft.icons.STORAGE,
+            "icon": ft.Icons.STORAGE,
             "title": "PostgreSQL",
             "description": "Banco de dados relacional de alta performance.",
         },
         {
-            "icon": ft.icons.DATA_OBJECT,
+            "icon": ft.Icons.DATA_OBJECT,
             "title": "ScyllaDB",
             "description": "Banco NoSQL de alta performance e baixa latência.",
         },
         {
-            "icon": ft.icons.MEMORY,
+            "icon": ft.Icons.MEMORY,
             "title": "Redis",
             "description": "Cache distribuído e banco de dados em memória.",
         },
         {
-            "icon": ft.icons.CLOUD_QUEUE,
+            "icon": ft.Icons.CLOUD_QUEUE,
             "title": "AWS",
             "description": "Infraestrutura em nuvem escalável e confiável.",
         },
         {
-            "icon": ft.icons.INTEGRATION_INSTRUCTIONS,
+            "icon": ft.Icons.INTEGRATION_INSTRUCTIONS,
             "title": "Azure DevOps",
             "description": "CI/CD e gestão ágil de projetos.",
         },
         {
-            "icon": ft.icons.INSERT_CHART,
+            "icon": ft.Icons.INSERT_CHART,
             "title": "Apache ECharts",
             "description": "Biblioteca de visualização de dados interativa e responsiva.",
         },
@@ -161,8 +161,7 @@ def services_content(page: ft.Page):
     # Use responsive grid columns based on breakpoint
     services_grid_columns = ResponsiveConfig.get_grid_columns(breakpoint)
     # For services, use 1 column on mobile, 2 on tablet/desktop
-    if breakpoint == ResponsiveConfig.get_breakpoint(page.width):
-        services_runs_count = 1 if breakpoint.value == "mobile" else 2
+    services_runs_count = 1 if page.width < 768 else 2
     
     # For technologies, use full responsive grid (1, 2, 3)
     tech_grid_columns = ResponsiveConfig.get_grid_columns(breakpoint)

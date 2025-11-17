@@ -41,7 +41,7 @@ def home_content(page: ft.Page):
                                     "Ver Portfólio",
                                     style=ft.ButtonStyle(
                                         bgcolor=COLORS["secondary"],
-                                        color=ft.colors.WHITE,
+                                        color=ft.Colors.WHITE,
                                         padding=ft.padding.symmetric(
                                             horizontal=button_padding_h,
                                             vertical=button_padding_v,
@@ -53,7 +53,7 @@ def home_content(page: ft.Page):
                                     "Nossos Serviços",
                                     style=ft.ButtonStyle(
                                         bgcolor=COLORS["primary"],
-                                        color=ft.colors.WHITE,
+                                        color=ft.Colors.WHITE,
                                         padding=ft.padding.symmetric(
                                             horizontal=button_padding_h,
                                             vertical=button_padding_v,
@@ -65,7 +65,7 @@ def home_content(page: ft.Page):
                                     "Entre em Contato",
                                     style=ft.ButtonStyle(
                                         bgcolor=COLORS["accent"],
-                                        color=ft.colors.WHITE,
+                                        color=ft.Colors.WHITE,
                                         padding=ft.padding.symmetric(
                                             horizontal=button_padding_h,
                                             vertical=button_padding_v,

@@ -160,6 +160,109 @@ def main(page: ft.Page):
             except:
                 pass
 
+    def close_drawer(e):
+        page.close(page.drawer)
+        page.update()
+
+    def navigate_and_close_drawer(route):
+        def handler(e):
+            if page.drawer:
+                page.close(page.drawer)
+            page.go(route)
+        return handler
+
+    def login_and_close_drawer(e):
+        if page.drawer:
+            page.close(page.drawer)
+        handle_login_click(e)
+
+    def create_mobile_drawer():
+        # Get responsive values
+        width = page.width if page.width else 1024
+        
+        # Calculate responsive sizes
+        header_font_size = get_responsive_font_size(24, width)
+        item_font_size = get_responsive_font_size(16, width)
+        icon_size = get_responsive_font_size(24, width)
+        
+        drawer_items = [
+            ft.Container(
+                content=ft.Column(
+                    [
+                        ft.Icon(ft.Icons.BUSINESS, size=48, color=COLORS["primary"]),
+                        ft.Text(
+                            "GMF-tech",
+                            size=header_font_size,
+                            weight="bold",
+                            color=COLORS["primary"],
+                        ),
+                        ft.Text(
+                            "Outsourcing em TI",
+                            size=item_font_size - 2,
+                            color=COLORS["text_secondary"],
+                        ),
+                    ],
+                    horizontal_alignment="center",
+                    spacing=5,
+                ),
+                padding=ft.padding.symmetric(vertical=20, horizontal=16),
+                bgcolor=COLORS["surface"],
+            ),
+            ft.Divider(height=1, color=COLORS["text_secondary"]),
+            ft.ListTile(
+                leading=ft.Icon(ft.Icons.HOME, color=COLORS["primary"], size=icon_size),
+                title=ft.Text("Início", size=item_font_size),
+                on_click=navigate_and_close_drawer("/"),
+                selected=page.route == "/",
+            ),
+            ft.ListTile(
+                leading=ft.Icon(ft.Icons.WORK, color=COLORS["primary"], size=icon_size),
+                title=ft.Text("Serviços", size=item_font_size),
+                on_click=navigate_and_close_drawer("/services"),
+                selected=page.route == "/services",
+            ),
+            ft.ListTile(
+                leading=ft.Icon(ft.Icons.INFO, color=COLORS["primary"], size=icon_size),
+                title=ft.Text("Sobre", size=item_font_size),
+                on_click=navigate_and_close_drawer("/about"),
+                selected=page.route == "/about",
+            ),
+            ft.ListTile(
+                leading=ft.Icon(ft.Icons.CONTACT_MAIL, color=COLORS["primary"], size=icon_size),
+                title=ft.Text("Contato", size=item_font_size),
+                on_click=navigate_and_close_drawer("/contact"),
+                selected=page.route == "/contact",
+            ),
+            ft.ListTile(
+                leading=ft.Icon(ft.Icons.ATTACH_MONEY, color=COLORS["primary"], size=icon_size),
+                title=ft.Text("Cotação", size=item_font_size),
+                on_click=navigate_and_close_drawer("/coins"),
+                selected=page.route == "/coins",
+            ),
+            ft.ListTile(
+                leading=ft.Icon(ft.Icons.FOLDER, color=COLORS["primary"], size=icon_size),
+                title=ft.Text("Portfólio", size=item_font_size),
+                on_click=navigate_and_close_drawer("/portfolio"),
+                selected=page.route == "/portfolio",
+            ),
+        ]
+
+        # Adicionar opção de login se não estiver na página de cotação
+        if page.route != "/coins":
+            drawer_items.extend([
+                ft.Divider(height=1, color=COLORS["text_secondary"]),
+                ft.ListTile(
+                    leading=ft.Icon(ft.Icons.LOGIN, color=COLORS["secondary"], size=icon_size),
+                    title=ft.Text("Login", size=item_font_size, weight="bold"),
+                    on_click=login_and_close_drawer,
+                ),
+            ])
+
+        return ft.NavigationDrawer(
+            controls=drawer_items,
+            bgcolor=ft.Colors.WHITE,
+        )
+
     def create_header(is_mobile):
         # Get responsive values based on screen width
         width = page.width if page.width else 1024
@@ -254,10 +357,18 @@ def main(page: ft.Page):
                 spacing=button_spacing,
             )
         else:
-            navigation_controls = ft.PopupMenuButton(
+            # Mobile: usar ícone de menu que abre o drawer
+            def open_drawer(e):
+                if page.drawer:
+                    page.open(page.drawer)
+                    page.update()
+            
+            navigation_controls = ft.IconButton(
                 icon=ft.Icons.MENU,
-                items=navigation_items,
                 icon_color=ft.Colors.WHITE,
+                icon_size=28,
+                on_click=open_drawer,
+                tooltip="Menu",
             )
 
         return ft.AppBar(
@@ -361,14 +472,22 @@ def main(page: ft.Page):
             shadow=get_shadow(),
         )
 
-    # Criar o header uma única vez
+    # Criar o header e drawer
     is_mobile = page.width <= 600
     page.appbar = create_header(is_mobile)
+    if is_mobile:
+        page.drawer = create_mobile_drawer()
     footer = create_footer()
 
     # Listener para redimensionamento da janela
     def on_resize(e):
         global footer
+        is_mobile = page.width <= 600
+        page.appbar = create_header(is_mobile)
+        if is_mobile:
+            page.drawer = create_mobile_drawer()
+        else:
+            page.drawer = None
         footer = create_footer()
         page.update()
 
@@ -378,9 +497,13 @@ def main(page: ft.Page):
         global main_content
         page.controls.clear()
 
-        # Atualiza o header quando a rota muda
+        # Atualiza o header e drawer quando a rota muda
         is_mobile = page.width <= 600
         page.appbar = create_header(is_mobile)
+        if is_mobile:
+            page.drawer = create_mobile_drawer()
+        else:
+            page.drawer = None
 
         main_content = None
         if route_event.route == "/":
