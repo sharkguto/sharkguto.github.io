@@ -297,7 +297,7 @@ class TestButtonNavigationHandlers:
         buttons = button_row.controls
         
         for button in buttons:
-            assert button.style.color == ft.colors.WHITE
+            assert button.style.color == ft.Colors.WHITE
     
     def test_buttons_have_responsive_padding(self, mobile_page, desktop_page):
         """Test that buttons have responsive padding based on viewport"""

@@ -131,7 +131,7 @@ resultando em uma experiência excepcional para os usuários.
                 ],
                 spacing=spacing_between_elements,
             ),
-            bgcolor=ft.colors.WHITE,
+            bgcolor=ft.Colors.WHITE,
             padding=card_padding,
             border_radius=ft.border_radius.all(15),
             shadow=get_shadow(),

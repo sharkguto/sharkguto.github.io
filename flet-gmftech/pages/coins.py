@@ -336,7 +336,7 @@ def currency_chart_content(page: ft.Page):
                 ),
                 ft.Container(
                     expand=True,
-                    bgcolor=ft.colors.TRANSPARENT,
+                    bgcolor=ft.Colors.TRANSPARENT,
                 )
             ],
             expand=True,

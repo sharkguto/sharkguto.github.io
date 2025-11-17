@@ -123,7 +123,7 @@ class TestCreateProjectCard:
         card = project_container.content
         
         assert isinstance(card, ft.Container)
-        assert card.bgcolor == ft.colors.WHITE
+        assert card.bgcolor == ft.Colors.WHITE
         assert card.border_radius is not None
         assert card.shadow is not None
         assert card.padding is not None
