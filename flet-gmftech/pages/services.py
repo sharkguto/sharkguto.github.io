@@ -232,8 +232,10 @@ def services_content(page: ft.Page):
                     ),
                 ),
             ],
-            scroll=None,
+            scroll=ft.ScrollMode.AUTO,
             spacing=15,
         ),
+        expand=True,
+        height=max(page.height - 160 if page.height else 400, 400),
         padding=ft.padding.symmetric(horizontal=10),
     )
