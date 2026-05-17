@@ -488,9 +488,14 @@ def main(page: ft.Page):
 
     page.on_resize = on_resize
 
-    def route_change(route_event):
+    def route_change(route_event=None):
         global main_content
         page.controls.clear()
+
+        active_route = getattr(route_event, "route", None) or page.route or "/"
+        if active_route == "":
+            active_route = "/"
+        page.route = active_route
 
         # Atualiza o header e drawer quando a rota muda
         is_mobile = (page.width or 1024) <= 600
@@ -501,22 +506,22 @@ def main(page: ft.Page):
             page.drawer = None
 
         main_content = None
-        if route_event.route == "/":
+        if active_route == "/":
             from pages.home import home_content
             main_content = home_content(page)
-        elif route_event.route == "/services":
+        elif active_route == "/services":
             from pages.services import services_content
             main_content = services_content(page)
-        elif route_event.route == "/about":
+        elif active_route == "/about":
             from pages.about import about_content
             main_content = about_content(page)
-        elif route_event.route == "/contact":
+        elif active_route == "/contact":
             from pages.contact import contact_content
             main_content = contact_content(page)
-        elif route_event.route == "/coins":
+        elif active_route == "/coins":
             from pages.coins import currency_chart_content
             main_content = currency_chart_content(page)
-        elif route_event.route == "/portfolio":
+        elif active_route == "/portfolio":
             from pages.portfolio import portfolio_content
             main_content = portfolio_content(page)
 
@@ -541,7 +546,7 @@ def main(page: ft.Page):
         page.update()
 
     page.on_route_change = route_change
-    call_page_method(page, "push_route", page.route if page.route else "/")
+    route_change()
 
 if __name__ == "__main__":
     ft.run(main, view=ft.AppView.WEB_BROWSER)

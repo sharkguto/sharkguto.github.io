@@ -519,6 +519,19 @@ class TestPageInitialization:
         
         mock_page.run_task.assert_called_once()
 
+    def test_main_renders_initial_route_content(self, mock_page):
+        """Test that main() renders content on initial load without waiting for route event"""
+        from app import main
+
+        mock_page.route = "/"
+        main(mock_page)
+
+        assert len(mock_page.controls) == 1
+        layout = mock_page.controls[0]
+        content_container = layout.controls[0]
+        assert content_container.content is not None
+        assert mock_page.update.called
+
 
 class TestResizeHandler:
     """Tests for window resize handler"""
