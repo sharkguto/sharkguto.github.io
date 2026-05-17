@@ -13,7 +13,7 @@ Este projeto é uma aplicação web multiplataforma construída com Flet (framew
 - **Tecnologias**: Stack tecnológico utilizado (Python, Flet, PostgreSQL, ScyllaDB, Redis, AWS, etc.)
 - **Sobre**: História, missão e valores da empresa
 - **Contato**: Formulário de contato com validação
-- **Cotação USD/BRL**: Gráfico nativo em Flet com dados dos últimos 15 dias
+- **Cotação USD/BRL**: Gráfico PyECharts com dados dos últimos 15 dias
 - **Portfólio**: Showcase de projetos realizados com imagens e descrições detalhadas
 - **Design Responsivo**: Interface adaptável para desktop, tablet e mobile
 - **Sistema de Login**: Modal de autenticação (Google, Apple, X)
@@ -24,7 +24,8 @@ Este projeto é uma aplicação web multiplataforma construída com Flet (framew
 - **Python 3.13+**: Linguagem principal
 - **Flet 0.85.1**: Framework para aplicações multiplataforma
 - **Flet Web 0.85.1**: Runtime web usado pelo Flet 0.85
-- **PyECharts 2.1.0**: Dependência disponível para visualização de dados
+- **Flet WebView 0.85.1**: Renderização do gráfico PyECharts no app web
+- **PyECharts 2.1.0**: Biblioteca de visualização de dados usada na cotação
 - **HTTPX 0.28.1**: Cliente HTTP assíncrono
 
 ## 📋 Pré-requisitos

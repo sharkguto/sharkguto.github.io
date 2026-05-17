@@ -212,7 +212,7 @@ class TestCreateChart:
     """Tests for create_chart function"""
     
     def test_create_chart_with_valid_data(self):
-        """Test that create_chart() returns a native Flet chart with valid data"""
+        """Test that create_chart() returns valid base64 encoded PyECharts HTML"""
         # Sample data matching API structure
         data = [
             {
@@ -238,12 +238,15 @@ class TestCreateChart:
         result = create_chart(data, "400px")
         
         assert result is not None
-        assert isinstance(result, ft.Container)
-        assert result.expand is True
-        assert result.bgcolor == COLORS["surface"]
-        assert result.data["high"] == 5.20
-        assert result.data["low"] == 5.00
-        assert len(result.data["points"]) == 3
+        assert isinstance(result, str)
+
+        import base64
+
+        decoded = base64.b64decode(result).decode("utf-8")
+        assert "<!doctype html>" in decoded
+        assert "echarts" in decoded
+        assert "BRL" in decoded
+        assert "Varia" in decoded or "Varia\\u00e7\\u00e3o" in decoded
     
     def test_create_chart_with_empty_data(self):
         """Test that create_chart() returns None with empty data"""
@@ -257,8 +260,8 @@ class TestCreateChart:
         
         assert result is None
     
-    def test_create_chart_is_deterministic_for_same_data(self):
-        """Test that create_chart() renders the same point data for same input"""
+    def test_create_chart_renders_valid_html_for_same_data(self):
+        """Test that create_chart() renders valid HTML for repeated same input"""
         data = [
             {
                 "timestamp": "1700000000",
@@ -274,12 +277,15 @@ class TestCreateChart:
         # Second call with same data
         result2 = create_chart(data, "400px")
         
-        # Both should be valid native Flet charts with same point data
+        # Both should be valid base64 encoded PyECharts HTML
         assert result1 is not None
         assert result2 is not None
-        assert isinstance(result1, ft.Container)
-        assert isinstance(result2, ft.Container)
-        assert result1.data == result2.data
+        assert isinstance(result1, str)
+        assert isinstance(result2, str)
+        import base64
+
+        assert "echarts" in base64.b64decode(result1).decode("utf-8")
+        assert "echarts" in base64.b64decode(result2).decode("utf-8")
 
 
 @pytest.mark.asyncio
@@ -447,7 +453,7 @@ class TestLoadChart:
             assert error_text.color == COLORS["error"]
     
     async def test_load_chart_displays_chart_on_success(self, mock_page):
-        """Test that load_chart displays native Flet chart on success"""
+        """Test that load_chart displays WebView with PyECharts on success"""
         chart_container = ft.Container()
         error_button = ft.Button("Retry")
         
@@ -465,12 +471,13 @@ class TestLoadChart:
             
             await load_chart(mock_page, chart_container, error_button, "400px")
             
-            # Should display native chart
+            # Should display WebView with PyECharts data URL
             assert chart_container.content is not None
-            assert isinstance(chart_container.content, ft.Container)
-            assert chart_container.content.expand is True
-            assert chart_container.content.bgcolor == COLORS["surface"]
-            assert chart_container.content.data["points"][0]["high"] == 5.10
+            assert type(chart_container.content).__name__ == "WebView"
+            webview = chart_container.content
+            assert webview.expand is True
+            assert webview.bgcolor == COLORS["surface"]
+            assert webview.url.startswith("data:text/html;base64,")
     
     async def test_load_chart_displays_error_on_exception(self, mock_page):
         """Test that load_chart displays error message on exception"""

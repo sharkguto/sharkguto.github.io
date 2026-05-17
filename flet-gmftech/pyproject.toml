@@ -6,6 +6,7 @@ authors = [{ name = "Gustavo M Freitas", email = "gustavo@gmf-tech.com" }]
 requires-python = ">=3.13"
 dependencies = [
     "flet==0.85.1",
+    "flet-webview==0.85.1",
     "pyecharts==2.1.0",
     "httpx==0.28.1",
 ]

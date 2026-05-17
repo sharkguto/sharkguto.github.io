@@ -51,6 +51,7 @@ Fonte mais autoritativa de dependencias: `pyproject.toml`.
 - Python 3.13 ou superior.
 - `flet==0.85.1`.
 - `flet-web==0.85.1`.
+- `flet-webview==0.85.1`.
 - `pyecharts==2.1.0`.
 - `httpx==0.28.1`.
 - Testes opcionais: `pytest`, `pytest-cov`, `pytest-asyncio`.
@@ -59,6 +60,7 @@ Fonte mais autoritativa de dependencias: `pyproject.toml`.
 
 - `flet==0.85.1`
 - `flet-web==0.85.1`
+- `flet-webview==0.85.1`
 - `httpx==0.28.1`
 - `pyecharts==2.1.0`
 
@@ -122,7 +124,7 @@ Arquivos principais:
 - `pages/services.py`: cards de servicos e tecnologias.
 - `pages/about.py`: historia, missao e valores.
 - `pages/contact.py`: formulario de contato com validacao local e SnackBar.
-- `pages/coins.py`: grafico USD/BRL com controles nativos do Flet, cache e fetch async.
+- `pages/coins.py`: grafico USD/BRL com PyECharts renderizado em WebView, cache e fetch async.
 - `pages/portfolio.py`: cards de projetos com imagens e tecnologias.
 - `tests/`: suite de testes unitarios por modulo e pagina.
 - `old.py` e `new2.py`: prototipos antigos. Nao usar como base principal para novas features.
@@ -253,7 +255,8 @@ O visual atual e institucional, azul e Material-like. Se melhorar design, manter
 - Em WebAssembly/Pyodide usa `pyodide.http.pyfetch`.
 - Em ambiente local Python usa `httpx.AsyncClient`.
 - Cache global por 5 minutos.
-- Grafico renderizado com controles nativos do Flet para manter compatibilidade com WebAssembly/GitHub Pages.
+- Grafico gerado com PyECharts e renderizado em `flet_webview.WebView` via data URL base64.
+- WebView deve ficar na mesma versao do Flet (`0.85.1`) para o build Flutter/WebAssembly compilar.
 
 Cuidados:
 
@@ -341,12 +344,12 @@ Nao evoluir esses arquivos como produto principal. Se alguma ideia visual for re
 - Build web sai em `build/web/`; `.gitignore` ignora diretorios de build.
 - Imagens existem em `assets/` e `images/`; evitar divergencia.
 - Paths de imagem com `/arquivo.png` podem se comportar diferente dependendo de `base_url`.
-- O grafico depende da API externa de cotacao. Para demonstracao comercial, ter mensagem de fallback elegante.
+- O grafico depende da API externa de cotacao e do CDN do ECharts usado pelo PyECharts. Para demonstracao comercial, ter mensagem de fallback elegante.
 
 ## Regras Para Novas Alteracoes
 
 - Manter Flet como framework unico do frontend.
-- Preferir controles e componentes Flet nativos.
+- Preferir controles e componentes Flet nativos, exceto onde houver decisao explicita do produto, como o grafico PyECharts da cotacao.
 - Manter arquitetura por paginas em `pages/`.
 - Manter tema centralizado em `theme.py`.
 - Manter responsividade centralizada em `utils/responsive.py`.
