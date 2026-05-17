@@ -1,0 +1,11 @@
+services:
+  gmftech-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PYODIDE_VERSION: "0.29.4"
+    image: gmftech-flet-web:local
+    ports:
+      - "8080:80"
+    restart: unless-stopped

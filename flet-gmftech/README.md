@@ -81,6 +81,22 @@ cd ..
 
 O script aplica Pyodide `0.29.4` no bundle final para rodar Python 3.13 no navegador.
 
+### Servindo Com Docker/Nginx
+
+Para testar o build web em um Nginx local sem executar o deploy para GitHub Pages:
+```bash
+cd ..
+docker compose build
+docker compose up -d
+```
+
+O site fica disponível em `http://127.0.0.1:8080/`.
+
+Para validar com Playwright:
+```bash
+PLAYWRIGHT_BROWSER=chromium python3 flet-gmftech/tools/validate_frontend_playwright.py http://127.0.0.1:8080/
+```
+
 ### Build para Desktop
 
 Para criar executável desktop:
