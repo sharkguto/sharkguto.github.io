@@ -9,6 +9,7 @@ dependencies = [
     "flet-webview==0.85.1",
     "pyecharts==2.1.0",
     "httpx==0.28.1",
+    "typing_extensions==4.15.0",
 ]
 
 [project.optional-dependencies]

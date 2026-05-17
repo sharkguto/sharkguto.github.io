@@ -27,6 +27,7 @@ Este projeto é uma aplicação web multiplataforma construída com Flet (framew
 - **Flet WebView 0.85.1**: Renderização do gráfico PyECharts no app web
 - **PyECharts 2.1.0**: Biblioteca de visualização de dados usada na cotação
 - **HTTPX 0.28.1**: Cliente HTTP assíncrono
+- **typing_extensions 4.15.0**: Dependência explícita para compatibilidade do WebView no Pyodide
 
 ## 📋 Pré-requisitos
 

@@ -54,6 +54,7 @@ Fonte mais autoritativa de dependencias: `pyproject.toml`.
 - `flet-webview==0.85.1`.
 - `pyecharts==2.1.0`.
 - `httpx==0.28.1`.
+- `typing_extensions==4.15.0`.
 - Testes opcionais: `pytest`, `pytest-cov`, `pytest-asyncio`.
 
 `requirements.txt` deve ficar seguro para WebAssembly/Pyodide. Nao incluir dependencias de servidor local nele:
@@ -62,6 +63,7 @@ Fonte mais autoritativa de dependencias: `pyproject.toml`.
 - `flet-webview==0.85.1`
 - `httpx==0.28.1`
 - `pyecharts==2.1.0`
+- `typing_extensions==4.15.0`
 
 Para desenvolvimento local com browser, usar `requirements-dev.txt` ou `.[serve]`, pois `flet-web` puxa dependencias de servidor que nao rodam no Pyodide.
 
