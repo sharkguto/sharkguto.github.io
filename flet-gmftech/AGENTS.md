@@ -56,13 +56,14 @@ Fonte mais autoritativa de dependencias: `pyproject.toml`.
 - `httpx==0.28.1`.
 - Testes opcionais: `pytest`, `pytest-cov`, `pytest-asyncio`.
 
-`requirements.txt` tambem deve ficar pinado com as mesmas versoes runtime:
+`requirements.txt` deve ficar seguro para WebAssembly/Pyodide. Nao incluir dependencias de servidor local nele:
 
 - `flet==0.85.1`
-- `flet-web==0.85.1`
 - `flet-webview==0.85.1`
 - `httpx==0.28.1`
 - `pyecharts==2.1.0`
+
+Para desenvolvimento local com browser, usar `requirements-dev.txt` ou `.[serve]`, pois `flet-web` puxa dependencias de servidor que nao rodam no Pyodide.
 
 Prefira manter `pyproject.toml` como fonte principal quando precisar de reproducibilidade.
 
@@ -76,10 +77,10 @@ Instalacao para desenvolvimento:
 python -m pip install -e ".[test]"
 ```
 
-Alternativa simples, apenas runtime:
+Alternativa simples para desenvolvimento local:
 
 ```bash
-python -m pip install -r requirements.txt
+python -m pip install -r requirements-dev.txt
 ```
 
 Rodar localmente:
