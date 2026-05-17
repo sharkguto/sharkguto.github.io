@@ -55,26 +55,41 @@ def contact_content(page: ft.Page):
         text_align="center",
     )
 
+    def show_snack_bar(snack_bar: ft.SnackBar):
+        page.snack_bar = snack_bar
+        snack_bar.open = True
+        if hasattr(page, "show_dialog"):
+            try:
+                page.show_dialog(snack_bar)
+                page.update()
+                return
+            except Exception:
+                pass
+        page.update()
+
     def handle_submit(e):
         if not name_field.value or not email_field.value or not message_field.value:
-            page.snack_bar = ft.SnackBar(
+            show_snack_bar(ft.SnackBar(
                 content=ft.Text("Por favor, preencha todos os campos."),
                 bgcolor=COLORS["error"],
-            )
-            page.snack_bar.open = True
-            page.update()
+            ))
             return
 
         # Aqui você pode adicionar a lógica para enviar o email
-        page.snack_bar = ft.SnackBar(
+        show_snack_bar(ft.SnackBar(
             content=ft.Text("Mensagem enviada com sucesso!"),
             bgcolor=COLORS["success"],
-        )
-        page.snack_bar.open = True
+        ))
         name_field.value = ""
         email_field.value = ""
         message_field.value = ""
         page.update()
+
+    submit_button = ft.Button(
+        "Enviar Mensagem",
+        style=get_button_style(),
+        on_click=handle_submit,
+    )
 
     return ft.Container(
         content=ft.Container(
@@ -94,12 +109,8 @@ def contact_content(page: ft.Page):
                                 email_field,
                                 message_field,
                                 ft.Container(
-                                    content=ft.ElevatedButton(
-                                        "Enviar Mensagem",
-                                        style=get_button_style(),
-                                        on_click=handle_submit,
-                                    ),
-                                    alignment=ft.alignment.center,
+                                    content=submit_button,
+                                    alignment=ft.Alignment.CENTER,
                                 ),
                             ],
                             horizontal_alignment="center",
@@ -108,20 +119,20 @@ def contact_content(page: ft.Page):
                         ),
                         padding=container_padding,
                         bgcolor=COLORS["surface"],
-                        border_radius=ft.border_radius.all(15),
+                        border_radius=ft.BorderRadius.all(15),
                         shadow=get_shadow(),
                         width=500 if breakpoint != Breakpoint.MOBILE else None,
-                        alignment=ft.alignment.center,
+                        alignment=ft.Alignment.CENTER,
                     ),
                 ],
                 horizontal_alignment="center",
                 alignment="center",
                 spacing=section_spacing,
             ),
-            alignment=ft.alignment.center,
+            alignment=ft.Alignment.CENTER,
             expand=True,
         ),
         expand=True,
         height=max(page.height - 160 if page.height else 400, 350),
-        alignment=ft.alignment.center,
+        alignment=ft.Alignment.CENTER,
     )

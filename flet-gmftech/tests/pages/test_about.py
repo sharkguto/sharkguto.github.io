@@ -29,13 +29,13 @@ class TestAboutContent:
         # Outer container
         assert isinstance(result, ft.Container)
         assert result.expand is True
-        assert result.alignment == ft.alignment.center
+        assert result.alignment == ft.Alignment.CENTER
         
         # Inner container
         inner_container = result.content
         assert isinstance(inner_container, ft.Container)
         assert inner_container.expand is True
-        assert inner_container.alignment == ft.alignment.center
+        assert inner_container.alignment == ft.Alignment.CENTER
         
         # Column
         column = inner_container.content
@@ -70,9 +70,9 @@ class TestAboutContent:
         
         assert isinstance(content_container, ft.Container)
         assert content_container.bgcolor == COLORS["surface"]
-        assert content_container.border_radius == ft.border_radius.all(15)
+        assert content_container.border_radius == ft.BorderRadius.all(15)
         assert content_container.shadow is not None
-        assert content_container.alignment == ft.alignment.center
+        assert content_container.alignment == ft.Alignment.CENTER
     
     def test_about_content_has_all_sections(self, mock_page):
         """Test that about_content contains all required sections"""
@@ -305,7 +305,7 @@ class TestAboutContentBreakpoints:
             column = result.content.content
             content_container = column.controls[1]
             
-            assert content_container.alignment == ft.alignment.center
+            assert content_container.alignment == ft.Alignment.CENTER
 
 
 class TestAboutContentTextSizes:

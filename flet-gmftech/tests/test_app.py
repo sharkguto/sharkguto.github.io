@@ -26,7 +26,7 @@ class TestCreateHeader:
             # Create a mock page with mobile width
             page = mobile_page
             page.on_route_change = None
-            page.on_resized = None
+            page.on_resize = None
             
             # We need to test the header creation logic
             # Since create_header is inside main(), we'll extract and test the logic
@@ -205,16 +205,15 @@ class TestHandleLoginClick:
     
     def test_handle_login_click_has_three_login_options(self, mock_page):
         """Test that login dialog has three login options (Google, Apple, X)"""
-        # Dialog should have 3 ElevatedButtons for login options
+        # Dialog should have 3 Button controls for login options
         expected_login_options = 3
         assert expected_login_options == 3
     
-    def test_handle_login_click_hides_webview_on_coins_page(self, mock_page):
-        """Test that handle_login_click hides WebView when on /coins route"""
+    def test_handle_login_click_supports_coins_page(self, mock_page):
+        """Test that handle_login_click supports the /coins route"""
         mock_page.route = "/coins"
         
-        # When on coins page, WebView should be hidden before showing dialog
-        # This prevents overlay issues
+        # Login modal should be safe on the coins page.
         assert mock_page.route == "/coins"
 
 
@@ -290,10 +289,9 @@ class TestLoginFunctions:
         
         # After login, dialog should be closed
         # Simulate close_dialog behavior
-        mock_page.close = Mock()
-        mock_page.close(login_dialog)
+        mock_page.pop_dialog()
         
-        assert mock_page.close.called
+        assert mock_page.pop_dialog.called
     
     def test_login_functions_call_page_update(self, mock_page):
         """Test that login functions call page.update()"""
@@ -316,17 +314,15 @@ class TestCloseDialog:
         mock_page.login_dialog = login_dialog
         
         # Simulate close_dialog
-        mock_page.close = Mock()
-        mock_page.close(login_dialog)
+        mock_page.pop_dialog()
         
-        assert mock_page.close.called
+        assert mock_page.pop_dialog.called
     
-    def test_close_dialog_restores_webview(self, mock_page):
-        """Test that close_dialog restores WebView visibility on coins page"""
+    def test_close_dialog_supports_coins_page(self, mock_page):
+        """Test that close_dialog supports the coins page"""
         mock_page.route = "/coins"
         
-        # When closing dialog on coins page, WebView should be restored
-        # This is handled by restore_webview function
+        # Closing the login dialog should be safe on the coins page.
         assert mock_page.route == "/coins"
     
     def test_close_dialog_calls_page_update(self, mock_page):
@@ -350,38 +346,38 @@ class TestNavigationFunctions:
     
     def test_go_to_home_navigates_to_root(self, mock_page):
         """Test that go_to_home() navigates to '/'"""
-        mock_page.go = Mock()
-        mock_page.go("/")
+        mock_page.push_route = Mock()
+        mock_page.push_route("/")
         
-        mock_page.go.assert_called_once_with("/")
+        mock_page.push_route.assert_called_once_with("/")
     
     def test_go_to_services_navigates_to_services(self, mock_page):
         """Test that go_to_services() navigates to '/services'"""
-        mock_page.go = Mock()
-        mock_page.go("/services")
+        mock_page.push_route = Mock()
+        mock_page.push_route("/services")
         
-        mock_page.go.assert_called_once_with("/services")
+        mock_page.push_route.assert_called_once_with("/services")
     
     def test_go_to_about_navigates_to_about(self, mock_page):
         """Test that go_to_about() navigates to '/about'"""
-        mock_page.go = Mock()
-        mock_page.go("/about")
+        mock_page.push_route = Mock()
+        mock_page.push_route("/about")
         
-        mock_page.go.assert_called_once_with("/about")
+        mock_page.push_route.assert_called_once_with("/about")
     
     def test_go_to_contact_navigates_to_contact(self, mock_page):
         """Test that go_to_contact() navigates to '/contact'"""
-        mock_page.go = Mock()
-        mock_page.go("/contact")
+        mock_page.push_route = Mock()
+        mock_page.push_route("/contact")
         
-        mock_page.go.assert_called_once_with("/contact")
+        mock_page.push_route.assert_called_once_with("/contact")
     
     def test_go_to_coins_navigates_to_coins(self, mock_page):
         """Test that go_to_coins() navigates to '/coins'"""
-        mock_page.go = Mock()
-        mock_page.go("/coins")
+        mock_page.push_route = Mock()
+        mock_page.push_route("/coins")
         
-        mock_page.go.assert_called_once_with("/coins")
+        mock_page.push_route.assert_called_once_with("/coins")
 
 
 class TestResponsiveHeader:
@@ -426,7 +422,7 @@ class TestResponsiveHeader:
         mock_page.route = "/coins"
         
         # When on coins page, login button should not be shown
-        # This is to avoid conflicts with WebView
+        # This keeps the chart page focused on the quotation demo.
         assert mock_page.route == "/coins"
 
 

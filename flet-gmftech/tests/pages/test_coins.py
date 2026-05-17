@@ -212,7 +212,7 @@ class TestCreateChart:
     """Tests for create_chart function"""
     
     def test_create_chart_with_valid_data(self):
-        """Test that create_chart() returns valid base64 encoded HTML with valid data"""
+        """Test that create_chart() returns a native Flet chart with valid data"""
         # Sample data matching API structure
         data = [
             {
@@ -238,18 +238,12 @@ class TestCreateChart:
         result = create_chart(data, "400px")
         
         assert result is not None
-        assert isinstance(result, str)
-        # Should be base64 encoded
-        assert len(result) > 0
-        # Base64 strings typically contain alphanumeric and +/= characters
-        import base64
-        try:
-            decoded = base64.b64decode(result)
-            assert len(decoded) > 0
-            # Should contain HTML
-            assert b"<" in decoded or b"html" in decoded.lower()
-        except Exception:
-            pytest.fail("Result is not valid base64")
+        assert isinstance(result, ft.Container)
+        assert result.expand is True
+        assert result.bgcolor == COLORS["surface"]
+        assert result.data["high"] == 5.20
+        assert result.data["low"] == 5.00
+        assert len(result.data["points"]) == 3
     
     def test_create_chart_with_empty_data(self):
         """Test that create_chart() returns None with empty data"""
@@ -263,8 +257,8 @@ class TestCreateChart:
         
         assert result is None
     
-    def test_create_chart_caches_result(self):
-        """Test that create_chart() caches the result for same data"""
+    def test_create_chart_is_deterministic_for_same_data(self):
+        """Test that create_chart() renders the same point data for same input"""
         data = [
             {
                 "timestamp": "1700000000",
@@ -280,18 +274,12 @@ class TestCreateChart:
         # Second call with same data
         result2 = create_chart(data, "400px")
         
-        # Both should be valid base64 strings
+        # Both should be valid native Flet charts with same point data
         assert result1 is not None
         assert result2 is not None
-        assert len(result1) > 0
-        assert len(result2) > 0
-        
-        # Both should be base64 encoded HTML
-        import base64
-        decoded1 = base64.b64decode(result1)
-        decoded2 = base64.b64decode(result2)
-        assert b"<" in decoded1 or b"html" in decoded1.lower()
-        assert b"<" in decoded2 or b"html" in decoded2.lower()
+        assert isinstance(result1, ft.Container)
+        assert isinstance(result2, ft.Container)
+        assert result1.data == result2.data
 
 
 @pytest.mark.asyncio
@@ -440,7 +428,7 @@ class TestLoadChart:
     async def test_load_chart_displays_error_on_empty_data(self, mock_page):
         """Test that load_chart displays error message when data is empty"""
         chart_container = ft.Container()
-        error_button = ft.ElevatedButton("Retry")
+        error_button = ft.Button("Retry")
         
         with patch("pages.coins.fetch_usd_brl_data", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.return_value = []
@@ -459,9 +447,9 @@ class TestLoadChart:
             assert error_text.color == COLORS["error"]
     
     async def test_load_chart_displays_chart_on_success(self, mock_page):
-        """Test that load_chart displays WebView with chart on success"""
+        """Test that load_chart displays native Flet chart on success"""
         chart_container = ft.Container()
-        error_button = ft.ElevatedButton("Retry")
+        error_button = ft.Button("Retry")
         
         mock_data = [
             {
@@ -477,19 +465,17 @@ class TestLoadChart:
             
             await load_chart(mock_page, chart_container, error_button, "400px")
             
-            # Should display WebView with chart
+            # Should display native chart
             assert chart_container.content is not None
-            # Check if it's a WebView by checking its type name
-            assert type(chart_container.content).__name__ == "WebView"
-            webview = chart_container.content
-            assert webview.expand is True
-            assert webview.bgcolor == COLORS["surface"]
-            assert "data:text/html;base64," in webview.url
+            assert isinstance(chart_container.content, ft.Container)
+            assert chart_container.content.expand is True
+            assert chart_container.content.bgcolor == COLORS["surface"]
+            assert chart_container.content.data["points"][0]["high"] == 5.10
     
     async def test_load_chart_displays_error_on_exception(self, mock_page):
         """Test that load_chart displays error message on exception"""
         chart_container = ft.Container()
-        error_button = ft.ElevatedButton("Retry")
+        error_button = ft.Button("Retry")
         
         # Mock page.update to prevent errors
         mock_page.update = Mock()
@@ -517,7 +503,7 @@ class TestLoadChart:
     async def test_load_chart_displays_error_when_chart_creation_fails(self, mock_page):
         """Test that load_chart displays error when create_chart returns None"""
         chart_container = ft.Container()
-        error_button = ft.ElevatedButton("Retry")
+        error_button = ft.Button("Retry")
         
         mock_data = [{"timestamp": "1700000000", "high": "5.10", "low": "5.00", "pctChange": "0.5"}]
         

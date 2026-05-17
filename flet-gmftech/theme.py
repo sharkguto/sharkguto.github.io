@@ -8,6 +8,7 @@
 import flet as ft
 from utils.responsive import ResponsiveConfig
 
+
 # Paleta de cores moderna
 COLORS = {
     "primary": "#1a237e",  # Azul escuro
@@ -24,21 +25,24 @@ COLORS = {
 
 # Configurações de tema
 def get_theme():
+    color_scheme = ft.ColorScheme(
+        primary=COLORS["primary"],
+        secondary=COLORS["secondary"],
+        surface=COLORS["surface"],
+    )
+
     return ft.Theme(
         font_family="Roboto",
-        color_scheme=ft.ColorScheme(
-            primary=COLORS["primary"],
-            secondary=COLORS["secondary"],
-            surface=COLORS["surface"],
-            background=COLORS["background"],
-        ),
+        color_scheme=color_scheme,
+        scaffold_bgcolor=COLORS["background"],
+        use_material3=True,
     )
 
 # Estilo de botão padrão
 def get_button_style():
     return ft.ButtonStyle(
         shape=ft.RoundedRectangleBorder(radius=8),
-        padding=ft.padding.symmetric(horizontal=30, vertical=15),
+        padding=ft.Padding.symmetric(horizontal=30, vertical=15),
         overlay_color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
     )
 

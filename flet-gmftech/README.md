@@ -13,7 +13,7 @@ Este projeto é uma aplicação web multiplataforma construída com Flet (framew
 - **Tecnologias**: Stack tecnológico utilizado (Python, Flet, PostgreSQL, ScyllaDB, Redis, AWS, etc.)
 - **Sobre**: História, missão e valores da empresa
 - **Contato**: Formulário de contato com validação
-- **Cotação USD/BRL**: Gráfico interativo com dados dos últimos 15 dias usando Apache ECharts
+- **Cotação USD/BRL**: Gráfico nativo em Flet com dados dos últimos 15 dias
 - **Portfólio**: Showcase de projetos realizados com imagens e descrições detalhadas
 - **Design Responsivo**: Interface adaptável para desktop, tablet e mobile
 - **Sistema de Login**: Modal de autenticação (Google, Apple, X)
@@ -21,15 +21,15 @@ Este projeto é uma aplicação web multiplataforma construída com Flet (framew
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **Python 3.x**: Linguagem principal
-- **Flet 0.27.6**: Framework para aplicações multiplataforma
-- **PyECharts 2.0.8**: Biblioteca de visualização de dados
+- **Python 3.13+**: Linguagem principal
+- **Flet 0.85.1**: Framework para aplicações multiplataforma
+- **Flet Web 0.85.1**: Runtime web usado pelo Flet 0.85
+- **PyECharts 2.1.0**: Dependência disponível para visualização de dados
 - **HTTPX 0.28.1**: Cliente HTTP assíncrono
-- **Flet WebView 0.1.0**: Componente para renderização de conteúdo web
 
 ## 📋 Pré-requisitos
 
-- Python 3.8 ou superior
+- Python 3.13 ou superior
 - pip (gerenciador de pacotes Python)
 
 ## 🔧 Instalação
@@ -47,7 +47,7 @@ pip install -r requirements.txt
 
 Ou usando o pyproject.toml:
 ```bash
-pip install -e .
+pip install -e ".[serve]"
 ```
 
 ## 🚀 Como Executar
@@ -65,10 +65,10 @@ A aplicação será aberta automaticamente no navegador padrão.
 
 Para gerar os arquivos estáticos para deploy:
 ```bash
-flet build web
+flet build web --yes
 ```
 
-Os arquivos compilados estarão disponíveis na pasta `dist/`.
+Os arquivos compilados estarão disponíveis na pasta `build/web/`.
 
 ### Build para Desktop
 
@@ -348,7 +348,7 @@ Isso gera um relatório XML compatível com ferramentas de CI/CD como GitHub Act
 ### Exemplo de Deploy com Docker
 
 ```dockerfile
-FROM python:3.11-slim
+FROM python:3.13-slim
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install -r requirements.txt
@@ -366,9 +366,6 @@ CMD ["python", "app.py"]
 
 Copyright (C) 2026 by sharkguto
 
-## 🤝 Contribuindo
-
-Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou pull requests.
 
 ## 📞 Suporte
 

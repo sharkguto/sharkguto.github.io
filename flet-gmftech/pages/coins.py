@@ -5,10 +5,6 @@
 # @Author : Gustavo (gustavo@gmf-tech.com)
 
 import flet as ft
-import base64
-from pyecharts import options as opts
-from pyecharts.charts import Bar, Line
-from pyecharts.globals import ThemeType
 from theme import COLORS, get_shadow, get_text_style, get_responsive_font_size, get_responsive_padding
 from utils.responsive import ResponsiveConfig
 
@@ -26,7 +22,6 @@ import asyncio
 
 # Cache global para os dados e gráfico
 _cached_data = None
-_cached_chart = None
 _last_update = None
 _is_fetching = False
 
@@ -81,98 +76,172 @@ async def fetch_usd_brl_data(force_refresh=False):
     finally:
         _is_fetching = False
 
-# Função para criar o gráfico com Pyecharts
+# Função para criar o gráfico com controles nativos do Flet
 def create_chart(data, chart_height="400px"):
-    global _cached_chart
-    
     if not data:
         return None
+    
+    points = []
+    for entry in data[::-1]:
+        try:
+            points.append(
+                {
+                    "date": datetime.fromtimestamp(int(entry["timestamp"])).strftime("%d/%m"),
+                    "high": float(entry["high"]),
+                    "low": float(entry["low"]),
+                    "pct_change": float(entry.get("pctChange", 0)),
+                }
+            )
+        except (KeyError, TypeError, ValueError, OSError):
+            continue
 
-    # Se já temos um gráfico em cache para esses dados e mesma altura, retorna ele
-    if _cached_chart and _cached_data == data:
-        return _cached_chart
-        
-    dates = [
-        datetime.fromtimestamp(int(entry["timestamp"])).strftime("%d/%m")
-        for entry in data[::-1]
-    ]
-    highs = [float(entry["high"]) for entry in data[::-1]]
-    lows = [float(entry["low"]) for entry in data[::-1]]
-    pct_changes = [float(entry["pctChange"]) for entry in data[::-1]]
+    if not points:
+        return None
 
-    bar = (
-        Bar(
-            init_opts=opts.InitOpts(
-                width="100%",
-                height=chart_height,
-                theme=ThemeType.LIGHT,
-                animation_opts=opts.AnimationOpts(animation=False),
-                js_host="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/",
+    height = _parse_chart_height(chart_height)
+    max_bar_height = max(min(height - 150, 240), 110)
+    high_value = max(point["high"] for point in points)
+    low_value = min(point["low"] for point in points)
+    spread = max(high_value - low_value, 0.01)
+
+    def bar_height(value):
+        return max(14, int(18 + ((value - low_value) / spread) * (max_bar_height - 18)))
+
+    day_columns = []
+    for point in points:
+        pct_color = COLORS["success"] if point["pct_change"] >= 0 else COLORS["error"]
+        day_columns.append(
+            ft.Container(
+                width=76,
+                content=ft.Column(
+                    [
+                        ft.Container(
+                            height=max_bar_height,
+                            alignment=ft.Alignment.BOTTOM_CENTER,
+                            content=ft.Row(
+                                [
+                                    ft.Container(
+                                        width=18,
+                                        height=bar_height(point["low"]),
+                                        bgcolor=COLORS["error"],
+                                        border_radius=ft.BorderRadius.only(top_left=4, top_right=4),
+                                        tooltip=f"Mínima: R$ {point['low']:.2f}",
+                                    ),
+                                    ft.Container(
+                                        width=18,
+                                        height=bar_height(point["high"]),
+                                        bgcolor=COLORS["accent"],
+                                        border_radius=ft.BorderRadius.only(top_left=4, top_right=4),
+                                        tooltip=f"Máxima: R$ {point['high']:.2f}",
+                                    ),
+                                ],
+                                alignment=ft.MainAxisAlignment.CENTER,
+                                vertical_alignment=ft.CrossAxisAlignment.END,
+                                spacing=4,
+                            ),
+                        ),
+                        ft.Text(
+                            point["date"],
+                            size=11,
+                            color=COLORS["text_secondary"],
+                            text_align="center",
+                        ),
+                        ft.Text(
+                            f"R$ {point['high']:.2f}",
+                            size=11,
+                            color=COLORS["text_primary"],
+                            text_align="center",
+                        ),
+                        ft.Text(
+                            f"{point['pct_change']:+.2f}%",
+                            size=11,
+                            color=pct_color,
+                            text_align="center",
+                        ),
+                    ],
+                    horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                    spacing=4,
+                ),
             )
         )
-        .add_xaxis(dates)
-        .add_yaxis(
-            "Mínima (BRL)",
-            lows,
-            color=COLORS["error"],
-            bar_width="40%",
-            category_gap="20%",
-            itemstyle_opts=opts.ItemStyleOpts(opacity=0.7),
-        )
-        .add_yaxis(
-            "Máxima (BRL)",
-            highs,
-            color=COLORS["accent"],
-            bar_width="40%",
-            category_gap="20%",
-            itemstyle_opts=opts.ItemStyleOpts(opacity=0.7),
-        )
-        .extend_axis(
-            yaxis=opts.AxisOpts(
-                name="Variação (%)",
-                position="right",
-                axislabel_opts=opts.LabelOpts(formatter="{value}%"),
-            )
-        )
-        .set_global_opts(
-            title_opts=opts.TitleOpts(title=""),
-            xaxis_opts=opts.AxisOpts(
-                axislabel_opts=opts.LabelOpts(rotate=45),
-                boundary_gap=True
+
+    return ft.Container(
+        expand=True,
+        bgcolor=COLORS["surface"],
+        data={"points": points, "low": low_value, "high": high_value},
+        content=ft.Column(
+            [
+                ft.Row(
+                    [
+                        _legend_item("Mínima", COLORS["error"]),
+                        _legend_item("Máxima", COLORS["accent"]),
+                        _legend_item("Variação", COLORS["success"]),
+                    ],
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    spacing=14,
+                    wrap=True,
+                ),
+                ft.Row(
+                    day_columns,
+                    alignment=ft.MainAxisAlignment.START,
+                    vertical_alignment=ft.CrossAxisAlignment.END,
+                    spacing=10,
+                    scroll=ft.ScrollMode.AUTO,
+                    expand=True,
+                ),
+                ft.Text(
+                    f"Faixa no período: R$ {low_value:.2f} - R$ {high_value:.2f}",
+                    size=12,
+                    color=COLORS["text_secondary"],
+                    text_align="center",
+                ),
+            ],
+            expand=True,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            spacing=12,
+        ),
+    )
+
+
+def _parse_chart_height(chart_height):
+    if isinstance(chart_height, (int, float)):
+        return int(chart_height)
+
+    if isinstance(chart_height, str):
+        normalized = chart_height.strip().lower().replace("px", "")
+        try:
+            return int(float(normalized))
+        except ValueError:
+            pass
+
+    return 400
+
+
+def _legend_item(label, color):
+    return ft.Row(
+        [
+            ft.Container(
+                width=12,
+                height=12,
+                bgcolor=color,
+                border_radius=ft.BorderRadius.all(3),
             ),
-            legend_opts=opts.LegendOpts(pos_top="5%"),
-            tooltip_opts=opts.TooltipOpts(trigger="axis", axis_pointer_type="cross"),
-        )
+            ft.Text(label, size=12, color=COLORS["text_secondary"]),
+        ],
+        spacing=5,
+        tight=True,
+        vertical_alignment=ft.CrossAxisAlignment.CENTER,
     )
-
-    line = (
-        Line()
-        .add_xaxis(dates)
-        .add_yaxis(
-            "Variação (%)",
-            pct_changes,
-            yaxis_index=1,
-            color=COLORS["success"],
-            linestyle_opts=opts.LineStyleOpts(width=3, opacity=1),
-            label_opts=opts.LabelOpts(is_show=False),
-        )
-    )
-
-    bar.overlap(line)
-    html = bar.render_embed()
-    _cached_chart = base64.b64encode(html.encode("utf-8")).decode("utf-8")
-    return _cached_chart
 
 # Função assíncrona para carregar o gráfico
 async def load_chart(page, chart_container, error_button, chart_height):
+    width = page.width if page.width else 1024
+    error_font_size = get_responsive_font_size(16, width)
+
     try:
         # Buscar os dados (usa cache se disponível)
         data = await fetch_usd_brl_data()
-        
-        # Detect breakpoint for responsive error messages
-        breakpoint = ResponsiveConfig.get_breakpoint(page.width if page.width else 1024)
-        error_font_size = get_responsive_font_size(16, page.width if page.width else 1024)
-        
+
         if not data:
             chart_container.content = ft.Column(
                 [
@@ -193,16 +262,9 @@ async def load_chart(page, chart_container, error_button, chart_height):
             return
 
         # Criar e exibir o gráfico
-        encoded_html = create_chart(data, chart_height)
-        if encoded_html:
-            data_url = f"data:text/html;base64,{encoded_html}"
-            chart_webview = ft.WebView(
-                url=data_url,
-                expand=True,
-                bgcolor=COLORS["surface"],
-                visible=True,
-            )
-            chart_container.content = chart_webview
+        chart = create_chart(data, chart_height)
+        if chart:
+            chart_container.content = chart
         else:
             chart_container.content = ft.Column(
                 [
@@ -262,7 +324,7 @@ def currency_chart_content(page: ft.Page):
     chart_height_str = f"{chart_height}px"
     
     # Definir o botão de erro primeiro
-    error_button = ft.ElevatedButton(
+    error_button = ft.Button(
         "Tentar Novamente",
         bgcolor=COLORS["primary"],
         color=ft.Colors.WHITE,
@@ -271,7 +333,7 @@ def currency_chart_content(page: ft.Page):
     chart_container = ft.Container(
         expand=True,
         bgcolor=COLORS["surface"],
-        border_radius=ft.border_radius.all(15),
+        border_radius=ft.BorderRadius.all(15),
         shadow=get_shadow(),
         padding=container_padding,
         height=chart_height,
@@ -343,5 +405,5 @@ def currency_chart_content(page: ft.Page):
         ),
         expand=True,
         height=max(page.height - 160 if page.height else 400, 400),
-        padding=ft.padding.symmetric(horizontal=horizontal_padding),
+        padding=ft.Padding.symmetric(horizontal=horizontal_padding),
     )

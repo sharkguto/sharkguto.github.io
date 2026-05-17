@@ -79,9 +79,9 @@ class TestHomeContent:
         buttons = button_row.controls
         assert len(buttons) == 3
         
-        # Check all are ElevatedButtons
+        # Check all are Flet 0.85 buttons
         for button in buttons:
-            assert isinstance(button, ft.ElevatedButton)
+            assert isinstance(button, ft.Button)
 
 
 class TestHomeContentMobile:
@@ -223,13 +223,13 @@ class TestButtonNavigationHandlers:
         
         # First button should be "Ver Portfólio"
         portfolio_button = buttons[0]
-        assert "Portfólio" in portfolio_button.text
+        assert "Portfólio" in portfolio_button.content
         
         # Trigger the click handler
         portfolio_button.on_click(None)
         
-        # Verify page.go was called with /portfolio
-        mock_page.go.assert_called_once_with("/portfolio")
+        # Verify page.push_route was called with /portfolio
+        mock_page.push_route.assert_called_once_with("/portfolio")
     
     def test_services_button_navigation(self, mock_page):
         """Test that 'Nossos Serviços' button navigates to /services"""
@@ -242,13 +242,13 @@ class TestButtonNavigationHandlers:
         
         # Second button should be "Nossos Serviços"
         services_button = buttons[1]
-        assert "Serviços" in services_button.text
+        assert "Serviços" in services_button.content
         
         # Trigger the click handler
         services_button.on_click(None)
         
-        # Verify page.go was called with /services
-        mock_page.go.assert_called_once_with("/services")
+        # Verify page.push_route was called with /services
+        mock_page.push_route.assert_called_once_with("/services")
     
     def test_contact_button_navigation(self, mock_page):
         """Test that 'Entre em Contato' button navigates to /contact"""
@@ -261,13 +261,13 @@ class TestButtonNavigationHandlers:
         
         # Third button should be "Entre em Contato"
         contact_button = buttons[2]
-        assert "Contato" in contact_button.text
+        assert "Contato" in contact_button.content
         
         # Trigger the click handler
         contact_button.on_click(None)
         
-        # Verify page.go was called with /contact
-        mock_page.go.assert_called_once_with("/contact")
+        # Verify page.push_route was called with /contact
+        mock_page.push_route.assert_called_once_with("/contact")
     
     def test_all_buttons_have_correct_colors(self, mock_page):
         """Test that buttons have correct background colors"""
@@ -309,10 +309,7 @@ class TestButtonNavigationHandlers:
         
         # Mobile padding: 30 * 0.75 = 22.5 -> 22 (horizontal)
         # Mobile padding: 15 * 0.75 = 11.25 -> 11 (vertical)
-        # Padding is stored as a dict with ControlState keys
-        mobile_padding_dict = mobile_button.style.padding
-        assert isinstance(mobile_padding_dict, dict)
-        mobile_padding = mobile_padding_dict.get(ft.ControlState.DEFAULT)
+        mobile_padding = mobile_button.style.padding
         assert mobile_padding.left == 22
         assert mobile_padding.right == 22
         assert mobile_padding.top == 11
@@ -326,10 +323,7 @@ class TestButtonNavigationHandlers:
         
         # Desktop padding: 30 * 1.0 = 30 (horizontal)
         # Desktop padding: 15 * 1.0 = 15 (vertical)
-        # Padding is stored as a dict with ControlState keys
-        desktop_padding_dict = desktop_button.style.padding
-        assert isinstance(desktop_padding_dict, dict)
-        desktop_padding = desktop_padding_dict.get(ft.ControlState.DEFAULT)
+        desktop_padding = desktop_button.style.padding
         assert desktop_padding.left == 30
         assert desktop_padding.right == 30
         assert desktop_padding.top == 15

@@ -86,12 +86,12 @@ resultando em uma experiência excepcional para os usuários.
                     ft.Container(
                         content=ft.Image(
                             src=project["image"],
-                            fit=ft.ImageFit.COVER,
+                            fit=ft.BoxFit.COVER,
                             width=image_width,
                             height=image_height,
-                            border_radius=ft.border_radius.all(8),
+                            border_radius=ft.BorderRadius.all(8),
                         ),
-                        margin=ft.margin.only(bottom=margin_bottom),
+                        margin=ft.Margin.only(bottom=margin_bottom),
                     ),
                     ft.Text(
                         project["title"],
@@ -116,9 +116,9 @@ resultando em uma experiência excepcional para os usuários.
                                         weight="w500",
                                     ),
                                     bgcolor=COLORS["surface"],
-                                    padding=ft.padding.all(tech_tag_padding),
-                                    border_radius=ft.border_radius.all(4),
-                                    margin=ft.margin.only(right=tech_tag_spacing, bottom=tech_tag_spacing),
+                                    padding=ft.Padding.all(tech_tag_padding),
+                                    border_radius=ft.BorderRadius.all(4),
+                                    margin=ft.Margin.only(right=tech_tag_spacing, bottom=tech_tag_spacing),
                                 )
                                 for tech in project["technologies"]
                             ],
@@ -126,16 +126,16 @@ resultando em uma experiência excepcional para os usuários.
                             spacing=0,
                             alignment=ft.MainAxisAlignment.START,
                         ),
-                        margin=ft.margin.only(top=tech_margin_top),
+                        margin=ft.Margin.only(top=tech_margin_top),
                     ),
                 ],
                 spacing=spacing_between_elements,
             ),
             bgcolor=ft.Colors.WHITE,
             padding=card_padding,
-            border_radius=ft.border_radius.all(15),
+            border_radius=ft.BorderRadius.all(15),
             shadow=get_shadow(),
-            margin=ft.margin.only(bottom=30),
+            margin=ft.Margin.only(bottom=30),
         )
 
     # Detect breakpoint for main container
@@ -186,5 +186,5 @@ resultando em uma experiência excepcional para os usuários.
         ),
         expand=True,
         height=max(page.height - 160 if page.height else 400, 400),
-        padding=ft.padding.symmetric(horizontal=container_padding),
+        padding=ft.Padding.symmetric(horizontal=container_padding),
     ) 

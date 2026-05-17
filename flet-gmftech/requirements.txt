@@ -1,3 +1,4 @@
-flet>=0.21.1
-httpx>=0.26.0
-pyecharts>=2.0.0 
+flet==0.85.1
+flet-web==0.85.1
+httpx==0.28.1
+pyecharts==2.1.0

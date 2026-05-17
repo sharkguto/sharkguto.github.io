@@ -36,7 +36,7 @@ def services_content(page: ft.Page):
                             size=icon_size,
                             color=COLORS["primary"],
                         ),
-                        margin=ft.margin.only(bottom=bottom_spacing),
+                        margin=ft.Margin.only(bottom=bottom_spacing),
                     ),
                     ft.Container(
                         content=ft.Text(
@@ -46,7 +46,7 @@ def services_content(page: ft.Page):
                             color=COLORS["text_primary"],
                             text_align="center",
                         ),
-                        margin=ft.margin.only(bottom=bottom_spacing),
+                        margin=ft.Margin.only(bottom=bottom_spacing),
                     ),
                     ft.Container(
                         content=ft.Text(
@@ -55,20 +55,20 @@ def services_content(page: ft.Page):
                             color=COLORS["text_secondary"],
                             text_align="center",
                         ),
-                        margin=ft.margin.only(bottom=5),
+                        margin=ft.Margin.only(bottom=5),
                     ),
                 ],
                 horizontal_alignment="center",
                 alignment="center",
                 spacing=5,
             ),
-            padding=ft.padding.all(card_padding),
+            padding=ft.Padding.all(card_padding),
             bgcolor=COLORS["surface"],
-            border_radius=ft.border_radius.all(15),
+            border_radius=ft.BorderRadius.all(15),
             shadow=get_shadow(),
             width=None,  # Permitir que a largura seja controlada pelo GridView
             height=None,  # Altura automática
-            margin=ft.margin.all(5),
+            margin=ft.Margin.all(5),
         )
 
     # Lista de serviços
@@ -197,7 +197,7 @@ def services_content(page: ft.Page):
                     spacing=grid_spacing,
                     run_spacing=grid_spacing,
                     child_aspect_ratio=None,
-                    padding=ft.padding.symmetric(
+                    padding=ft.Padding.symmetric(
                         horizontal=10,
                         vertical=8,
                     ),
@@ -210,7 +210,7 @@ def services_content(page: ft.Page):
                         color=COLORS["text_primary"],
                         text_align="center",
                     ),
-                    margin=ft.margin.only(top=section_spacing),
+                    margin=ft.Margin.only(top=section_spacing),
                 ),
                 ft.GridView(
                     [
@@ -226,7 +226,7 @@ def services_content(page: ft.Page):
                     spacing=grid_spacing,
                     run_spacing=grid_spacing,
                     child_aspect_ratio=None,
-                    padding=ft.padding.symmetric(
+                    padding=ft.Padding.symmetric(
                         horizontal=10,
                         vertical=8,
                     ),
@@ -237,5 +237,5 @@ def services_content(page: ft.Page):
         ),
         expand=True,
         height=max(page.height - 160 if page.height else 400, 400),
-        padding=ft.padding.symmetric(horizontal=10),
+        padding=ft.Padding.symmetric(horizontal=10),
     )

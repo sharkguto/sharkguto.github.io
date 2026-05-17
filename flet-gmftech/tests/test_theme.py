@@ -36,7 +36,7 @@ class TestThemeBasics:
         assert theme.color_scheme.primary == COLORS["primary"]
         assert theme.color_scheme.secondary == COLORS["secondary"]
         assert theme.color_scheme.surface == COLORS["surface"]
-        assert theme.color_scheme.background == COLORS["background"]
+        assert theme.scaffold_bgcolor == COLORS["background"]
 
 
 class TestButtonStyle:
@@ -55,23 +55,17 @@ class TestButtonStyle:
         """Test that button style has rounded border with radius 8"""
         button_style = get_button_style()
         
-        # Shape is stored as a dict with ControlState keys
-        assert isinstance(button_style.shape, dict)
-        default_shape = button_style.shape.get(ft.ControlState.DEFAULT)
-        assert isinstance(default_shape, ft.RoundedRectangleBorder)
-        assert default_shape.radius == 8
+        assert isinstance(button_style.shape, ft.RoundedRectangleBorder)
+        assert button_style.shape.radius == 8
     
     def test_get_button_style_has_correct_padding(self):
         """Test that button style has correct padding values"""
         button_style = get_button_style()
         
-        # Padding is stored as a dict with ControlState keys
-        assert isinstance(button_style.padding, dict)
-        default_padding = button_style.padding.get(ft.ControlState.DEFAULT)
-        assert default_padding.left == 30
-        assert default_padding.right == 30
-        assert default_padding.top == 15
-        assert default_padding.bottom == 15
+        assert button_style.padding.left == 30
+        assert button_style.padding.right == 30
+        assert button_style.padding.top == 15
+        assert button_style.padding.bottom == 15
 
 
 class TestTextStyle:

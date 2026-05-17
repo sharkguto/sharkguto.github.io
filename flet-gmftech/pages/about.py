@@ -7,12 +7,13 @@
 
 import flet as ft
 from theme import COLORS, get_text_style, get_button_style, get_shadow, get_responsive_font_size, get_responsive_padding, get_responsive_spacing
+from utils.flet_runtime import call_page_method
 from utils.responsive import ResponsiveConfig, Breakpoint
 
 
 def about_content(page: ft.Page):
     def go_to_home(e):
-        page.go("/")
+        call_page_method(page, "push_route", "/")
 
     # Detect current breakpoint
     width = page.width if page.width else 1024
@@ -94,20 +95,20 @@ def about_content(page: ft.Page):
                         ),
                         padding=container_padding,
                         bgcolor=COLORS["surface"],
-                        border_radius=ft.border_radius.all(15),
+                        border_radius=ft.BorderRadius.all(15),
                         shadow=get_shadow(),
                         width=container_max_width,
-                        alignment=ft.alignment.center,
+                        alignment=ft.Alignment.CENTER,
                     ),
                 ],
                 horizontal_alignment="center",
                 alignment="center",
                 spacing=section_spacing,
             ),
-            alignment=ft.alignment.center,
+            alignment=ft.Alignment.CENTER,
             expand=True,
         ),
         expand=True,
         height=max(page.height - 160 if page.height else 400, 350),  # Altura mínima menor para mobile
-        alignment=ft.alignment.center,
+        alignment=ft.Alignment.CENTER,
     )

@@ -1,5 +1,6 @@
 import flet as ft
 from theme import COLORS, get_responsive_font_size, get_responsive_padding, get_responsive_spacing
+from utils.flet_runtime import call_page_method
 from utils.responsive import ResponsiveConfig
 
 
@@ -16,6 +17,21 @@ def home_content(page: ft.Page):
     button_spacing = get_responsive_spacing(20, width)
     top_margin = get_responsive_spacing(40, width)
     column_spacing = get_responsive_spacing(20, width)
+
+    def create_nav_button(text, bgcolor, route):
+        button = ft.Button(
+            text,
+            style=ft.ButtonStyle(
+                bgcolor=bgcolor,
+                color=ft.Colors.WHITE,
+                padding=ft.Padding.symmetric(
+                    horizontal=button_padding_h,
+                    vertical=button_padding_v,
+                ),
+            ),
+            on_click=lambda e: call_page_method(page, "push_route", route),
+        )
+        return button
     
     return ft.Container(
         content=ft.Container(
@@ -37,58 +53,25 @@ def home_content(page: ft.Page):
                     ft.Container(
                         content=ft.Row(
                             [
-                                ft.ElevatedButton(
-                                    "Ver Portfólio",
-                                    style=ft.ButtonStyle(
-                                        bgcolor=COLORS["secondary"],
-                                        color=ft.Colors.WHITE,
-                                        padding=ft.padding.symmetric(
-                                            horizontal=button_padding_h,
-                                            vertical=button_padding_v,
-                                        ),
-                                    ),
-                                    on_click=lambda e: page.go("/portfolio"),
-                                ),
-                                ft.ElevatedButton(
-                                    "Nossos Serviços",
-                                    style=ft.ButtonStyle(
-                                        bgcolor=COLORS["primary"],
-                                        color=ft.Colors.WHITE,
-                                        padding=ft.padding.symmetric(
-                                            horizontal=button_padding_h,
-                                            vertical=button_padding_v,
-                                        ),
-                                    ),
-                                    on_click=lambda e: page.go("/services"),
-                                ),
-                                ft.ElevatedButton(
-                                    "Entre em Contato",
-                                    style=ft.ButtonStyle(
-                                        bgcolor=COLORS["accent"],
-                                        color=ft.Colors.WHITE,
-                                        padding=ft.padding.symmetric(
-                                            horizontal=button_padding_h,
-                                            vertical=button_padding_v,
-                                        ),
-                                    ),
-                                    on_click=lambda e: page.go("/contact"),
-                                ),
+                                create_nav_button("Ver Portfólio", COLORS["secondary"], "/portfolio"),
+                                create_nav_button("Nossos Serviços", COLORS["primary"], "/services"),
+                                create_nav_button("Entre em Contato", COLORS["accent"], "/contact"),
                             ],
                             alignment="center",
                             spacing=button_spacing,
                             wrap=True,
                         ),
-                        margin=ft.margin.only(top=top_margin),
+                        margin=ft.Margin.only(top=top_margin),
                     ),
                 ],
                 horizontal_alignment="center",
                 alignment="center",
                 spacing=column_spacing,
             ),
-            alignment=ft.alignment.center,
+            alignment=ft.Alignment.CENTER,
             expand=True,
         ),
         expand=True,
         height=max(page.height - 160 if page.height else 400, 350),
-        alignment=ft.alignment.center,
+        alignment=ft.Alignment.CENTER,
     )

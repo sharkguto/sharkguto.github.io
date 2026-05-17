@@ -149,7 +149,7 @@ class TestCreateProjectCard:
         # Image
         image = image_container.content
         assert isinstance(image, ft.Image)
-        assert image.fit == ft.ImageFit.COVER
+        assert image.fit == ft.BoxFit.COVER
         assert image.border_radius is not None
         assert image.src is not None and len(image.src) > 0
     
@@ -299,7 +299,7 @@ class TestImageDimensionsMobile:
         card = project_container.content
         
         # Card padding (30 * 0.75 = 22.5 -> 22)
-        # Padding is set using ft.padding.all() which returns an integer
+        # Padding is set using ft.Padding.all() which returns an integer
         assert card.padding == 22
 
 
@@ -430,7 +430,7 @@ class TestImageDimensionsDesktop:
         card = project_container.content
         
         # Card padding (30 * 1.0 = 30)
-        # Padding is set using ft.padding.all() which returns an integer
+        # Padding is set using ft.Padding.all() which returns an integer
         assert card.padding == 30
 
 

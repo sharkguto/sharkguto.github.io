@@ -3,9 +3,30 @@ Test fixtures for GMF-tech application tests.
 Provides reusable mock objects and test data for unit tests.
 """
 
+import asyncio
+import inspect
 import pytest
 from unittest.mock import Mock, MagicMock
 from theme import COLORS
+
+
+def pytest_configure(config):
+    config.addinivalue_line("markers", "asyncio: run async test functions")
+
+
+def pytest_pyfunc_call(pyfuncitem):
+    if "asyncio" not in pyfuncitem.keywords:
+        return None
+
+    if not inspect.iscoroutinefunction(pyfuncitem.obj):
+        return None
+
+    test_args = {
+        name: pyfuncitem.funcargs[name]
+        for name in pyfuncitem._fixtureinfo.argnames
+    }
+    asyncio.run(pyfuncitem.obj(**test_args))
+    return True
 
 
 @pytest.fixture
@@ -30,10 +51,14 @@ def mock_page():
     page.theme = None
     
     # Mock methods
-    page.go = Mock()
+    page.push_route = Mock()
     page.update = Mock()
     page.run_task = Mock()
     page.close = Mock()
+    page.show_dialog = Mock()
+    page.pop_dialog = Mock()
+    page.show_drawer = Mock()
+    page.close_drawer = Mock()
     page.add = Mock()
     
     return page
@@ -61,10 +86,14 @@ def mobile_page():
     page.theme = None
     
     # Mock methods
-    page.go = Mock()
+    page.push_route = Mock()
     page.update = Mock()
     page.run_task = Mock()
     page.close = Mock()
+    page.show_dialog = Mock()
+    page.pop_dialog = Mock()
+    page.show_drawer = Mock()
+    page.close_drawer = Mock()
     page.add = Mock()
     
     return page
@@ -92,10 +121,14 @@ def tablet_page():
     page.theme = None
     
     # Mock methods
-    page.go = Mock()
+    page.push_route = Mock()
     page.update = Mock()
     page.run_task = Mock()
     page.close = Mock()
+    page.show_dialog = Mock()
+    page.pop_dialog = Mock()
+    page.show_drawer = Mock()
+    page.close_drawer = Mock()
     page.add = Mock()
     
     return page
@@ -123,10 +156,14 @@ def desktop_page():
     page.theme = None
     
     # Mock methods
-    page.go = Mock()
+    page.push_route = Mock()
     page.update = Mock()
     page.run_task = Mock()
     page.close = Mock()
+    page.show_dialog = Mock()
+    page.pop_dialog = Mock()
+    page.show_drawer = Mock()
+    page.close_drawer = Mock()
     page.add = Mock()
     
     return page

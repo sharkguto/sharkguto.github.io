@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 SCRIPTPATH="$(
     cd "$(dirname "$0")"
     pwd -P
@@ -6,7 +8,7 @@ SCRIPTPATH="$(
 echo $SCRIPTPATH
 cd $SCRIPTPATH
 
-export PATH=$PATH:/usr/local/bin
+export PATH=$PATH:/usr/local/bin:$HOME/.local/bin:$HOME/flutter/3.41.7/bin
 
 rm -rf icons/
 rm -f app.tar.gz
@@ -24,14 +26,17 @@ rm -f requirements.txt
 
 cd flet-gmftech/
 
-rm -rf dist/
+rm -rf build/web/
+rm -rf build/flutter/.dart_tool
+rm -rf build/flutter/build
+rm -f build/flutter/.flutter-plugins-dependencies
 
-flet publish app.py
+flet build web --yes
 
-#cp -r dist/** $SCRIPTPATH/
+cd "$SCRIPTPATH"
 
 echo $SCRIPTPATH
 
-cp -r dist/* $SCRIPTPATH
+cp -r flet-gmftech/build/web/* "$SCRIPTPATH"
 
 # cp requirements.txt $SCRIPTPATH/requirements.txt

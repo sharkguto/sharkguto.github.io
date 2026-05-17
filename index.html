@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html>
-
-<head>
+<!DOCTYPE html><html><head>
   <base href="/">
-
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="website gmf-tech">
+  <meta name="description" content="">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
@@ -15,91 +11,119 @@
   <link rel="apple-touch-icon" href="icons/apple-touch-icon-192.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png" />
-
-  <!-- Flet specific -->
-  <meta name="flet-route-url-strategy" content="path">
-  <meta name="flet-web-pyodide" content="true">
-  <meta name="flet-websocket-endpoint-path" content="/ws">
+  <link rel="icon" type="image/png" href="favicon.png">
 
   <title>GMF tech website</title>
   <link rel="manifest" href="manifest.json">
 
   <script>
-    var webRenderer = "auto";
-    var useColorEmoji = false;
+    var flet = {
+      pyodide: true,
+      multiView: false,
+      noCdn: "False".toLowerCase() == "true",
+      webSocketEndpoint: "/ws",
+      entrypointBaseUrl: "/",
+      assetBase: "/",
+      routeUrlStrategy: "hash",
+      canvasKitBaseUrl: "/canvaskit/",
+      pyodideUrl: "/pyodide/pyodide.js",
+      pythonModuleName: "app",
+      webRenderer: "canvaskit",
+      fontFallbackBaseUrl: "assets/fonts/", // for Noto Emoji, use Google CDN
+      appPackageUrl: "assets/app/app.zip"
+    }
+
+    flet.flutterAppLoaded = new Promise((resolve) => {
+      flet.flutterAppResolve = resolve;
+    });
+
+    flet.flutterAppLoaded.then((flutterApp) => {
+      console.log("Flutter app loaded");
+    });
   </script>
+  <script src="python.js"></script>
+  <style id="splash-screen-style">
+    html {
+      height: 100%
+    }
 
-  <script>webRenderer="canvaskit";</script>
-  <script>useColorEmoji=false;</script>
+    body {
+      margin: 0;
+      min-height: 100%;
+      background-color: #ffffff;
+          background-size: 100% 100%;
+    }
 
-  
-        <script>
-            var micropipIncludePre = false;
-            var pythonModuleName = "app";
-        </script>
-        <script src="python.js"></script>
-        
+    .center {
+      margin: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+    }
+
+    .contain {
+      display:block;
+      width:100%; height:100%;
+      object-fit: contain;
+    }
+
+    .stretch {
+      display:block;
+      width:100%; height:100%;
+    }
+
+    .cover {
+      display:block;
+      width:100%; height:100%;
+      object-fit: cover;
+    }
+
+    .bottom {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      -ms-transform: translate(-50%, 0);
+      transform: translate(-50%, 0);
+    }
+
+    .bottomLeft {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+
+    .bottomRight {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #222222;
+          }
+    }
+  </style>
+  <script id="splash-screen-script">
+    function removeSplashFromWeb() {
+      document.getElementById("splash")?.remove();
+      document.getElementById("splash-branding")?.remove();
+      document.body.style.background = "transparent";
+    }
+  </script>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
 </head>
 
 <body>
-  <div id="loading">
-    <style>
-      body {
-        inset: 0;
-        overflow: hidden;
-        margin: 0;
-        padding: 0;
-        position: fixed;
-      }
+  <picture id="splash">
+      <source srcset="splash/img/light-1x.png 1x, splash/img/light-2x.png 2x, splash/img/light-3x.png 3x, splash/img/light-4x.png 4x" media="(prefers-color-scheme: light)">
+      <source srcset="splash/img/dark-1x.png 1x, splash/img/dark-2x.png 2x, splash/img/dark-3x.png 3x, splash/img/dark-4x.png 4x" media="(prefers-color-scheme: dark)">
+      <img class="center" aria-hidden="true" src="splash/img/light-1x.png" alt="">
+  </picture>
+  <script src="flutter_bootstrap.js" async=""></script>
 
-      #loading {
-        align-items: center;
-        display: flex;
-        height: 100%;
-        justify-content: center;
-        width: 100%;
-      }
 
-      #loading img {
-        animation: 1s ease-in-out 0s infinite alternate breathe;
-        opacity: .66;
-        transition: opacity .4s;
-      }
 
-      #loading.main_done img {
-        opacity: 1;
-      }
-
-      #loading.init_done img {
-        animation: .33s ease-in-out 0s 1 forwards zooooom;
-        opacity: .05;
-      }
-
-      @keyframes breathe {
-        from {
-          transform: scale(0.4);
-          opacity: 1.0;
-        }
-
-        to {
-          transform: scale(0.35);
-          opacity: .7;
-        }
-      }
-
-      @keyframes zooooom {
-        from {
-          transform: scale(0.4)
-        }
-
-        to {
-          transform: scale(10)
-        }
-      }
-    </style>
-    <img src="icons/loading-animation.png" alt="Loading..." />
-  </div>
-  <script src="flutter_bootstrap.js" async></script>
-</body>
-</html>
+</body></html>

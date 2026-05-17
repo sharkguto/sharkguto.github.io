@@ -117,8 +117,8 @@ class TestContactContent:
         assert isinstance(button_container, ft.Container)
         
         button = button_container.content
-        assert isinstance(button, ft.ElevatedButton)
-        assert "Enviar" in button.text
+        assert isinstance(button, ft.Button)
+        assert "Enviar" in button.content
         assert button.on_click is not None
 
 

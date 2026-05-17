@@ -7,7 +7,8 @@
 
 import flet as ft
 from theme import COLORS, get_theme, get_button_style, get_text_style, get_shadow, get_responsive_font_size, get_responsive_spacing
-from utils.responsive import ResponsiveConfig, Breakpoint
+from utils.flet_runtime import call_page_method
+from utils.responsive import ResponsiveConfig
 
 # Variáveis globais para header e footer
 header = None
@@ -29,79 +30,85 @@ def main(page: ft.Page):
     from pages.coins import preload_data
     page.run_task(preload_data)
 
+    def show_snack_bar(snack_bar: ft.SnackBar):
+        page.snack_bar = snack_bar
+        snack_bar.open = True
+        if hasattr(page, "show_dialog"):
+            try:
+                page.show_dialog(snack_bar)
+                page.update()
+                return
+            except Exception:
+                pass
+        page.update()
+
     # Função para fechar o diálogo
     def close_dialog(e):
-        if page.overlay:
-            page.close(page.login_dialog)
-            restore_webview(e)
+        dialog = getattr(page, "login_dialog", None)
+        if dialog:
+            dialog.open = False
+            if hasattr(page, "pop_dialog"):
+                try:
+                    page.pop_dialog()
+                except Exception:
+                    pass
+            elif dialog in page.overlay:
+                page.overlay.remove(dialog)
+        handle_dialog_dismiss(e)
         page.update()
 
     # Funções de login simuladas
     def login_with_google(e):
-        page.snack_bar = ft.SnackBar(
+        snack_bar = ft.SnackBar(
             content=ft.Text("Login com Google iniciado...", style=get_text_style()),
             bgcolor=COLORS["success"],
             behavior=ft.SnackBarBehavior.FLOATING,
         )
-        page.snack_bar.open = True
         close_dialog(e)
-        page.update()
+        show_snack_bar(snack_bar)
 
     def login_with_apple(e):
-        page.snack_bar = ft.SnackBar(
+        snack_bar = ft.SnackBar(
             content=ft.Text("Login com Apple iniciado...", style=get_text_style()),
             bgcolor=COLORS["success"],
             behavior=ft.SnackBarBehavior.FLOATING,
         )
-        page.snack_bar.open = True
         close_dialog(e)
-        page.update()
+        show_snack_bar(snack_bar)
 
     def login_with_x(e):
-        page.snack_bar = ft.SnackBar(
+        snack_bar = ft.SnackBar(
             content=ft.Text("Login com X iniciado...", style=get_text_style()),
             bgcolor=COLORS["success"],
             behavior=ft.SnackBarBehavior.FLOATING,
         )
-        page.snack_bar.open = True
         close_dialog(e)
-        page.update()
+        show_snack_bar(snack_bar)
 
     # Funções para navegação entre páginas
     def go_to_home(e):
-        page.go("/")
+        call_page_method(page, "push_route", "/")
 
     def go_to_services(e):
-        page.go("/services")
+        call_page_method(page, "push_route", "/services")
 
     def go_to_about(e):
-        page.go("/about")
+        call_page_method(page, "push_route", "/about")
 
     def go_to_contact(e):
-        page.go("/contact")
+        call_page_method(page, "push_route", "/contact")
 
     def go_to_coins(e):
-        page.go("/coins")
+        call_page_method(page, "push_route", "/coins")
 
     def handle_login_click(e):
-        global main_content
-        # Esconder o WebView se estiver na página de cotação
-        if page.route == "/coins" and main_content:
-            try:
-                webview = main_content.content.content.controls[0].controls[2].content
-                if isinstance(webview, ft.WebView):
-                    webview.visible = False
-                    page.update()
-            except:
-                pass
-        
         page.login_dialog = ft.AlertDialog(
             modal=True,
             title=ft.Text("Login na Plataforma de Cursos", style=get_text_style(20, weight="bold")),
             content=ft.Column(
                 [
                     ft.Text("Escolha como deseja entrar:", style=get_text_style(16, COLORS["text_secondary"])),
-                    ft.ElevatedButton(
+                    ft.Button(
                         content=ft.Row(
                             [
                                 ft.Icon(ft.Icons.ACCOUNT_CIRCLE, color=ft.Colors.WHITE),
@@ -113,7 +120,7 @@ def main(page: ft.Page):
                         style=get_button_style(),
                         on_click=login_with_google,
                     ),
-                    ft.ElevatedButton(
+                    ft.Button(
                         content=ft.Row(
                             [
                                 ft.Icon(ft.Icons.APPLE, color=ft.Colors.WHITE),
@@ -125,7 +132,7 @@ def main(page: ft.Page):
                         style=get_button_style(),
                         on_click=login_with_apple,
                     ),
-                    ft.ElevatedButton(
+                    ft.Button(
                         content=ft.Row(
                             [
                                 ft.Icon(ft.Icons.ALTERNATE_EMAIL, color=ft.Colors.WHITE),
@@ -143,37 +150,35 @@ def main(page: ft.Page):
             ),
             actions=[ft.TextButton("Cancelar", on_click=close_dialog)],
             actions_alignment="end",
-            on_dismiss=lambda e: restore_webview(e),
+            on_dismiss=lambda e: handle_dialog_dismiss(e),
         )
-        page.overlay.append(page.login_dialog)
-        page.login_dialog.open = True
-        page.update()
+        if hasattr(page, "show_dialog"):
+            page.show_dialog(page.login_dialog)
+        else:
+            page.overlay.append(page.login_dialog)
+            page.login_dialog.open = True
+            page.update()
 
-    def restore_webview(e):
-        global main_content
-        if page.route == "/coins" and main_content:
-            try:
-                webview = main_content.content.content.controls[0].controls[2].content
-                if isinstance(webview, ft.WebView):
-                    webview.visible = True
-                    page.update()
-            except:
-                pass
+    def handle_dialog_dismiss(e):
+        return None
 
     def close_drawer(e):
-        page.close(page.drawer)
-        page.update()
+        if hasattr(page, "close_drawer"):
+            call_page_method(page, "close_drawer")
+        else:
+            page.drawer.open = False
+            page.update()
 
     def navigate_and_close_drawer(route):
         def handler(e):
             if page.drawer:
-                page.close(page.drawer)
-            page.go(route)
+                close_drawer(e)
+            call_page_method(page, "push_route", route)
         return handler
 
     def login_and_close_drawer(e):
         if page.drawer:
-            page.close(page.drawer)
+            close_drawer(e)
         handle_login_click(e)
 
     def create_mobile_drawer():
@@ -205,7 +210,7 @@ def main(page: ft.Page):
                     horizontal_alignment="center",
                     spacing=5,
                 ),
-                padding=ft.padding.symmetric(vertical=20, horizontal=16),
+                padding=ft.Padding.symmetric(vertical=20, horizontal=16),
                 bgcolor=COLORS["surface"],
             ),
             ft.Divider(height=1, color=COLORS["text_secondary"]),
@@ -266,8 +271,6 @@ def main(page: ft.Page):
     def create_header(is_mobile):
         # Get responsive values based on screen width
         width = page.width if page.width else 1024
-        breakpoint = ResponsiveConfig.get_breakpoint(width)
-        
         # Calculate responsive logo font size
         logo_font_size = get_responsive_font_size(32, width)
         
@@ -281,17 +284,6 @@ def main(page: ft.Page):
         button_padding_h = get_responsive_spacing(20, width)
         button_padding_v = get_responsive_spacing(10, width)
         
-        navigation_items = [
-            ft.PopupMenuItem(text="Início", on_click=go_to_home),
-            ft.PopupMenuItem(text="Serviços", on_click=go_to_services),
-            ft.PopupMenuItem(text="Sobre", on_click=go_to_about),
-            ft.PopupMenuItem(text="Contato", on_click=go_to_contact),
-            ft.PopupMenuItem(text="Cotação", on_click=go_to_coins),
-        ]
-
-        if page.route != "/coins":
-            navigation_items.append(ft.PopupMenuItem(text="Login", on_click=handle_login_click))
-
         if not is_mobile:
             nav_buttons = [
                 ft.TextButton(
@@ -338,14 +330,14 @@ def main(page: ft.Page):
 
             if page.route != "/coins":
                 nav_buttons.append(
-                    ft.ElevatedButton(
+                    ft.Button(
                         "Login",
                         bgcolor=COLORS["secondary"],
                         color=ft.Colors.WHITE,
                         on_click=handle_login_click,
                         style=ft.ButtonStyle(
                             shape=ft.RoundedRectangleBorder(radius=8),
-                            padding=ft.padding.symmetric(horizontal=button_padding_h, vertical=button_padding_v),
+                            padding=ft.Padding.symmetric(horizontal=button_padding_h, vertical=button_padding_v),
                             overlay_color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
                         ),
                     )
@@ -360,8 +352,11 @@ def main(page: ft.Page):
             # Mobile: usar ícone de menu que abre o drawer
             def open_drawer(e):
                 if page.drawer:
-                    page.open(page.drawer)
-                    page.update()
+                    if hasattr(page, "show_drawer"):
+                        call_page_method(page, "show_drawer")
+                    else:
+                        page.drawer.open = True
+                        page.update()
             
             navigation_controls = ft.IconButton(
                 icon=ft.Icons.MENU,
@@ -379,7 +374,7 @@ def main(page: ft.Page):
                     weight="bold",
                     color=ft.Colors.WHITE,
                 ),
-                padding=ft.padding.only(left=20),
+                padding=ft.Padding.only(left=20),
             ),
             leading_width=200,
             title=ft.Text(""),
@@ -463,17 +458,17 @@ def main(page: ft.Page):
                 horizontal_alignment="center",
             ),
             bgcolor=COLORS["primary"],
-            padding=ft.padding.symmetric(
+            padding=ft.Padding.symmetric(
                 vertical=padding_vertical,
                 horizontal=padding_horizontal
             ),
-            border_radius=ft.border_radius.only(top_left=15, top_right=15),
-            alignment=ft.alignment.center,
+            border_radius=ft.BorderRadius.only(top_left=15, top_right=15),
+            alignment=ft.Alignment.CENTER,
             shadow=get_shadow(),
         )
 
     # Criar o header e drawer
-    is_mobile = page.width <= 600
+    is_mobile = (page.width or 1024) <= 600
     page.appbar = create_header(is_mobile)
     if is_mobile:
         page.drawer = create_mobile_drawer()
@@ -482,7 +477,7 @@ def main(page: ft.Page):
     # Listener para redimensionamento da janela
     def on_resize(e):
         global footer
-        is_mobile = page.width <= 600
+        is_mobile = (page.width or 1024) <= 600
         page.appbar = create_header(is_mobile)
         if is_mobile:
             page.drawer = create_mobile_drawer()
@@ -491,14 +486,14 @@ def main(page: ft.Page):
         footer = create_footer()
         page.update()
 
-    page.on_resized = on_resize
+    page.on_resize = on_resize
 
     def route_change(route_event):
         global main_content
         page.controls.clear()
 
         # Atualiza o header e drawer quando a rota muda
-        is_mobile = page.width <= 600
+        is_mobile = (page.width or 1024) <= 600
         page.appbar = create_header(is_mobile)
         if is_mobile:
             page.drawer = create_mobile_drawer()
@@ -533,8 +528,8 @@ def main(page: ft.Page):
                             content=main_content,
                             expand=True,
                             bgcolor=COLORS["surface"],
-                            padding=ft.padding.symmetric(horizontal=30, vertical=20),
-                            border_radius=ft.border_radius.all(15),
+                            padding=ft.Padding.symmetric(horizontal=30, vertical=20),
+                            border_radius=ft.BorderRadius.all(15),
                             shadow=get_shadow(),
                         ),
                         footer,
@@ -546,6 +541,7 @@ def main(page: ft.Page):
         page.update()
 
     page.on_route_change = route_change
-    page.go(page.route if page.route else "/")
+    call_page_method(page, "push_route", page.route if page.route else "/")
 
-ft.app(target=main, view=ft.AppView.WEB_BROWSER)
+if __name__ == "__main__":
+    ft.run(main, view=ft.AppView.WEB_BROWSER)

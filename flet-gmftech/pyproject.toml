@@ -3,14 +3,17 @@ name = "gmf_tech"
 version = "1.0.0"
 description = "website gmf-tech"
 authors = [{ name = "Gustavo M Freitas", email = "gustavo@gmf-tech.com" }]
+requires-python = ">=3.13"
 dependencies = [
-    "flet==0.27.6",
-    "pyecharts==2.0.8",
-    "flet-webview==0.1.0",
+    "flet==0.85.1",
+    "pyecharts==2.1.0",
     "httpx==0.28.1",
 ]
 
 [project.optional-dependencies]
+serve = [
+    "flet-web==0.85.1",
+]
 test = [
     "pytest>=7.4.0",
     "pytest-cov>=4.1.0",
@@ -24,8 +27,11 @@ company = "GMF tech"                          # --company
 copyright = "Copyright (C) 2026 by sharkguto" # --copyright
 build_number = 1                              # --build-number
 
+[tool.flet.app]
+module = "app"
+
 [tool.flet.web]
 base_url = "/"              # --base-url
 renderer = "canvaskit"      # --web-renderer
 use_color_emoji = false     # --use-color-emoji
-route_url_strategy = "path" # --route-url-strategy
+route_url_strategy = "hash" # --route-url-strategy
