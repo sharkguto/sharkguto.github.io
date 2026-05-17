@@ -49,6 +49,7 @@ Os servicos atuais continuam validos, mas devem ser apresentados como capacidade
 Fonte mais autoritativa de dependencias: `pyproject.toml`.
 
 - Python 3.13 ou superior.
+- Runtime web desejado: Pyodide `0.29.4`, para CPython 3.13 no navegador.
 - `flet==0.85.1`.
 - `flet-web==0.85.1`.
 - `flet-webview==0.85.1`.
@@ -66,6 +67,8 @@ Fonte mais autoritativa de dependencias: `pyproject.toml`.
 - `typing_extensions==4.15.0`
 
 Para desenvolvimento local com browser, usar `requirements-dev.txt` ou `.[serve]`, pois `flet-web` puxa dependencias de servidor que nao rodam no Pyodide.
+
+O Flet `0.85.1` ainda aponta o web runtime padrao para Pyodide `0.27.7`. O script `../deploy-flet.sh` aplica um patch pos-build em `python.js` para trocar o CDN para `https://cdn.jsdelivr.net/pyodide/v0.29.4/full/pyodide.js`. Nao usar `--no-cdn` sem tambem atualizar a pasta local `pyodide/`, pois ela e gerada pelo Flet.
 
 Prefira manter `pyproject.toml` como fonte principal quando precisar de reproducibilidade.
 

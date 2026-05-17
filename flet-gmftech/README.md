@@ -22,6 +22,7 @@ Este projeto é uma aplicação web multiplataforma construída com Flet (framew
 ## 🛠️ Tecnologias Utilizadas
 
 - **Python 3.13+**: Linguagem principal
+- **Pyodide 0.29.4**: Runtime Python/WebAssembly usado no navegador
 - **Flet 0.85.1**: Framework para aplicações multiplataforma
 - **Flet Web 0.85.1**: Runtime web usado pelo Flet 0.85
 - **Flet WebView 0.85.1**: Renderização do gráfico PyECharts no app web
@@ -71,6 +72,14 @@ flet build web --yes
 ```
 
 Os arquivos compilados estarão disponíveis na pasta `build/web/`.
+
+Para publicar na raiz do GitHub Pages deste repositório, use o script da raiz:
+```bash
+cd ..
+./deploy-flet.sh
+```
+
+O script aplica Pyodide `0.29.4` no bundle final para rodar Python 3.13 no navegador.
 
 ### Build para Desktop
 
