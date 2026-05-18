@@ -1,109 +1,100 @@
 # AGENTS.md
 
-Orientacoes para qualquer agente trabalhando no projeto `flet-gmftech`.
+Contexto para Codex e qualquer agente trabalhando no projeto `flet-gmftech`.
 
-## Objetivo Do Projeto
+## Objetivo
 
-Este projeto deve ser o website institucional da GMF-tech, feito com Python 3 e Flet, com foco em web via WebAssembly/Pyodide e build estatico para deploy no GitHub Pages.
+`flet-gmftech` e o website institucional da GMF-tech. O produto deve continuar sendo um site/app web feito com Python, Flet e WebAssembly, com bundle estatico para publicacao em GitHub Pages.
 
-Direcao do usuario:
+Direcao do produto:
 
-- Foco exclusivo em Flet como tecnologia principal e como oferta comercial da GMF-tech.
-- Usar Python 3, Flet e WebAssembly para entregar o site.
-- Gerar bundle web estatico para publicar no GitHub Pages.
-- Todos os servicos ja listados no projeto sao servicos prestados pela GMF-tech, mas a comunicacao deve puxar claramente para especialidade em Flet.
-- Nao migrar para React, Next, Vue, Astro, templates JS ou outro stack de frontend. Se precisar de interatividade visual, implementar com controles Flet ou integracao pontual dentro do padrao atual.
+- Flet e a tecnologia principal do frontend e tambem a principal oferta comercial da GMF-tech.
+- Python 3.13+ e a linguagem base.
+- WebAssembly/Pyodide e o runtime do site no navegador.
+- PyECharts e usado nos graficos, especialmente na pagina de cotacao.
+- O site comunica desenvolvimento em Flet, Python, IA aplicada, automacao, dados, cloud, IoT e modernizacao.
+- Nao migrar para React, Next, Vue, Astro ou templates JS. Melhorias visuais devem ser feitas em Flet.
 
-## Produto E Posicionamento
+## Identidade Atual
 
 Marca: GMF-tech.
 
-Autor/contato atual no projeto:
+Contato principal:
 
 - Gustavo M Freitas
 - `gustavo@gmf-tech.com`
-- README tambem cita `contato@gmf-tech.com` e telefone `(11) 9999-9999`.
+- `contato@gmf-tech.com`
 
-Mensagem atual do site:
+Identidade visual atual:
 
-- Home: "Bem-vindo a GMF-tech" e "Sua parceira em solucoes de TI".
-- Footer: "GMF-tech - Outsourcing em TI".
-- Sobre: historia, missao e valores da empresa.
-- Servicos: catalogo de servicos e tecnologias.
-- Portfolio: projetos realizados.
-- Cotacao: demonstracao tecnica com grafico USD/BRL.
+- Visual inspirado em sites enterprise de tecnologia, com hero forte, secoes full-width, servicos por ciclo completo e foco em resultado.
+- Referencia estrutural usada: BairesDev, sem copiar texto, marca ou layout literal.
+- A marca da caravela deve aparecer via `assets/favicon.ico` e `assets/favicon.png`.
+- Paleta em `theme.py`: azul profundo, verde oceano, teal, amarelo quente e coral.
+- Evitar voltar ao visual antigo totalmente Material azul.
 
-Ao evoluir o conteudo, tratar a GMF-tech como especialista em:
+Copy e posicionamento atuais:
 
-- Aplicacoes web com Flet.
-- Aplicacoes Python multiplataforma.
-- WebAssembly/Pyodide para apps Python rodando no navegador.
-- Prototipos, MVPs e sistemas internos em Flet.
-- Dashboards, formularios, portais, sites institucionais e apps responsivos feitos em Flet.
-- Deploy estatico do bundle web em GitHub Pages.
+- Home: "Software, Flet e IA para acelerar sua operacao".
+- Footer: "GMF-tech - Flet, Python e IA aplicada".
+- Serviços: Flet, Python, IA, automacao, dados, cloud, IoT, seguranca e modernizacao.
+- Contato: diagnostico tecnico para Flet, IA e automacao.
+- Portfolio: projetos com Flet, dados e automacao em producao.
+- Cotacao: demonstracao tecnica com USD/BRL usando PyECharts.
 
-Os servicos atuais continuam validos, mas devem ser apresentados como capacidades da GMF-tech com Flet no centro.
+## Stack
 
-## Stack Atual
+Fonte principal de dependencias: `pyproject.toml`.
 
-Fonte mais autoritativa de dependencias: `pyproject.toml`.
+Versoes atuais:
 
-- Python 3.13 ou superior.
-- Runtime web desejado: Pyodide `0.29.4`, para CPython 3.13 no navegador.
-- `flet==0.85.1`.
-- `flet-web==0.85.1`.
-- `flet-webview==0.85.1`.
-- `pyecharts==2.1.0`.
-- `httpx==0.28.1`.
+- Python `>=3.13`.
+- Flet `0.85.1`.
+- Flet WebView `0.85.1`.
+- HTTPX `0.28.1`.
+- PyECharts `2.1.0`.
 - `typing_extensions==4.15.0`.
-- Testes opcionais: `pytest`, `pytest-cov`, `pytest-asyncio`.
+- `flet-web==0.85.1` apenas para desenvolvimento/serve local, fora de `requirements.txt`.
 
-`requirements.txt` deve ficar seguro para WebAssembly/Pyodide. Nao incluir dependencias de servidor local nele:
+Arquivos de dependencias:
 
-- `flet==0.85.1`
-- `flet-webview==0.85.1`
-- `httpx==0.28.1`
-- `pyecharts==2.1.0`
-- `typing_extensions==4.15.0`
+- `requirements.txt`: seguro para Pyodide/WebAssembly. Nao incluir `flet-web`.
+- `requirements-dev.txt`: inclui `-r requirements.txt` e `flet-web==0.85.1`.
+- `pyproject.toml`: dependencias de runtime, extras `serve` e `test`, e configuracao do build Flet.
 
-Para desenvolvimento local com browser, usar `requirements-dev.txt` ou `.[serve]`, pois `flet-web` puxa dependencias de servidor que nao rodam no Pyodide.
+Observacao importante:
 
-O Flet `0.85.1` ainda aponta o web runtime padrao para Pyodide `0.27.7`. O script `../deploy-flet.sh` aplica um patch pos-build em `python.js` para trocar o CDN para `https://cdn.jsdelivr.net/pyodide/v0.29.4/full/pyodide.js`. Nao usar `--no-cdn` sem tambem atualizar a pasta local `pyodide/`, pois ela e gerada pelo Flet.
+- O Flet 0.85.1 ainda pode gerar bundle com Pyodide antigo por padrao.
+- O projeto usa patch pos-build para Pyodide `0.29.4`, que entrega Python 3.13 no navegador.
+- O patch existe no `deploy-flet.sh` e tambem no `Dockerfile` via `ARG PYODIDE_VERSION=0.29.4`.
+- Nao usar `--no-cdn` sem tambem atualizar a pasta local `pyodide/` gerada pelo Flet.
 
-Prefira manter `pyproject.toml` como fonte principal quando precisar de reproducibilidade.
+## Comandos
 
-## Comandos Comuns
+Executar comandos de app dentro de `flet-gmftech/`, salvo quando indicado.
 
-Sempre executar a partir de `flet-gmftech/`.
-
-Instalacao para desenvolvimento:
+Instalacao local:
 
 ```bash
-python -m pip install -e ".[test]"
+python3 -m pip install -r requirements-dev.txt
 ```
 
-Alternativa simples para desenvolvimento local:
+Instalacao editavel com testes:
 
 ```bash
-python -m pip install -r requirements-dev.txt
+python3 -m pip install -e ".[test,serve]"
 ```
 
-Rodar localmente:
+Rodar local:
 
 ```bash
-python app.py
+python3 app.py
 ```
 
 Testes:
 
 ```bash
-python -m pytest
-```
-
-Cobertura:
-
-```bash
-python -m pytest --cov=. --cov-report=term --cov-report=html
+python3 -m pytest
 ```
 
 Build web:
@@ -112,61 +103,99 @@ Build web:
 flet build web --yes
 ```
 
-Antes de publicar no GitHub Pages, verificar o destino real:
+Docker/Nginx, a partir da raiz do repositorio:
 
-- Para site de usuario/organizacao no dominio raiz, `base_url = "/"` pode ser adequado.
-- Para deploy em subpasta, ajustar `base_url` para `/<repo-ou-subpasta>/` ou passar flag equivalente no build.
-- O projeto usa `route_url_strategy = "hash"` para funcionar bem em hospedagem estatica do GitHub Pages.
-- O build web do Flet 0.85 gera saida em `build/web/`.
+```bash
+docker compose build
+docker compose up -d
+docker compose exec gmftech-web nginx -t
+```
 
-## Estrutura Do Projeto
+Validacao Playwright, a partir da raiz:
+
+```bash
+PLAYWRIGHT_BROWSER=chromium python3 flet-gmftech/tools/validate_frontend_playwright.py http://127.0.0.1:8080/
+```
+
+Nao executar `../deploy-flet.sh` sem pedido explicito do usuario.
+
+## Deploy E Build
+
+Fluxo esperado:
+
+1. Alterar codigo em `flet-gmftech/`.
+2. Rodar testes.
+3. Gerar `flet-gmftech/build/web/` com `flet build web --yes`.
+4. Testar o bundle via Docker/Nginx.
+5. Validar com Playwright.
+6. So publicar no GitHub Pages quando o usuario pedir.
+
+Configuracao web atual em `pyproject.toml`:
+
+- `base_url = "/"`.
+- `renderer = "canvaskit"`.
+- `route_url_strategy = "hash"`.
+- modulo do app: `app`.
+
+Arquivos de container:
+
+- `Dockerfile`: serve `flet-gmftech/build/web/` com Nginx e troca `python.js` para Pyodide `0.29.4`.
+- `docker/nginx.conf`: cache control conservador para HTML, Python worker, service worker e app.zip.
+- `docker-compose.yml`: publica `gmftech-web` em `http://127.0.0.1:8080/`.
+- `.dockerignore`: reduz contexto de build.
+
+## Estrutura
 
 Arquivos principais:
 
-- `app.py`: entrada principal do app Flet, configuracao da pagina, AppBar, drawer mobile, footer, roteamento e modal de login.
-- `theme.py`: paleta de cores, tema Flet, estilos de botao/texto/sombra e helpers responsivos.
-- `utils/responsive.py`: breakpoints e regras centralizadas de responsividade.
-- `pages/home.py`: home com titulo, subtitulo e botoes para portfolio, servicos e contato.
-- `pages/services.py`: cards de servicos e tecnologias.
-- `pages/about.py`: historia, missao e valores.
-- `pages/contact.py`: formulario de contato com validacao local e SnackBar.
-- `pages/coins.py`: grafico USD/BRL com PyECharts renderizado em WebView, cache e fetch async.
-- `pages/portfolio.py`: cards de projetos com imagens e tecnologias.
-- `tests/`: suite de testes unitarios por modulo e pagina.
-- `old.py` e `new2.py`: prototipos antigos. Nao usar como base principal para novas features.
+- `app.py`: entrada Flet, tema, AppBar, drawer mobile, footer, rotas e modal de diagnostico.
+- `theme.py`: paleta, tema Flet, estilos de botao/texto/sombra e helpers responsivos.
+- `utils/responsive.py`: breakpoints, escalas de fonte/espacamento e colunas responsivas.
+- `utils/flet_runtime.py`: chamada segura para metodos da pagina em testes e runtime.
+- `pages/home.py`: landing principal com hero, servicos e modelo de trabalho.
+- `pages/services.py`: catalogo de servicos e stack principal.
+- `pages/about.py`: posicionamento, valores e modo de trabalho.
+- `pages/contact.py`: formulario de diagnostico, validacao local e SnackBar.
+- `pages/portfolio.py`: projetos e provas de stack.
+- `pages/coins.py`: cotacao USD/BRL com PyECharts em `flet_webview.WebView`.
+- `tools/validate_frontend_playwright.py`: smoke test real do bundle servido no navegador.
+- `tests/`: testes unitarios de paginas, app, tema, responsividade e cotacao.
+
+Arquivos legados:
+
+- `old.py` e `new2.py` sao prototipos. Nao evoluir como produto principal.
 
 Assets:
 
 - `assets/favicon.ico`
 - `assets/favicon.png`
-- `assets/loading-animation.png`
-- `assets/icons/loading-animation.png`
 - `assets/velejar_facil.png`
 - `assets/chart-project.jpg`
 - `assets/website-project.jpg`
+- `assets/loading-animation.png`
+- `assets/icons/loading-animation.png`
 
-A pasta `images/` duplica imagens do portfolio. Para Flet web, prefira `assets/` como fonte principal.
-
-Artefatos e ignores:
-
-- `.gitignore` ignora `dist`, `build` e `*.pyc`.
-- `.coverage` existe como artefato local de cobertura.
-- Se o bundle gerado precisar ser versionado para GitHub Pages, confirmar antes o fluxo desejado, porque os diretorios comuns de build estao ignorados.
+A pasta `images/` duplica imagens do portfolio. Para Flet web, preferir `assets/`.
 
 ## Rotas
 
 Rotas registradas em `app.py`:
 
-- `/`: `home_content(page)`.
-- `/services`: `services_content(page)`.
-- `/about`: `about_content(page)`.
-- `/contact`: `contact_content(page)`.
-- `/coins`: `currency_chart_content(page)`.
-- `/portfolio`: `portfolio_content(page)`.
+- `/`: Home.
+- `/services`: Servicos e stack.
+- `/about`: Sobre.
+- `/contact`: Contato/diagnostico.
+- `/coins`: Cotacao USD/BRL.
+- `/portfolio`: Portfolio.
 
-A AppBar desktop mostra: Inicio, Servicos, Sobre, Contato, Cotacao e Login. Em mobile, usa `NavigationDrawer` com Inicio, Servicos, Sobre, Contato, Cotacao, Portfolio e Login quando aplicavel.
+Navegacao:
 
-## Servicos E Tecnologias Listados Hoje
+- Desktop usa AppBar com botoes.
+- Mobile usa `NavigationDrawer`.
+- O botao "Diagnostico" abre um modal simulado com Google, Apple e X.
+- Na rota `/coins`, o CTA de diagnostico e ocultado para manter foco na demo.
+
+## Servicos
 
 Servicos atuais em `pages/services.py`:
 
@@ -178,8 +207,9 @@ Servicos atuais em `pages/services.py`:
 - Desenvolvimento Mobile.
 - Cloud Computing.
 - Seguranca.
+- Consultoria e Automacao com IA.
 
-Tecnologias atuais:
+Stack principal exibida:
 
 - Python.
 - Flet.
@@ -189,197 +219,167 @@ Tecnologias atuais:
 - AWS.
 - Azure DevOps.
 - Apache ECharts.
+- IA e LLMs.
 
-Ao reescrever marketing/copy, nao remover automaticamente essas capacidades; reposiciona-las como servicos prestados pela GMF-tech, com Flet como eixo da oferta.
+Ao mudar copy, preservar esses servicos como base do que a GMF-tech presta e adicionar IA como camada nova de consultoria, automacao e melhoria operacional.
 
-## Portfolio Atual
+## Paginas
 
-Projetos em `pages/portfolio.py`:
+Home:
 
-- Velejar Facil: plataforma para controle de embarcacoes, marinas, reservas, pagamentos, avaliacoes e interface web/mobile.
-- Sistema de Monitoramento de Cotacoes: visualizacao em tempo real, historico, performance, escalabilidade e interface responsiva.
-- Website Institucional GMF-tech: site responsivo, performance, acessibilidade, animacoes e analytics.
+- Hero escuro com CTA para diagnostico, servicos e portfolio.
+- Imagem `velejar_facil.png` como visual de produto.
+- Cards de servico para levantamento de requisitos, arquitetura, IoT/prototipagem, web/mobile, cloud/seguranca e IA.
+- Secao de modelo de trabalho em 3 passos.
 
-Imagens usadas:
+Servicos:
 
-- `/velejar_facil.png`
-- `/chart-project.jpg`
-- `/website-project.jpg`
+- Header enterprise.
+- Grade responsiva de 9 servicos com cards clicaveis.
+- Ao clicar em um servico, o card mostra uma previa de stacks e o painel "Stacks para ..." exibe tecnologias e aplicacoes tipicas.
+- Grade responsiva de 9 tecnologias.
 
-Verificar caminhos de assets depois do build web, especialmente se `base_url` for diferente de `/`.
+Sobre:
+
+- Hero com caravela/favicon.
+- Blocos de valor: consultoria sem enrolacao, Flet como especialidade e IA para operacao real.
+- Processo: Diagnostico, Prototipo, Producao.
+
+Contato:
+
+- Hero com prompts de projeto Flet, IA e automacao.
+- Formulario valida nome, email e mensagem.
+- `send_email()` ainda e simulado e apenas imprime dados.
+- Nao apresentar envio real sem integrar backend/API.
+
+Portfolio:
+
+- Casos atuais: Velejar Facil, Monitoramento de Cotacoes e Website GMF-tech.
+- Mostrar tecnologias por projeto.
+- Usar imagens de `assets/`.
+
+Cotacao:
+
+- Usa AwesomeAPI: `https://economia.awesomeapi.com.br/json/daily/USD-BRL/15`.
+- Em Pyodide usa `pyodide.http.pyfetch`.
+- Em local/native usa `httpx.AsyncClient`.
+- Cache global por 5 minutos.
+- Grafico gerado com PyECharts e renderizado por `WebView` via data URL base64.
+- Depende de internet e do CDN ECharts usado pelo PyECharts.
 
 ## Responsividade
 
-Breakpoints definidos em `utils/responsive.py`:
+Breakpoints em `utils/responsive.py`:
 
 - Mobile: `<= 600px`.
 - Tablet: `601px` a `900px`.
 - Desktop: `> 900px`.
 
-Escalas atuais:
+Escalas:
 
 - Fonte: mobile `0.85`, tablet `0.95`, desktop `1.0`.
 - Espacamento: mobile `0.75`, tablet `0.9`, desktop `1.0`.
 - Grid padrao: mobile `1`, tablet `2`, desktop `3`.
 - Padding de container: mobile `20`, tablet `30`, desktop `40`.
 
-Use os helpers existentes:
+Ao alterar layout, conferir pelo menos:
 
-- `ResponsiveConfig.get_breakpoint(width)`.
-- `ResponsiveConfig.get_font_size(base_size, breakpoint)`.
-- `ResponsiveConfig.get_spacing(base_spacing, breakpoint)`.
-- `ResponsiveConfig.get_grid_columns(breakpoint)`.
-- `ResponsiveConfig.get_container_padding(breakpoint)`.
-- `get_responsive_font_size(base_size, width)`.
-- `get_responsive_padding(base_padding, width)`.
-- `get_responsive_spacing(base_spacing, width)`.
-
-Ao alterar layout, testar pelo menos larguras proximas de `400px`, `768px` e `1920px`.
+- 400px.
+- 768px.
+- 1920px.
 
 ## Tema Visual
 
 Paleta atual em `theme.py`:
 
-- `primary`: `#1a237e`
-- `secondary`: `#0d47a1`
-- `accent`: `#1e88e5`
-- `error`: `#d32f2f`
-- `warning`: `#ffa000`
-- `success`: `#388e3c`
-- `background`: `#f5f5f5`
-- `surface`: `#ffffff`
-- `text_primary`: `#212121`
-- `text_secondary`: `#757575`
+- `primary`: `#071B2C`
+- `secondary`: `#0E7C7B`
+- `accent`: `#2DD4BF`
+- `accent_alt`: `#F6C85F`
+- `coral`: `#FF6B4A`
+- `error`: `#D64545`
+- `warning`: `#F6C85F`
+- `success`: `#1A936F`
+- `background`: `#F4F8FA`
+- `surface`: `#FFFFFF`
+- `surface_alt`: `#EAF3F5`
+- `text_primary`: `#10212F`
+- `text_secondary`: `#53656F`
+- `muted`: `#D8E6EA`
+- `dark_surface`: `#0B2536`
 
-O visual atual e institucional, azul e Material-like. Se melhorar design, manter consistencia com a marca, mas evitar que toda a interface vire apenas variacoes de azul. Usar contraste, hierarquia tipografica, bons espacos e componentes Flet reais.
+Estilo:
 
-## Pagina De Cotacao
-
-`pages/coins.py` mostra uma demo tecnica com USD/BRL:
-
-- API: `https://economia.awesomeapi.com.br/json/daily/USD-BRL/15`.
-- Em WebAssembly/Pyodide usa `pyodide.http.pyfetch`.
-- Em ambiente local Python usa `httpx.AsyncClient`.
-- Cache global por 5 minutos.
-- Grafico gerado com PyECharts e renderizado em `flet_webview.WebView` via data URL base64.
-- WebView deve ficar na mesma versao do Flet (`0.85.1`) para o build Flutter/WebAssembly compilar.
-
-Cuidados:
-
-- Em deploy estatico, a pagina depende de internet para AwesomeAPI.
-- Verificar CORS no GitHub Pages.
-- Se a meta for site estatico totalmente resiliente, adicionar fallback visual ou dados mockados.
-
-## Contato E Login
-
-Contato:
-
-- `send_email()` hoje apenas imprime dados e retorna sucesso.
-- `contact_content()` valida campos obrigatorios e mostra SnackBar.
-- Nao existe envio real de email ainda.
-
-Login:
-
-- Modal simulado com Google, Apple e X.
-- Mostra SnackBar de sucesso.
-- Nao existe autenticacao real.
-- O botao de login e escondido na pagina `/coins` para manter foco na demo de cotacao.
-
-Nao apresentar login ou envio de formulario como funcionalidade real em copy publica sem implementar backend ou integracao.
+- Cards com raio de 8px.
+- Botoes com raio de 6px.
+- Secoes full-width, sem empilhar cards dentro de cards.
+- Usar icones Flet/Lucide-equivalentes disponiveis em `ft.Icons`.
+- Evitar texto explicando como usar o site dentro da interface.
 
 ## Testes
 
 Configuracao:
 
-- `pytest.ini` define `testpaths = tests`, padrao `test_*.py`, classes `Test*`, funcoes `test_*`, `-v` e `--strict-markers`.
-- `.coveragerc` omite `tests/*`, caches, venvs, `dist/*`, `old.py` e `new2.py`.
+- `pytest.ini` define `testpaths = tests`.
+- Testes unitarios usam paginas Flet instanciadas com mocks de `ft.Page`.
+- `tools/validate_frontend_playwright.py` faz smoke test real do frontend web servido.
 
-Fixtures em `tests/conftest.py`:
+Antes de finalizar mudanca relevante:
 
-- `mock_page`: 1024x768.
-- `mobile_page`: 400x800.
-- `tablet_page`: 768x1024.
-- `desktop_page`: 1920x1080.
-- `theme_colors`.
+```bash
+python3 -m compileall app.py pages theme.py utils tests
+python3 -m pytest
+```
 
-Cobertura de testes atual:
+Quando houver mudanca visual/build:
 
-- `tests/test_theme.py`: tema, estilos, sombras e helpers responsivos.
-- `tests/test_responsive.py`: breakpoints, fontes, espacamentos, colunas e padding.
-- `tests/test_app.py`: expectativas de header/footer, rotas, login, resize e inicializacao.
-- `tests/pages/test_home.py`: estrutura, responsividade e botoes.
-- `tests/pages/test_services.py`: estrutura, cards, grids, listas e responsividade.
-- `tests/pages/test_about.py`: estrutura, secoes, responsividade e larguras.
-- `tests/pages/test_contact.py`: campos, validacao, SnackBars e responsividade.
-- `tests/pages/test_coins.py`: loading, grafico, cache, fetch mockado e erros.
-- `tests/pages/test_portfolio.py`: projetos, cards, imagens, tecnologias e ResponsiveRow.
+```bash
+flet build web --yes
+docker compose build
+docker compose up -d
+PLAYWRIGHT_BROWSER=chromium python3 flet-gmftech/tools/validate_frontend_playwright.py http://127.0.0.1:8080/
+```
 
-Ao alterar comportamento, atualizar testes junto. Alguns testes sao mais estruturais/mocados do que integrados, entao nao assumir que passam como garantia visual completa.
+## Cuidados De Compatibilidade
 
-## Contexto Codex
-
-Este `AGENTS.md` e a fonte principal de contexto para Codex neste projeto.
-
-- Registrar aqui decisoes importantes sobre produto, stack, build e deploy.
-- Manter a direcao do projeto alinhada com Flet, Python 3, WebAssembly e GitHub Pages.
-- Atualizar este arquivo quando comandos, rotas, servicos, assets ou fluxo de deploy mudarem.
-- Nao recriar diretorios ou specs de outras ferramentas de agente; centralizar a orientacao do projeto neste arquivo.
-
-## Arquivos Legados
-
-`old.py`:
-
-- Prototipo com Tabs, PyeCharts, `flet_webview` e grafico simples.
-- Gera HTML de chart em `assets/chart.html`.
-- Comentarios indicam dificuldades com grafico em web/browser.
-
-`new2.py`:
-
-- Prototipo de landing page em arquivo unico.
-- Header, hero, cards de servicos, footer e modal de login simulados.
-- Usa `page.window.width` e API antiga `ft.icons`.
-
-Nao evoluir esses arquivos como produto principal. Se alguma ideia visual for reaproveitada, migrar para a arquitetura atual em `app.py`, `pages/`, `theme.py` e `utils/`.
-
-## Cuidados Conhecidos
-
-- `app.py` usa `ft.run(...)` protegido por `if __name__ == "__main__":`.
-- `page.width` pode ser `None` no inicio de uma sessao Flet; usar fallback `page.width or 1024` antes de comparacoes.
-- Ha inconsistencia entre documentacao/spec e codigo em `services.py`: README/spec falam em 3 colunas no desktop, mas o codigo atual usa 2 colunas para servicos quando `page.width >= 768`.
-- README e footer misturam anos 2025 e 2026.
-- Build web sai em `build/web/`; `.gitignore` ignora diretorios de build.
-- Imagens existem em `assets/` e `images/`; evitar divergencia.
-- Paths de imagem com `/arquivo.png` podem se comportar diferente dependendo de `base_url`.
-- O grafico depende da API externa de cotacao e do CDN do ECharts usado pelo PyECharts. Para demonstracao comercial, ter mensagem de fallback elegante.
+- Flet 0.85 usa `ft.Border.all(...)`; nao usar `ft.border.all(...)` em codigo novo.
+- `PopupMenuItem(text=...)` nao e aceito no Flet novo; usar `content=ft.Text(...)` quando precisar de menu.
+- `page.width` pode ser `None` no inicio; usar fallback `page.width or 1024`.
+- `flet-web` nao deve entrar em `requirements.txt`, pois pode puxar dependencias sem wheel pure Python no Pyodide.
+- `typing_extensions` deve continuar explicito por causa do `flet_webview` no Pyodide.
+- Build web gera `build/web/`, normalmente ignorado pelo git.
+- Em GitHub Pages, manter `route_url_strategy = "hash"` para reduzir problemas de refresh/deep link.
+- Paths de assets com `/arquivo.png` dependem do `base_url`; revisar se publicar em subpasta.
 
 ## Regras Para Novas Alteracoes
 
 - Manter Flet como framework unico do frontend.
-- Preferir controles e componentes Flet nativos, exceto onde houver decisao explicita do produto, como o grafico PyECharts da cotacao.
-- Manter arquitetura por paginas em `pages/`.
-- Manter tema centralizado em `theme.py`.
-- Manter responsividade centralizada em `utils/responsive.py`.
-- Evitar hardcodes de largura/altura quando houver helper responsivo aplicavel.
-- Para codigo que roda no navegador via Pyodide, usar `pyfetch` quando necessario; para local/native, usar `httpx`.
-- Nao adicionar dependencias pesadas sem necessidade clara.
-- Nao tratar `old.py` e `new2.py` como arquivos produtivos.
-- Atualizar README e testes quando mudar comandos, rotas, servicos, build ou comportamento de UI.
-- Antes de finalizar uma mudanca relevante, rodar testes e, quando mexer em UI/build, gerar/validar o build web.
+- Manter arquitetura em `pages/`, tema em `theme.py` e responsividade em `utils/responsive.py`.
+- Usar PyECharts para graficos.
+- Nao adicionar dependencias pesadas sem motivo claro.
+- Nao reintroduzir specs antigas ou diretorios de outra ferramenta.
+- Nao evoluir `old.py` e `new2.py`.
+- Atualizar README, AGENTS e testes quando mudar stack, rotas, servicos, build ou comportamento de UI.
+- Nao executar deploy sem pedido explicito.
 
 ## Definition Of Done
 
-Para alteracoes de codigo:
+Para codigo:
 
-- App roda localmente com `python app.py`.
-- Testes relevantes passam com `python -m pytest`.
-- Layout foi pensado para mobile, tablet e desktop.
-- Copy publica reflete GMF-tech com Flet como foco principal.
-- Bundle web foi considerado para GitHub Pages.
+- `python3 -m pytest` passa.
+- Layout pensado para mobile, tablet e desktop.
+- Copy publica reflete Flet, Python, IA e automacao.
+- App segue Flet 0.85.1 sem APIs antigas quebradas.
 
-Para alteracoes de deploy:
+Para frontend/build:
 
-- `flet build web` executa sem erro.
-- `base_url` esta adequado ao destino.
-- Rotas funcionam em refresh/deep link ou existe fallback.
-- Assets carregam corretamente no caminho final.
-- Conteudo gerado para Pages foi colocado no local esperado pelo fluxo de deploy do repositorio.
+- `flet build web --yes` executa sem erro.
+- Docker/Nginx serve o bundle.
+- Playwright valida que a pagina carrega e nao fica branca.
+- Assets principais aparecem no navegador.
+
+Para deploy:
+
+- Confirmar destino do GitHub Pages antes.
+- Usar Pyodide `0.29.4`.
+- Nao publicar automaticamente sem confirmacao do usuario.

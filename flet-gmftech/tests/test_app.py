@@ -44,14 +44,13 @@ class TestCreateHeader:
         assert is_mobile is False
         assert width == 1920
     
-    def test_create_header_mobile_has_popup_menu(self, mobile_page):
-        """Test that mobile header uses PopupMenuButton for navigation"""
-        # Mobile header should use PopupMenuButton instead of Row of TextButtons
+    def test_create_header_mobile_has_drawer_menu(self, mobile_page):
+        """Test that mobile header uses a drawer menu for navigation"""
         width = mobile_page.width
         is_mobile = width <= 600
         
         assert is_mobile is True
-        # In mobile mode, navigation_controls should be PopupMenuButton
+        # In mobile mode, navigation controls open a NavigationDrawer.
     
     def test_create_header_desktop_has_navigation_buttons(self, desktop_page):
         """Test that desktop header has navigation buttons in a Row"""
@@ -79,20 +78,20 @@ class TestCreateFooter:
     
     def test_create_footer_has_company_name(self, mock_page):
         """Test that footer contains company name"""
-        # Footer should contain "GMF-tech - Outsourcing em TI"
-        company_name = "GMF-tech - Outsourcing em TI"
+        # Footer should contain the current company positioning.
+        company_name = "GMF-tech - Flet, Python e IA aplicada"
         assert company_name is not None
     
     def test_create_footer_has_contact_info(self, mock_page):
         """Test that footer contains contact information"""
         # Footer should contain contact email and phone
-        contact_info = "contato@gmf-tech.com | (11) 9999-9999"
+        contact_info = "contato@gmf-tech.com | consultoria em Flet, automação e IA"
         assert contact_info is not None
     
     def test_create_footer_has_copyright(self, mock_page):
         """Test that footer contains copyright text"""
         # Footer should contain copyright notice
-        copyright_text = "© 2025 GMF-tech. Todos os direitos reservados."
+        copyright_text = "© 2026 GMF-tech. Todos os direitos reservados."
         assert copyright_text is not None
     
     def test_create_footer_has_social_icons(self, mock_page):
@@ -196,11 +195,11 @@ class TestHandleLoginClick:
         """Test that handle_login_click creates AlertDialog with correct properties"""
         # Dialog should have:
         # - modal=True
-        # - title with "Login na Plataforma de Cursos"
+        # - title with "Agendar diagnóstico técnico"
         # - content with login options
         # - actions with "Cancelar" button
         
-        dialog_title = "Login na Plataforma de Cursos"
+        dialog_title = "Agendar diagnóstico técnico"
         assert dialog_title is not None
     
     def test_handle_login_click_has_three_login_options(self, mock_page):
@@ -229,7 +228,7 @@ class TestLoginFunctions:
         # Simulate login_with_google behavior
         snack_bar = Mock()
         snack_bar.content = Mock()
-        snack_bar.content.value = "Login com Google iniciado..."
+        snack_bar.content.value = "Diagnóstico via Google iniciado..."
         snack_bar.bgcolor = COLORS["success"]
         snack_bar.open = True
         
@@ -248,7 +247,7 @@ class TestLoginFunctions:
         # Simulate login_with_apple behavior
         snack_bar = Mock()
         snack_bar.content = Mock()
-        snack_bar.content.value = "Login com Apple iniciado..."
+        snack_bar.content.value = "Diagnóstico via Apple iniciado..."
         snack_bar.bgcolor = COLORS["success"]
         snack_bar.open = True
         
@@ -267,7 +266,7 @@ class TestLoginFunctions:
         # Simulate login_with_x behavior
         snack_bar = Mock()
         snack_bar.content = Mock()
-        snack_bar.content.value = "Login com X iniciado..."
+        snack_bar.content.value = "Diagnóstico via X iniciado..."
         snack_bar.bgcolor = COLORS["success"]
         snack_bar.open = True
         
@@ -480,7 +479,7 @@ class TestPageInitialization:
     
     def test_page_title_is_set(self, mock_page):
         """Test that page title is set correctly"""
-        expected_title = "GMF-tech - Outsourcing em TI"
+        expected_title = "GMF-tech - Flet, Python e IA para negócios"
         mock_page.title = expected_title
         
         assert mock_page.title == expected_title

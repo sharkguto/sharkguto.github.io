@@ -9,18 +9,23 @@ import flet as ft
 from utils.responsive import ResponsiveConfig
 
 
-# Paleta de cores moderna
+# Paleta de cores da GMF-tech: azul profundo, verde oceano e acentos quentes.
 COLORS = {
-    "primary": "#1a237e",  # Azul escuro
-    "secondary": "#0d47a1",  # Azul médio
-    "accent": "#1e88e5",  # Azul claro
-    "error": "#d32f2f",  # Vermelho
-    "warning": "#ffa000",  # Laranja
-    "success": "#388e3c",  # Verde
-    "background": "#f5f5f5",  # Cinza muito claro
-    "surface": "#ffffff",  # Branco
-    "text_primary": "#212121",  # Cinza muito escuro
-    "text_secondary": "#757575",  # Cinza médio
+    "primary": "#071B2C",
+    "secondary": "#0E7C7B",
+    "accent": "#2DD4BF",
+    "accent_alt": "#F6C85F",
+    "coral": "#FF6B4A",
+    "error": "#D64545",
+    "warning": "#F6C85F",
+    "success": "#1A936F",
+    "background": "#F4F8FA",
+    "surface": "#FFFFFF",
+    "surface_alt": "#EAF3F5",
+    "text_primary": "#10212F",
+    "text_secondary": "#53656F",
+    "muted": "#D8E6EA",
+    "dark_surface": "#0B2536",
 }
 
 # Configurações de tema
@@ -41,8 +46,8 @@ def get_theme():
 # Estilo de botão padrão
 def get_button_style():
     return ft.ButtonStyle(
-        shape=ft.RoundedRectangleBorder(radius=8),
-        padding=ft.Padding.symmetric(horizontal=30, vertical=15),
+        shape=ft.RoundedRectangleBorder(radius=6),
+        padding=ft.Padding.symmetric(horizontal=28, vertical=14),
         overlay_color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
     )
 
@@ -59,9 +64,9 @@ def get_text_style(size=16, color=None, weight=None):
 def get_shadow():
     return ft.BoxShadow(
         spread_radius=1,
-        blur_radius=15,
-        color=ft.Colors.with_opacity(0.1, ft.Colors.BLACK),
-        offset=ft.Offset(0, 0),
+        blur_radius=24,
+        color=ft.Colors.with_opacity(0.14, ft.Colors.BLACK),
+        offset=ft.Offset(0, 10),
     )
 
 # Responsive helper functions

@@ -52,20 +52,20 @@ class TestButtonStyle:
         assert button_style.overlay_color is not None
     
     def test_get_button_style_has_rounded_border(self):
-        """Test that button style has rounded border with radius 8"""
+        """Test that button style has rounded border with radius 6"""
         button_style = get_button_style()
         
         assert isinstance(button_style.shape, ft.RoundedRectangleBorder)
-        assert button_style.shape.radius == 8
+        assert button_style.shape.radius == 6
     
     def test_get_button_style_has_correct_padding(self):
         """Test that button style has correct padding values"""
         button_style = get_button_style()
         
-        assert button_style.padding.left == 30
-        assert button_style.padding.right == 30
-        assert button_style.padding.top == 15
-        assert button_style.padding.bottom == 15
+        assert button_style.padding.left == 28
+        assert button_style.padding.right == 28
+        assert button_style.padding.top == 14
+        assert button_style.padding.bottom == 14
 
 
 class TestTextStyle:
@@ -127,7 +127,7 @@ class TestShadow:
         
         assert isinstance(shadow, ft.BoxShadow)
         assert shadow.spread_radius == 1
-        assert shadow.blur_radius == 15
+        assert shadow.blur_radius == 24
         assert shadow.color is not None
         assert shadow.offset is not None
     
@@ -137,7 +137,7 @@ class TestShadow:
         
         assert isinstance(shadow.offset, ft.Offset)
         assert shadow.offset.x == 0
-        assert shadow.offset.y == 0
+        assert shadow.offset.y == 10
 
 
 class TestResponsiveFontSize:
