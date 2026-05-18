@@ -208,9 +208,9 @@ def services_content(page: ft.Page):
             "title": "Cloud Computing",
             "description": "Soluções em nuvem para escalabilidade, performance, disponibilidade e deploy confiável.",
             "highlight": COLORS["primary"],
-            "stacks": ["AWS", "Docker", "Nginx", "GitHub Pages", "CI/CD", "Azure DevOps", "Observabilidade", "Cache-Control"],
-            "stack_note": "Deploy previsível, ambiente reproduzível e caminho simples para crescer com segurança.",
-            "use_cases": ["Publicação de apps Flet web", "Automação de build e validação", "Infraestrutura para APIs e sistemas"],
+            "stacks": ["AWS", "OCI", "Azure DevOps", "Docker", "Nginx", "CI/CD", "Observabilidade", "Backups", "Monitoramento"],
+            "stack_note": "Organizo ambientes reproduzíveis, pipelines confiáveis e infraestrutura pronta para evoluir sem improviso.",
+            "use_cases": ["Infraestrutura para APIs e sistemas", "Automação de build, testes e deploy", "Ambientes de produção com monitoramento e rotina de backup"],
         },
         {
             "icon": ft.Icons.SECURITY,

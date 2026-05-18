@@ -47,7 +47,7 @@ def about_content(page: ft.Page):
                                         ft.Text("Sobre a GMF-tech", size=get_responsive_font_size(15, width), color=COLORS["accent"], weight="bold"),
                                         ft.Text("Um estúdio técnico para empresas que querem sair do slide e colocar software em produção.", size=title_size, weight="bold", color=ft.Colors.WHITE),
                                         ft.Text(
-                                            "A GMF-tech combina engenharia Python, Flet, WebAssembly, cloud e IA aplicada para construir sistemas úteis, bonitos e fáceis de evoluir.",
+                                            "A GMF-tech combina desenvolvimento Python, DevOps, APIs, dados, cloud e IA aplicada para construir sistemas úteis, seguros e fáceis de evoluir.",
                                             size=body_text_size,
                                             color=ft.Colors.WHITE_70,
                                         ),
@@ -87,9 +87,9 @@ def about_content(page: ft.Page):
                 ft.Container(
                     content=ft.ResponsiveRow(
                         [
-                            ft.Container(content=value_card(ft.Icons.PSYCHOLOGY, "Consultoria sem enrolação", "Mapeio gargalos, priorizo ganhos rápidos e traduzo tecnologia em decisão de negócio.", COLORS["coral"]), col={"sm": 12, "md": 4, "lg": 4}),
-                            ft.Container(content=value_card(ft.Icons.DEVICES, "Flet como especialidade", "Interfaces ricas em Python, prontas para web, desktop, mobile e deploy estático.", COLORS["secondary"]), col={"sm": 12, "md": 4, "lg": 4}),
-                            ft.Container(content=value_card(ft.Icons.AUTO_AWESOME, "IA para operação real", "Copilots, agentes, triagem, extração, automação e integração com sistemas existentes.", COLORS["accent_alt"]), col={"sm": 12, "md": 4, "lg": 4}),
+                            ft.Container(content=value_card(ft.Icons.PSYCHOLOGY, "Consultoria sem enrolação", "Mapeio gargalos, priorizo ganhos rápidos e uso IA quando ela reduz trabalho manual de verdade.", COLORS["coral"]), col={"sm": 12, "md": 4, "lg": 4}),
+                            ft.Container(content=value_card(ft.Icons.DEVICES, "Desenvolvimento Python", "APIs, automações, sistemas internos e apps em Flet (Flutter com Python) para web, celular e desktop.", COLORS["secondary"]), col={"sm": 12, "md": 4, "lg": 4}),
+                            ft.Container(content=value_card(ft.Icons.AUTO_AWESOME, "DevOps para produção", "Docker, pipelines, Azure DevOps, deploys repetíveis e ambientes organizados para reduzir risco operacional.", COLORS["accent_alt"]), col={"sm": 12, "md": 4, "lg": 4}),
                         ],
                         spacing=16,
                         run_spacing=16,
@@ -103,9 +103,9 @@ def about_content(page: ft.Page):
                             ft.Text("Como eu trabalho", size=title_size, weight="bold", color=COLORS["text_primary"], text_align="center"),
                             ft.ResponsiveRow(
                                 [
-                                    ft.Container(content=value_card(ft.Icons.FACT_CHECK, "1. Diagnóstico", "Entendimento de processos, dados, riscos, ferramentas e oportunidades de automação.", COLORS["secondary"]), col={"sm": 12, "md": 4, "lg": 4}),
-                                    ft.Container(content=value_card(ft.Icons.ROUTE, "2. Protótipo", "Fluxo navegável em Flet, com integrações e dados suficientes para validar valor.", COLORS["coral"]), col={"sm": 12, "md": 4, "lg": 4}),
-                                    ft.Container(content=value_card(ft.Icons.SPEED, "3. Produção", "Deploy, monitoramento, testes, documentação e evolução incremental.", COLORS["accent_alt"]), col={"sm": 12, "md": 4, "lg": 4}),
+                                    ft.Container(content=value_card(ft.Icons.FACT_CHECK, "1. Diagnóstico", "Levantamento de processos, dados, integrações, infraestrutura, dores do time, riscos técnicos e oportunidades reais de IA. A ideia é separar sintoma de causa e transformar necessidade de negócio em um plano executável.", COLORS["secondary"]), col={"sm": 12, "md": 4, "lg": 4}),
+                                    ft.Container(content=value_card(ft.Icons.ROUTE, "2. Protótipo", "Validação rápida com Python, FastAPI, PostgreSQL, apps em Flet (Flutter com Python), automações com IA e integrações reais quando fizer sentido. O protótipo prova fluxo, regra de negócio e valor antes de virar projeto grande.", COLORS["coral"]), col={"sm": 12, "md": 4, "lg": 4}),
+                                    ft.Container(content=value_card(ft.Icons.SPEED, "3. Produção", "Entrega com Docker, Azure DevOps, testes, documentação, deploy automatizado, monitoramento básico e automações com IA bem integradas. Depois disso, evolução incremental com previsibilidade e menos retrabalho.", COLORS["accent_alt"]), col={"sm": 12, "md": 4, "lg": 4}),
                                 ],
                                 spacing=16,
                                 run_spacing=16,
