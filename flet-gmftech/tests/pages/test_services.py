@@ -25,7 +25,7 @@ def test_services_renders_header_grids_and_stack(mock_page):
     assert len(result.content.controls) == 5
     assert text_exists(result, "Nossos Serviços")
     assert text_exists(result, "Stack principal")
-    assert text_exists(result, "Stacks para Levantamento de Requisitos")
+    assert text_exists(result, "Stacks para Arquitetura de Sistemas")
 
     services_grid = _service_grid(result)
     tech_grid = _tech_grid(result)
@@ -40,7 +40,7 @@ def test_services_lists_current_offers(mock_page):
 
     for label in [
         "Levantamento de Requisitos",
-        "Arquitetura de Software",
+        "Arquitetura de Sistemas",
         "IoT com Arduino",
         "Prototipagem Eletrônica",
         "Desenvolvimento Web",
@@ -79,7 +79,7 @@ def test_services_cards_keep_gmftech_styling(mock_page):
     assert first_card.border_radius == ft.BorderRadius.all(8)
     assert first_card.shadow is not None
     assert first_card.on_click is not None
-    assert text_exists(first_card, "Levantamento de Requisitos")
+    assert text_exists(first_card, "Arquitetura de Sistemas")
 
 
 def test_services_clicking_card_updates_stack_panel(mock_page):
@@ -101,6 +101,6 @@ def test_services_stack_panel_has_clickable_service_stacks(mock_page):
     chips = find_controls(_stack_panel(result), ft.Text)
     values = [chip.value for chip in chips if getattr(chip, "value", None)]
 
-    assert "Discovery" in values
-    assert "Backlog" in values
-    assert "Automação com IA" in values
+    assert "FastAPI" in values
+    assert "PostgreSQL" in values
+    assert "Azure DevOps" in values

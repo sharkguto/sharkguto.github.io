@@ -150,6 +150,15 @@ def services_content(page: ft.Page):
 
     services = [
         {
+            "icon": ft.Icons.ARCHITECTURE,
+            "title": "Arquitetura de Sistemas",
+            "description": "Especialidade em desenhar sistemas Python escaláveis, integrados e preparados para produção desde o início.",
+            "highlight": COLORS["primary"],
+            "stacks": ["Python", "FastAPI", "PostgreSQL", "Docker", "Azure DevOps", "OCI", "Redis", "Observabilidade", "Testes"],
+            "stack_note": "Minha especialidade é ligar negócio, dados, APIs, integrações, infraestrutura e entrega em uma arquitetura clara e sustentável.",
+            "use_cases": ["Arquitetura de APIs e sistemas internos", "Modelagem de dados, integrações e fluxos críticos", "Modernização de sistemas com deploy, testes e operação"],
+        },
+        {
             "icon": ft.Icons.ASSIGNMENT,
             "title": "Levantamento de Requisitos",
             "description": "Análise detalhada, documentação e priorização das necessidades do seu projeto.",
@@ -157,15 +166,6 @@ def services_content(page: ft.Page):
             "stacks": ["Discovery", "User Stories", "Backlog", "Roadmap", "Protótipos Flet", "Critérios de aceite", "Documentação", "Automação com IA"],
             "stack_note": "Organizo o problema, documento os fluxos e uso IA para acelerar análise, priorização e documentação.",
             "use_cases": ["Mapeamento de processos e sistemas", "Backlog técnico para MVPs e produtos", "Documentação assistida por IA"],
-        },
-        {
-            "icon": ft.Icons.ARCHITECTURE,
-            "title": "Arquitetura de Software",
-            "description": "Design e planejamento de soluções escaláveis, robustas e fáceis de evoluir.",
-            "highlight": COLORS["primary"],
-            "stacks": ["Python", "Flet", "PostgreSQL", "ScyllaDB", "Redis", "Docker", "AWS", "Azure DevOps", "Testes"],
-            "stack_note": "Desenho a base técnica para o produto crescer sem virar uma coleção de atalhos difíceis de manter.",
-            "use_cases": ["Arquitetura de sistemas internos", "Modelagem de dados e integrações", "Plano de modernização"],
         },
         {
             "icon": ft.Icons.DEVELOPER_BOARD,

@@ -21,7 +21,7 @@ def test_about_renders_current_positioning(mock_page):
 def test_about_lists_current_value_cards(mock_page):
     result = about_content(mock_page)
 
-    for label in ["Consultoria sem enrolação", "Flet como especialidade", "IA para operação real"]:
+    for label in ["Consultoria sem enrolação", "Desenvolvimento Python", "DevOps para produção"]:
         assert text_exists(result, label)
 
 
