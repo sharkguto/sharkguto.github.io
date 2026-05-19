@@ -419,7 +419,7 @@ def main(page: ft.Page):
             content=ft.Column(
                 [
                     ft.Text(
-                        "GMF-tech - Flet, Python e IA aplicada",
+                        "GMF-tech - Tecnologia para negócios",
                         size=title_font_size,
                         color=ft.Colors.WHITE,
                         weight="bold",
@@ -427,7 +427,7 @@ def main(page: ft.Page):
                         text_align="center",
                     ),
                     ft.Text(
-                        "contato@gmf-tech.com | consultoria em Flet, automação e IA",
+                        "contato@gmf-tech.com | soluções digitais sob medida",
                         size=contact_font_size,
                         color=ft.Colors.GREY_300,
                         text_align="center",

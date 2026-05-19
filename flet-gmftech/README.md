@@ -23,7 +23,7 @@ O site posiciona a GMF-tech como especialista em Flet, Python, IA aplicada, auto
 - Sobre com posicionamento da GMF-tech e identidade da caravela.
 - Contato com formulario de diagnostico tecnico.
 - Portfolio com projetos e tecnologias.
-- Cotacao USD/BRL com grafico PyECharts renderizado em `flet_webview.WebView`.
+- Terminal de mercado para cambio e acoes, com campo digitavel no cambio, dois graficos padrao (USD/BRL e EUR/BRL) e PyECharts de preco/volume renderizado em `flet_webview.WebView`.
 
 ## Desenvolvimento
 
@@ -135,7 +135,7 @@ Paleta atual em `theme.py`:
 
 ## Observacoes
 
-- A pagina de cotacao depende da AwesomeAPI e de CDN do ECharts.
+- A pagina de mercado depende da AwesomeAPI, da brapi para acoes e de CDN do ECharts.
 - `send_email()` em `pages/contact.py` ainda e simulado.
 - `old.py` e `new2.py` sao prototipos legados.
 - O projeto deve continuar usando Flet como stack de frontend.

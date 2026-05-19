@@ -36,11 +36,11 @@ Identidade visual atual:
 Copy e posicionamento atuais:
 
 - Home: "Software, Flet e IA para acelerar sua operacao".
-- Footer: "GMF-tech - Flet, Python e IA aplicada".
+- Footer: "GMF-tech - Tecnologia para negócios".
 - Serviços: Flet, Python, IA, automacao, dados, cloud, IoT, seguranca e modernizacao.
 - Contato: diagnostico tecnico para Flet, IA e automacao.
 - Portfolio: projetos com Flet, dados e automacao em producao.
-- Cotacao: demonstracao tecnica com USD/BRL usando PyECharts.
+- Cotacao: terminal tecnico para cambio e acoes usando PyECharts; no cambio, campo digitavel e dois graficos padrao USD/BRL e EUR/BRL.
 
 ## Stack
 
@@ -157,7 +157,7 @@ Arquivos principais:
 - `pages/about.py`: posicionamento, valores e modo de trabalho.
 - `pages/contact.py`: formulario de diagnostico, validacao local e SnackBar.
 - `pages/portfolio.py`: projetos e provas de stack.
-- `pages/coins.py`: cotacao USD/BRL com PyECharts em `flet_webview.WebView`.
+- `pages/coins.py`: terminal de mercado para cambio e acoes com PyECharts em `flet_webview.WebView`.
 - `tools/validate_frontend_playwright.py`: smoke test real do bundle servido no navegador.
 - `tests/`: testes unitarios de paginas, app, tema, responsividade e cotacao.
 
@@ -185,7 +185,7 @@ Rotas registradas em `app.py`:
 - `/services`: Servicos e stack.
 - `/about`: Sobre.
 - `/contact`: Contato/diagnostico.
-- `/coins`: Cotacao USD/BRL.
+- `/coins`: Terminal de mercado para cambio e acoes.
 - `/portfolio`: Portfolio.
 
 Navegacao:
@@ -260,11 +260,11 @@ Portfolio:
 
 Cotacao:
 
-- Usa AwesomeAPI: `https://economia.awesomeapi.com.br/json/daily/USD-BRL/15`.
+- Usa AwesomeAPI para cambio e brapi para acoes; cambio aceita lista digitavel como `USD, EUR` ou pares como `USD/EUR`; quando a fonte de acoes falha, exibe serie demonstrativa deterministica.
 - Em Pyodide usa `pyodide.http.pyfetch`.
 - Em local/native usa `httpx.AsyncClient`.
 - Cache global por 5 minutos.
-- Grafico gerado com PyECharts e renderizado por `WebView` via data URL base64.
+- Grafico de preco e volume gerado com PyECharts e renderizado por `WebView` via data URL base64.
 - Depende de internet e do CDN ECharts usado pelo PyECharts.
 
 ## Responsividade

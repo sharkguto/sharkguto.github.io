@@ -79,13 +79,13 @@ class TestCreateFooter:
     def test_create_footer_has_company_name(self, mock_page):
         """Test that footer contains company name"""
         # Footer should contain the current company positioning.
-        company_name = "GMF-tech - Flet, Python e IA aplicada"
+        company_name = "GMF-tech - Tecnologia para negócios"
         assert company_name is not None
     
     def test_create_footer_has_contact_info(self, mock_page):
         """Test that footer contains contact information"""
         # Footer should contain contact email and phone
-        contact_info = "contato@gmf-tech.com | consultoria em Flet, automação e IA"
+        contact_info = "contato@gmf-tech.com | soluções digitais sob medida"
         assert contact_info is not None
     
     def test_create_footer_has_copyright(self, mock_page):

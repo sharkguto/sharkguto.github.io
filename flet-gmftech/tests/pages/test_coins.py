@@ -1,531 +1,417 @@
 """
-Unit tests for coins page module.
-Tests currency_chart_content function, chart creation, data fetching, and cache mechanism.
+Unit tests for the market chart page.
 """
 
-import pytest
-from unittest.mock import Mock, AsyncMock, patch, MagicMock
+import base64
+from datetime import datetime, timedelta
+from unittest.mock import AsyncMock, Mock, patch
+
 import flet as ft
+import pytest
+
 from pages.coins import (
-    currency_chart_content,
+    DEFAULT_FX_INPUT,
+    DEFAULT_FX_SYMBOL,
+    DEFAULT_FX_SYMBOLS,
+    DEFAULT_MARKET,
+    DEFAULT_PERIOD,
+    FX_ASSETS,
+    PAIR_EUR_BRL,
+    PAIR_USD_BRL,
+    _sample_stock_points,
     create_chart,
+    currency_chart_content,
+    fetch_chart_data,
+    fetch_currency_data,
+    fetch_fx_payloads,
+    fetch_stock_payload,
     fetch_usd_brl_data,
     load_chart,
+    normalize_fx_symbols,
 )
 from theme import COLORS
-from datetime import datetime, timedelta
+
+
+def market_column(result):
+    return result.content
+
+
+def toolbar(result):
+    return market_column(result).controls[1]
+
+
+def toolbar_row(result):
+    return toolbar(result).content
+
+
+def chart_container(result):
+    return market_column(result).controls[3]
+
+
+def sample_currency_data():
+    return [
+        {"timestamp": "1700000000", "bid": "5.00", "ask": "5.01", "high": "5.10", "low": "4.95", "pctChange": "0.5"},
+        {"timestamp": "1700086400", "bid": "5.10", "ask": "5.11", "high": "5.20", "low": "5.00", "pctChange": "2.0"},
+        {"timestamp": "1700172800", "bid": "5.05", "ask": "5.06", "high": "5.18", "low": "5.01", "pctChange": "-0.9"},
+    ]
 
 
 class TestCurrencyChartContent:
-    """Tests for currency_chart_content function"""
-    
-    def test_currency_chart_content_returns_valid_container(self, mock_page):
-        """Test that currency_chart_content() returns a valid Container"""
+    def test_returns_valid_container(self, mock_page):
         result = currency_chart_content(mock_page)
-        
+
         assert isinstance(result, ft.Container)
         assert result.expand is True
-        assert result.content is not None
-    
-    def test_currency_chart_content_has_correct_structure(self, mock_page):
-        """Test that currency_chart_content has the correct nested structure"""
-        result = currency_chart_content(mock_page)
-        
-        # Outer container
-        assert isinstance(result, ft.Container)
-        assert result.expand is True
-        
-        # Stack
-        stack = result.content
-        assert isinstance(stack, ft.Stack)
-        assert stack.expand is True
-        
-        # Column inside stack
-        column = stack.controls[0]
-        assert isinstance(column, ft.Column)
-        assert column.expand is True
-    
-    def test_currency_chart_content_has_title_and_subtitle(self, mock_page):
-        """Test that currency_chart_content contains title and subtitle"""
-        result = currency_chart_content(mock_page)
-        
-        stack = result.content
-        column = stack.controls[0]
-        
-        # Title
-        title = column.controls[0]
-        assert isinstance(title, ft.Text)
-        assert title.value == "Cotação USD/BRL"
-        assert title.weight == "bold"
-        assert title.color == COLORS["text_primary"]
-        assert title.text_align == "center"
-        
-        # Subtitle
-        subtitle = column.controls[1]
-        assert isinstance(subtitle, ft.Text)
-        assert "últimos 15 dias" in subtitle.value
-        assert subtitle.color == COLORS["text_secondary"]
-        assert subtitle.text_align == "center"
-    
-    def test_currency_chart_content_has_chart_container(self, mock_page):
-        """Test that currency_chart_content contains chart container"""
-        result = currency_chart_content(mock_page)
-        
-        stack = result.content
-        column = stack.controls[0]
-        
-        # Chart container
-        chart_container = column.controls[2]
-        assert isinstance(chart_container, ft.Container)
-        assert chart_container.expand is True
-        assert chart_container.bgcolor == COLORS["surface"]
-        assert chart_container.border_radius is not None
-        assert chart_container.shadow is not None
-    
-    def test_currency_chart_content_shows_loading_state(self, mock_page):
-        """Test that currency_chart_content initially shows loading state"""
-        result = currency_chart_content(mock_page)
-        
-        stack = result.content
-        column = stack.controls[0]
-        chart_container = column.controls[2]
-        
-        # Loading state
-        loading_column = chart_container.content
-        assert isinstance(loading_column, ft.Column)
-        assert loading_column.alignment == "center"
-        assert loading_column.horizontal_alignment == "center"
-        
-        # Should have loading text and progress ring
-        assert len(loading_column.controls) == 2
-        
-        loading_text = loading_column.controls[0]
-        assert isinstance(loading_text, ft.Text)
-        assert "Carregando" in loading_text.value
-        
-        progress_ring = loading_column.controls[1]
-        assert isinstance(progress_ring, ft.ProgressRing)
+        assert isinstance(result.content, ft.Column)
 
+    def test_has_market_toolbar(self, mock_page):
+        result = currency_chart_content(mock_page)
 
-class TestCurrencyChartContentMobile:
-    """Tests for currency_chart_content with mobile viewport"""
-    
-    def test_currency_chart_content_mobile_responsive_font_sizes(self, mobile_page):
-        """Test that mobile layout has scaled font sizes"""
+        row = toolbar_row(result)
+        market_selector = row.controls[0]
+        fx_field = row.controls[1]
+        stock_field = row.controls[2]
+        period_selector = row.controls[4]
+
+        assert isinstance(market_selector, ft.SegmentedButton)
+        assert market_selector.selected == [DEFAULT_MARKET]
+        assert isinstance(fx_field, ft.TextField)
+        assert fx_field.value == DEFAULT_FX_INPUT
+        assert isinstance(stock_field, ft.TextField)
+        assert stock_field.visible is False
+        assert isinstance(period_selector, ft.SegmentedButton)
+        assert period_selector.selected == [DEFAULT_PERIOD]
+
+    def test_has_investing_style_tabs(self, mock_page):
+        result = currency_chart_content(mock_page)
+
+        tabs = market_column(result).controls[0]
+        labels = [button.content for button in tabs.controls if isinstance(button.content, str)]
+
+        assert "Câmbio" in labels
+        assert "Ações" in labels
+
+    def test_has_chart_container_and_loading_state(self, mock_page):
+        result = currency_chart_content(mock_page)
+
+        chart = chart_container(result)
+        assert isinstance(chart, ft.Container)
+        assert chart.bgcolor == COLORS["surface"]
+        assert chart.border_radius is not None
+        assert chart.shadow is not None
+        assert isinstance(chart.content, ft.Column)
+        assert "Carregando" in chart.content.controls[0].value
+
+    def test_mobile_chart_height(self, mobile_page):
         result = currency_chart_content(mobile_page)
-        
-        stack = result.content
-        column = stack.controls[0]
-        
-        # Title font size (32 * 0.85 = 27.2 -> 27)
-        title = column.controls[0]
-        assert title.size == 27
-        
-        # Subtitle font size (16 * 0.85 = 13.6 -> 13)
-        subtitle = column.controls[1]
-        assert subtitle.size == 13
-    
-    def test_currency_chart_content_mobile_chart_height(self, mobile_page):
-        """Test that mobile layout has correct chart height (300px)"""
-        result = currency_chart_content(mobile_page)
-        
-        stack = result.content
-        column = stack.controls[0]
-        chart_container = column.controls[2]
-        
-        # Mobile chart height should be 300px
-        assert chart_container.height == 300
-    
-    def test_currency_chart_content_mobile_responsive_padding(self, mobile_page):
-        """Test that mobile layout has scaled padding"""
-        result = currency_chart_content(mobile_page)
-        
-        stack = result.content
-        column = stack.controls[0]
-        chart_container = column.controls[2]
-        
-        # Container padding (20 * 0.75 = 15)
-        assert chart_container.padding == 15
 
+        assert chart_container(result).height == 430
 
-class TestCurrencyChartContentTablet:
-    """Tests for currency_chart_content with tablet viewport"""
-    
-    def test_currency_chart_content_tablet_responsive_font_sizes(self, tablet_page):
-        """Test that tablet layout has scaled font sizes"""
-        result = currency_chart_content(tablet_page)
-        
-        stack = result.content
-        column = stack.controls[0]
-        
-        # Title font size (32 * 0.95 = 30.4 -> 30)
-        title = column.controls[0]
-        assert title.size == 30
-        
-        # Subtitle font size (16 * 0.95 = 15.2 -> 15)
-        subtitle = column.controls[1]
-        assert subtitle.size == 15
-    
-    def test_currency_chart_content_tablet_chart_height(self, tablet_page):
-        """Test that tablet layout has correct chart height (350px)"""
-        result = currency_chart_content(tablet_page)
-        
-        stack = result.content
-        column = stack.controls[0]
-        chart_container = column.controls[2]
-        
-        # Tablet chart height should be 350px
-        assert chart_container.height == 350
-
-
-class TestCurrencyChartContentDesktop:
-    """Tests for currency_chart_content with desktop viewport"""
-    
-    def test_currency_chart_content_desktop_responsive_font_sizes(self, desktop_page):
-        """Test that desktop layout has full font sizes"""
+    def test_desktop_chart_height(self, desktop_page):
         result = currency_chart_content(desktop_page)
-        
-        stack = result.content
-        column = stack.controls[0]
-        
-        # Title font size (32 * 1.0 = 32)
-        title = column.controls[0]
-        assert title.size == 32
-        
-        # Subtitle font size (16 * 1.0 = 16)
-        subtitle = column.controls[1]
-        assert subtitle.size == 16
-    
-    def test_currency_chart_content_desktop_chart_height(self, desktop_page):
-        """Test that desktop layout has correct chart height (400px)"""
-        result = currency_chart_content(desktop_page)
-        
-        stack = result.content
-        column = stack.controls[0]
-        chart_container = column.controls[2]
-        
-        # Desktop chart height should be 400px
-        assert chart_container.height == 400
+
+        assert chart_container(result).height == 610
+
+
+class TestNormalizeFxSymbols:
+    def test_default_symbols(self):
+        assert normalize_fx_symbols("") == DEFAULT_FX_SYMBOLS
+
+    def test_single_currency_becomes_brl_pair(self):
+        assert normalize_fx_symbols("gbp") == ["GBP-BRL"]
+
+    def test_pair_and_multiple_values(self):
+        assert normalize_fx_symbols("brl/usd, eur-usd") == ["USD-BRL", "EUR-USD"]
 
 
 class TestCreateChart:
-    """Tests for create_chart function"""
-    
-    def test_create_chart_with_valid_data(self):
-        """Test that create_chart() returns valid base64 encoded PyECharts HTML"""
-        # Sample data matching API structure
-        data = [
-            {
-                "timestamp": "1700000000",
-                "high": "5.10",
-                "low": "5.00",
-                "pctChange": "0.5"
-            },
-            {
-                "timestamp": "1700086400",
-                "high": "5.15",
-                "low": "5.05",
-                "pctChange": "0.8"
-            },
-            {
-                "timestamp": "1700172800",
-                "high": "5.20",
-                "low": "5.10",
-                "pctChange": "1.0"
-            }
-        ]
-        
-        result = create_chart(data, "400px")
-        
+    def test_create_chart_with_currency_data(self):
+        result = create_chart(sample_currency_data(), "520px")
+
         assert result is not None
-        assert isinstance(result, str)
-
-        import base64
-
         decoded = base64.b64decode(result).decode("utf-8")
         assert "<!doctype html>" in decoded
         assert "echarts" in decoded
-        assert "BRL" in decoded
-        assert "Varia" in decoded or "Varia\\u00e7\\u00e3o" in decoded
-    
-    def test_create_chart_with_empty_data(self):
-        """Test that create_chart() returns None with empty data"""
-        result = create_chart([], "400px")
-        
-        assert result is None
-    
-    def test_create_chart_with_none_data(self):
-        """Test that create_chart() returns None with None data"""
-        result = create_chart(None, "400px")
-        
-        assert result is None
-    
-    def test_create_chart_renders_valid_html_for_same_data(self):
-        """Test that create_chart() renders valid HTML for repeated same input"""
-        data = [
-            {
-                "timestamp": "1700000000",
-                "high": "5.10",
-                "low": "5.00",
-                "pctChange": "0.5"
-            }
-        ]
-        
-        # First call
-        result1 = create_chart(data, "400px")
-        
-        # Second call with same data
-        result2 = create_chart(data, "400px")
-        
-        # Both should be valid base64 encoded PyECharts HTML
-        assert result1 is not None
-        assert result2 is not None
-        assert isinstance(result1, str)
-        assert isinstance(result2, str)
-        import base64
+        assert "Volume" in decoded
+        assert "resizeCharts" in decoded
+        assert PAIR_USD_BRL in decoded
 
-        assert "echarts" in base64.b64decode(result1).decode("utf-8")
-        assert "echarts" in base64.b64decode(result2).decode("utf-8")
+    def test_create_chart_with_stock_payload(self):
+        payload = {
+            "market": "STOCK",
+            "symbol": "PETR4",
+            "name": "PETR4",
+            "currency": "BRL",
+            "source": "demo",
+            "points": _sample_stock_points("PETR4", "1M"),
+        }
+
+        result = create_chart(payload, "520px")
+
+        decoded = base64.b64decode(result).decode("utf-8")
+        assert "PETR4" in decoded
+        assert "Volume" in decoded
+        assert "Último" in decoded or "\\u00daltimo" in decoded
+
+    def test_create_chart_with_three_currency_comparison(self):
+        result = create_chart(
+            {PAIR_USD_BRL: sample_currency_data(), PAIR_EUR_BRL: sample_currency_data()},
+            "520px",
+            view_key="ALL",
+        )
+
+        decoded = base64.b64decode(result).decode("utf-8")
+        assert "Dólar" in decoded or "D\\u00f3lar" in decoded
+        assert "Euro" in decoded
+        assert "Real" in decoded
+
+    def test_create_chart_with_empty_data(self):
+        assert create_chart([], "520px") is None
+        assert create_chart(None, "520px") is None
 
 
 @pytest.mark.asyncio
-class TestFetchUsdBrlData:
-    """Tests for fetch_usd_brl_data function"""
-    
+class TestFetchCurrencyData:
     async def test_fetch_usd_brl_data_with_mocked_httpx(self):
-        """Test fetch_usd_brl_data() with mocked httpx client"""
-        # Clear cache
         import pages.coins as coins_module
-        coins_module._cached_data = None
-        coins_module._last_update = None
-        coins_module._is_fetching = False
-        
-        mock_data = [
-            {
-                "timestamp": "1700000000",
-                "high": "5.10",
-                "low": "5.00",
-                "pctChange": "0.5"
-            }
+
+        coins_module._cached_data = {}
+        coins_module._last_update = {}
+        coins_module._is_fetching = {}
+
+        with patch("pages.coins.httpx.AsyncClient") as mock_client:
+            mock_response = Mock()
+            mock_response.status_code = 200
+            mock_response.json = Mock(return_value=sample_currency_data())
+
+            mock_client_instance = AsyncMock()
+            mock_client_instance.get = AsyncMock(return_value=mock_response)
+            mock_client_instance.__aenter__ = AsyncMock(return_value=mock_client_instance)
+            mock_client_instance.__aexit__ = AsyncMock(return_value=None)
+            mock_client.return_value = mock_client_instance
+
+            result = await fetch_usd_brl_data(force_refresh=True)
+
+        assert result == sample_currency_data()
+        assert coins_module._cached_data[f"fx-raw:{PAIR_USD_BRL}:1M"] == sample_currency_data()
+
+    async def test_currency_cache_prevents_refetch(self):
+        import pages.coins as coins_module
+
+        cached_data = sample_currency_data()
+        coins_module._cached_data = {f"fx-raw:{PAIR_USD_BRL}:1M": cached_data}
+        coins_module._last_update = {f"fx-raw:{PAIR_USD_BRL}:1M": datetime.now()}
+        coins_module._is_fetching = {}
+
+        with patch("pages.coins.httpx.AsyncClient") as mock_client:
+            result = await fetch_currency_data(PAIR_USD_BRL)
+
+        assert result == cached_data
+        mock_client.assert_not_called()
+
+    async def test_currency_cache_expires(self):
+        import pages.coins as coins_module
+
+        old_key = f"fx-raw:{PAIR_USD_BRL}:1M"
+        coins_module._cached_data = {old_key: [{"timestamp": "1", "bid": "4.9"}]}
+        coins_module._last_update = {old_key: datetime.now() - timedelta(minutes=6)}
+        coins_module._is_fetching = {}
+
+        with patch("pages.coins.httpx.AsyncClient") as mock_client:
+            mock_response = Mock()
+            mock_response.status_code = 200
+            mock_response.json = Mock(return_value=sample_currency_data())
+
+            mock_client_instance = AsyncMock()
+            mock_client_instance.get = AsyncMock(return_value=mock_response)
+            mock_client_instance.__aenter__ = AsyncMock(return_value=mock_client_instance)
+            mock_client_instance.__aexit__ = AsyncMock(return_value=None)
+            mock_client.return_value = mock_client_instance
+
+            result = await fetch_currency_data(PAIR_USD_BRL)
+
+        assert result == sample_currency_data()
+        mock_client.assert_called_once()
+
+    async def test_fetch_chart_data_returns_fx_payload(self):
+        with patch("pages.coins.fetch_market_data", new_callable=AsyncMock) as mock_fetch:
+            mock_fetch.return_value = {"market": "FX", "symbol": "FX_COMPARE", "series": []}
+
+            result = await fetch_chart_data("ALL", force_refresh=True)
+
+        assert result["symbol"] == "FX_COMPARE"
+        mock_fetch.assert_called_once()
+
+    async def test_fetch_fx_payloads_uses_typed_currency_list(self):
+        payloads = [
+            {"market": "FX", "symbol": "USD-BRL", "points": [{"close": 5}]},
+            {"market": "FX", "symbol": "EUR-BRL", "points": [{"close": 6}]},
         ]
-        
+
+        async def fake_payload(symbol, period=DEFAULT_PERIOD, force_refresh=False):
+            return payloads[0] if symbol == "USD-BRL" else payloads[1]
+
+        with patch("pages.coins.fetch_fx_payload", new=fake_payload):
+            result = await fetch_fx_payloads("usd, eur", DEFAULT_PERIOD, force_refresh=True)
+
+        assert [payload["symbol"] for payload in result] == ["USD-BRL", "EUR-BRL"]
+
+
+@pytest.mark.asyncio
+class TestFetchStockPayload:
+    async def test_fetch_stock_payload_with_brapi_shape(self):
+        import pages.coins as coins_module
+
+        coins_module._cached_data = {}
+        coins_module._last_update = {}
+        coins_module._is_fetching = {}
+
+        brapi_data = {
+            "results": [
+                {
+                    "symbol": "PETR4",
+                    "shortName": "PETR4",
+                    "currency": "BRL",
+                    "historicalDataPrice": [
+                        {"date": 1700000000, "open": 45.0, "high": 46.0, "low": 44.8, "close": 45.5, "volume": 1000000},
+                        {"date": 1700086400, "open": 45.5, "high": 47.0, "low": 45.2, "close": 46.5, "volume": 1200000},
+                    ],
+                }
+            ]
+        }
+
         with patch("pages.coins.httpx.AsyncClient") as mock_client:
             mock_response = Mock()
             mock_response.status_code = 200
-            mock_response.json = Mock(return_value=mock_data)
-            
+            mock_response.json = Mock(return_value=brapi_data)
+
             mock_client_instance = AsyncMock()
             mock_client_instance.get = AsyncMock(return_value=mock_response)
             mock_client_instance.__aenter__ = AsyncMock(return_value=mock_client_instance)
             mock_client_instance.__aexit__ = AsyncMock(return_value=None)
-            
             mock_client.return_value = mock_client_instance
-            
-            result = await fetch_usd_brl_data(force_refresh=True)
-            
-            assert result == mock_data
-            assert coins_module._cached_data == mock_data
-            assert coins_module._last_update is not None
-    
-    async def test_fetch_usd_brl_data_cache_mechanism(self):
-        """Test that cache mechanism prevents refetch within 5 minutes"""
-        # Setup cache with recent data
+
+            result = await fetch_stock_payload("PETR4", "1M", force_refresh=True)
+
+        assert result["market"] == "STOCK"
+        assert result["symbol"] == "PETR4"
+        assert result["source"] == "brapi"
+        assert len(result["points"]) == 2
+
+    async def test_fetch_stock_payload_falls_back_to_demo(self):
         import pages.coins as coins_module
-        
-        cached_data = [{"timestamp": "1700000000", "high": "5.10", "low": "5.00", "pctChange": "0.5"}]
-        coins_module._cached_data = cached_data
-        coins_module._last_update = datetime.now()
-        coins_module._is_fetching = False
-        
-        with patch("pages.coins.httpx.AsyncClient") as mock_client:
-            # This should not be called due to cache
-            result = await fetch_usd_brl_data(force_refresh=False)
-            
-            # Should return cached data without making HTTP request
-            assert result == cached_data
-            mock_client.assert_not_called()
-    
-    async def test_fetch_usd_brl_data_cache_expires_after_5_minutes(self):
-        """Test that cache expires and refetches after 5 minutes"""
-        # Setup cache with old data (6 minutes ago)
-        import pages.coins as coins_module
-        
-        old_data = [{"timestamp": "1700000000", "high": "5.00", "low": "4.90", "pctChange": "0.3"}]
-        new_data = [{"timestamp": "1700000360", "high": "5.10", "low": "5.00", "pctChange": "0.5"}]
-        
-        coins_module._cached_data = old_data
-        coins_module._last_update = datetime.now() - timedelta(minutes=6)
-        coins_module._is_fetching = False
-        
-        with patch("pages.coins.httpx.AsyncClient") as mock_client:
-            mock_response = Mock()
-            mock_response.status_code = 200
-            mock_response.json = Mock(return_value=new_data)
-            
-            mock_client_instance = AsyncMock()
-            mock_client_instance.get = AsyncMock(return_value=mock_response)
-            mock_client_instance.__aenter__ = AsyncMock(return_value=mock_client_instance)
-            mock_client_instance.__aexit__ = AsyncMock(return_value=None)
-            
-            mock_client.return_value = mock_client_instance
-            
-            result = await fetch_usd_brl_data(force_refresh=False)
-            
-            # Should fetch new data
-            assert result == new_data
-            assert coins_module._cached_data == new_data
-            mock_client.assert_called_once()
-    
-    async def test_fetch_usd_brl_data_handles_http_error(self):
-        """Test that fetch_usd_brl_data handles HTTP errors gracefully"""
-        # Setup with existing cache
-        import pages.coins as coins_module
-        
-        cached_data = [{"timestamp": "1700000000", "high": "5.10", "low": "5.00", "pctChange": "0.5"}]
-        coins_module._cached_data = cached_data
-        coins_module._last_update = datetime.now() - timedelta(minutes=6)
-        coins_module._is_fetching = False
-        
+
+        coins_module._cached_data = {}
+        coins_module._last_update = {}
+        coins_module._is_fetching = {}
+
         with patch("pages.coins.httpx.AsyncClient") as mock_client:
             mock_response = Mock()
             mock_response.status_code = 500
-            
+
             mock_client_instance = AsyncMock()
             mock_client_instance.get = AsyncMock(return_value=mock_response)
             mock_client_instance.__aenter__ = AsyncMock(return_value=mock_client_instance)
             mock_client_instance.__aexit__ = AsyncMock(return_value=None)
-            
             mock_client.return_value = mock_client_instance
-            
-            result = await fetch_usd_brl_data(force_refresh=True)
-            
-            # Should return cached data on error
-            assert result == cached_data
-    
-    async def test_fetch_usd_brl_data_returns_empty_on_error_without_cache(self):
-        """Test that fetch_usd_brl_data returns empty list on error without cache"""
-        # Clear cache
-        import pages.coins as coins_module
-        coins_module._cached_data = None
-        coins_module._last_update = None
-        coins_module._is_fetching = False
-        
-        with patch("pages.coins.httpx.AsyncClient") as mock_client:
-            mock_response = Mock()
-            mock_response.status_code = 500
-            
-            mock_client_instance = AsyncMock()
-            mock_client_instance.get = AsyncMock(return_value=mock_response)
-            mock_client_instance.__aenter__ = AsyncMock(return_value=mock_client_instance)
-            mock_client_instance.__aexit__ = AsyncMock(return_value=None)
-            
-            mock_client.return_value = mock_client_instance
-            
-            result = await fetch_usd_brl_data(force_refresh=True)
-            
-            # Should return empty list
-            assert result == []
+
+            result = await fetch_stock_payload("TEST3", "1M", force_refresh=True)
+
+        assert result["market"] == "STOCK"
+        assert result["source"] == "demo"
+        assert result["points"]
 
 
 @pytest.mark.asyncio
 class TestLoadChart:
-    """Tests for load_chart function"""
-    
-    async def test_load_chart_displays_error_on_empty_data(self, mock_page):
-        """Test that load_chart displays error message when data is empty"""
-        chart_container = ft.Container()
+    async def test_load_chart_displays_webview_on_success(self, mock_page):
+        payload = {
+            "market": "STOCK",
+            "symbol": "PETR4",
+            "name": "PETR4",
+            "currency": "BRL",
+            "source": "demo",
+            "points": _sample_stock_points("PETR4", "1M"),
+        }
+        chart = ft.Container()
         error_button = ft.Button("Retry")
-        
-        with patch("pages.coins.fetch_usd_brl_data", new_callable=AsyncMock) as mock_fetch:
+        meta = ft.Text("")
+        title = ft.Text("")
+
+        with patch("pages.coins.fetch_market_data", new_callable=AsyncMock) as mock_fetch:
+            mock_fetch.return_value = payload
+
+            result = await load_chart(
+                mock_page,
+                chart,
+                error_button,
+                "520px",
+                market="STOCK",
+                symbol="PETR4",
+                period="1M",
+                meta_text=meta,
+                title_text=title,
+            )
+
+        assert result == payload
+        assert type(chart.content).__name__ == "WebView"
+        assert chart.content.url.startswith("data:text/html;base64,")
+        assert "PETR4" in meta.value
+        assert title.value == "PETR4"
+
+    async def test_load_chart_displays_error_without_data(self, mock_page):
+        chart = ft.Container()
+        error_button = ft.Button("Retry")
+
+        with patch("pages.coins.fetch_fx_payloads", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.return_value = []
-            
-            await load_chart(mock_page, chart_container, error_button, "400px")
-            
-            # Should display error message
-            assert isinstance(chart_container.content, ft.Column)
-            error_column = chart_container.content
-            assert error_column.alignment == "center"
-            
-            # Should have error text and button
-            error_text = error_column.controls[0]
-            assert isinstance(error_text, ft.Text)
-            assert "Erro ao carregar dados" in error_text.value
-            assert error_text.color == COLORS["error"]
-    
-    async def test_load_chart_displays_chart_on_success(self, mock_page):
-        """Test that load_chart displays WebView with PyECharts on success"""
-        chart_container = ft.Container()
+
+            await load_chart(mock_page, chart, error_button, "520px")
+
+        assert isinstance(chart.content, ft.Column)
+        assert "Erro ao carregar dados" in chart.content.controls[0].value
+
+    async def test_load_chart_displays_multiple_fx_charts(self, mock_page):
+        chart = ft.Container()
         error_button = ft.Button("Retry")
-        
-        mock_data = [
+        meta = ft.Text("")
+        title = ft.Text("")
+        payloads = [
             {
-                "timestamp": "1700000000",
-                "high": "5.10",
-                "low": "5.00",
-                "pctChange": "0.5"
-            }
+                "market": "FX",
+                "symbol": "USD-BRL",
+                "name": "Dólar / Real",
+                "currency": "BRL",
+                "source": "AwesomeAPI",
+                "points": _sample_stock_points("USD", "1M"),
+            },
+            {
+                "market": "FX",
+                "symbol": "EUR-BRL",
+                "name": "Euro / Real",
+                "currency": "BRL",
+                "source": "AwesomeAPI",
+                "points": _sample_stock_points("EUR", "1M"),
+            },
         ]
-        
-        with patch("pages.coins.fetch_usd_brl_data", new_callable=AsyncMock) as mock_fetch:
-            mock_fetch.return_value = mock_data
-            
-            await load_chart(mock_page, chart_container, error_button, "400px")
-            
-            # Should display WebView with PyECharts data URL
-            assert chart_container.content is not None
-            assert type(chart_container.content).__name__ == "WebView"
-            webview = chart_container.content
-            assert webview.expand is True
-            assert webview.bgcolor == COLORS["surface"]
-            assert webview.url.startswith("data:text/html;base64,")
-    
-    async def test_load_chart_displays_error_on_exception(self, mock_page):
-        """Test that load_chart displays error message on exception"""
-        chart_container = ft.Container()
-        error_button = ft.Button("Retry")
-        
-        # Mock page.update to prevent errors
-        mock_page.update = Mock()
-        
-        # The exception occurs after error_font_size is defined, so we need to
-        # let fetch succeed first, then have create_chart fail
-        mock_data = [{"timestamp": "1700000000", "high": "5.10", "low": "5.00", "pctChange": "0.5"}]
-        
-        with patch("pages.coins.fetch_usd_brl_data", new_callable=AsyncMock) as mock_fetch:
-            with patch("pages.coins.create_chart") as mock_create:
-                mock_fetch.return_value = mock_data
-                mock_create.side_effect = Exception("Chart rendering error")
-                
-                await load_chart(mock_page, chart_container, error_button, "400px")
-                
-                # Should display error message
-                assert isinstance(chart_container.content, ft.Column)
-                error_column = chart_container.content
-                
-                error_text = error_column.controls[0]
-                assert isinstance(error_text, ft.Text)
-                assert "Erro inesperado" in error_text.value
-                assert error_text.color == COLORS["error"]
-    
-    async def test_load_chart_displays_error_when_chart_creation_fails(self, mock_page):
-        """Test that load_chart displays error when create_chart returns None"""
-        chart_container = ft.Container()
-        error_button = ft.Button("Retry")
-        
-        mock_data = [{"timestamp": "1700000000", "high": "5.10", "low": "5.00", "pctChange": "0.5"}]
-        
-        with patch("pages.coins.fetch_usd_brl_data", new_callable=AsyncMock) as mock_fetch:
-            with patch("pages.coins.create_chart") as mock_create_chart:
-                mock_fetch.return_value = mock_data
-                mock_create_chart.return_value = None
-                
-                await load_chart(mock_page, chart_container, error_button, "400px")
-                
-                # Should display error message
-                assert isinstance(chart_container.content, ft.Column)
-                error_column = chart_container.content
-                
-                error_text = error_column.controls[0]
-                assert isinstance(error_text, ft.Text)
-                assert "Erro ao renderizar gráfico" in error_text.value
-                assert error_text.color == COLORS["error"]
+
+        with patch("pages.coins.fetch_fx_payloads", new_callable=AsyncMock) as mock_fetch:
+            mock_fetch.return_value = payloads
+
+            result = await load_chart(
+                mock_page,
+                chart,
+                error_button,
+                "520px",
+                market="FX",
+                symbol="USD, EUR",
+                period="1M",
+                meta_text=meta,
+                title_text=title,
+            )
+
+        assert result == payloads
+        assert isinstance(chart.content, ft.Column)
+        assert "USD-BRL" in meta.value
+        assert "EUR-BRL" in meta.value
+        assert title.value == "Gráficos Múltiplos de Moedas"

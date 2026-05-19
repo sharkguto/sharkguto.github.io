@@ -23,7 +23,7 @@ def portfolio_content(page: ft.Page):
         },
         {
             "title": "Monitoramento de Cotacoes",
-            "description": "Dashboard tecnico para acompanhar USD/BRL com historico, indicadores e grafico PyECharts dentro do Flet. Uma demonstracao direta de dados, WebView e Python no navegador.",
+            "description": "Terminal tecnico para acompanhar cambio e acoes com historico, indicadores, volume e grafico PyECharts dentro do Flet. Uma demonstracao direta de dados, WebView e Python no navegador.",
             "image": "/chart-project.jpg",
             "technologies": ["Python", "PyECharts", "Flet", "ScyllaDB", "Docker"],
             "metric": "Dados",
