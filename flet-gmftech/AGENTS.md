@@ -40,7 +40,7 @@ Copy e posicionamento atuais:
 - Serviços: Flet, Python, IA, automacao, dados, cloud, IoT, seguranca e modernizacao.
 - Contato: diagnostico tecnico para Flet, IA e automacao.
 - Portfolio: projetos com Flet, dados e automacao em producao.
-- Cotacao: terminal tecnico para cambio e acoes usando PyECharts; no cambio, campo digitavel e dois graficos padrao USD/BRL e EUR/BRL.
+- Cotacao: terminal tecnico para cambio e acoes usando PyECharts; no cambio, campo digitavel e padrao USD/BRL.
 
 ## Stack
 

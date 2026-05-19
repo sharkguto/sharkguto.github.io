@@ -123,6 +123,9 @@ class TestNormalizeFxSymbols:
     def test_pair_and_multiple_values(self):
         assert normalize_fx_symbols("brl/usd, eur-usd") == ["USD-BRL", "EUR-USD"]
 
+    def test_default_input_is_usd_brl(self):
+        assert normalize_fx_symbols(DEFAULT_FX_INPUT) == ["USD-BRL"]
+
 
 class TestCreateChart:
     def test_create_chart_with_currency_data(self):

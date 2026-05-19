@@ -33,8 +33,8 @@ PAIR_USD_BRL = "USD-BRL"
 PAIR_EUR_BRL = "EUR-BRL"
 DEFAULT_MARKET = "FX"
 DEFAULT_FX_SYMBOL = PAIR_USD_BRL
-DEFAULT_FX_INPUT = "USD, EUR"
-DEFAULT_FX_SYMBOLS = [PAIR_USD_BRL, PAIR_EUR_BRL]
+DEFAULT_FX_INPUT = "USD, BRL"
+DEFAULT_FX_SYMBOLS = [PAIR_USD_BRL]
 DEFAULT_STOCK_SYMBOL = "PETR4"
 DEFAULT_PERIOD = "1M"
 DEFAULT_VIEW = "BRL_USD"
@@ -1009,7 +1009,7 @@ def currency_chart_content(page: ft.Page):
         color=COLORS["text_primary"],
     )
     meta_text = ft.Text(
-        "Câmbio • USD-BRL, EUR-BRL • 1M",
+        "Câmbio • USD-BRL • 1M",
         size=get_responsive_font_size(13, width),
         color=COLORS["text_secondary"],
     )
@@ -1047,7 +1047,7 @@ def currency_chart_content(page: ft.Page):
         dense=True,
         width=250 if not is_mobile else 260,
         prefix_icon=ft.Icons.CURRENCY_EXCHANGE,
-        hint_text="USD, EUR, GBP ou USD/EUR",
+        hint_text="USD, BRL, EUR ou USD/EUR",
         bgcolor=COLORS["surface"],
         border_radius=6,
         content_padding=ft.Padding.symmetric(horizontal=10, vertical=8),

@@ -23,7 +23,7 @@ O site posiciona a GMF-tech como especialista em Flet, Python, IA aplicada, auto
 - Sobre com posicionamento da GMF-tech e identidade da caravela.
 - Contato com formulario de diagnostico tecnico.
 - Portfolio com projetos e tecnologias.
-- Terminal de mercado para cambio e acoes, com campo digitavel no cambio, dois graficos padrao (USD/BRL e EUR/BRL) e PyECharts de preco/volume renderizado em `flet_webview.WebView`.
+- Terminal de mercado para cambio e acoes, com campo digitavel no cambio, padrao USD/BRL e PyECharts de preco/volume renderizado em `flet_webview.WebView`.
 
 ## Desenvolvimento
 
