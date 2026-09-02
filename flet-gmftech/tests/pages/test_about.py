@@ -14,21 +14,21 @@ def test_about_renders_current_positioning(mock_page):
     assert result.bgcolor == COLORS["background"]
 
     assert text_exists(result, "Sobre a GMF-tech")
-    assert text_exists(result, "Um estúdio técnico")
-    assert text_exists(result, "Caravela digital")
+    assert text_exists(result, "Fábrica de software")
+    assert text_exists(result, "Identidade GMF-tech")
 
 
 def test_about_lists_current_value_cards(mock_page):
     result = about_content(mock_page)
 
-    for label in ["Consultoria sem enrolação", "Desenvolvimento Python", "DevOps para produção"]:
+    for label in ["Consultoria e discovery", "Desenvolvimento sob medida", "Entrega e operação"]:
         assert text_exists(result, label)
 
 
 def test_about_lists_work_model(mock_page):
     result = about_content(mock_page)
 
-    for label in ["Como eu trabalho", "1. Diagnóstico", "2. Protótipo", "3. Produção"]:
+    for label in ["Como conduzimos cada projeto", "1. Descoberta e escopo", "2. Engenharia e validação", "3. Implantação e evolução"]:
         assert text_exists(result, label)
 
 

@@ -43,14 +43,17 @@ Stack atual:
 - HTTPX 0.28.1;
 - Pyodide 314.0.3 no bundle web.
 
-Flet e o framework do frontend e parte central do posicionamento do produto.
-Nao migre telas para React, Vue, Next, Astro ou HTML/JavaScript paralelo. Nao
-adicione dependencias pesadas sem uma necessidade concreta e verificavel.
+Flet e o framework deste site. O posicionamento comercial da GMF-tech e fabrica
+de software sob medida: a comunicacao deve priorizar problemas de negocio,
+escopo, engenharia, entrega e operacao; tecnologias aparecem como suporte a
+essas capacidades. Nao migre telas para React, Vue, Next, Astro ou
+HTML/JavaScript paralelo. Nao adicione dependencias pesadas sem uma necessidade
+concreta e verificavel.
 
 ## Mapa do codigo
 
 - `app.py`: entrada do Flet, configuracao da pagina, cabecalho, navegacao,
-  drawer, footer, rotas e dialogos globais.
+  drawer, footer e rotas.
 - `theme.py`: paleta e helpers compartilhados de tema, tipografia, botoes e
   sombras.
 - `utils/responsive.py`: breakpoints, fontes, espacamentos, colunas e padding
@@ -91,8 +94,12 @@ portfolio; para codigo novo, prefira `assets/`.
   referencia larguras de 400, 768 e 1920 pixels.
 - Mantenha o site em portugues e preserve a identidade GMF-tech. Mudancas de copy
   nao devem prometer recursos ainda simulados ou inexistentes.
-- `pages/contact.py` nao envia email de verdade. Nao apresente a acao simulada
-  como integracao concluida sem implementar e testar um backend apropriado.
+- Use linguagem corporativa, objetiva e em terceira pessoa. Evite slogans
+  genericos, superlativos sem evidencia e IA como solucao padrao para todo
+  projeto.
+- `pages/contact.py` prepara um link `mailto:` para o visitante concluir o
+  contato no aplicativo de email. Nao afirme que a mensagem foi enviada sem um
+  backend apropriado.
 - Preserve acessibilidade basica: rotulos claros, contraste, estados de erro e
   alvos de interacao utilizaveis em telas pequenas.
 

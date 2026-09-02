@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from urllib.parse import quote
+
 import flet as ft
 
 from theme import (
@@ -14,9 +16,14 @@ from theme import (
 from utils.responsive import Breakpoint, ResponsiveConfig
 
 
-def send_email(name, email, message):
-    print(name, email, message)
-    return True, "Diagnostico recebido com sucesso"
+def build_mailto_url(name: str, email: str, message: str) -> str:
+    subject = quote("Contato pelo site GMF-tech")
+    body = quote(
+        f"Nome: {name}\n"
+        f"Email: {email}\n\n"
+        f"Contexto do projeto:\n{message}"
+    )
+    return f"mailto:contato@gmf-tech.com?subject={subject}&body={body}"
 
 
 def contact_content(page: ft.Page):
@@ -35,14 +42,14 @@ def contact_content(page: ft.Page):
 
     name_field = ft.TextField(
         label="Nome",
-        hint_text="Como posso te chamar?",
+        hint_text="Nome e sobrenome",
         border_color=COLORS["muted"],
         focused_border_color=COLORS["secondary"],
         cursor_color=COLORS["secondary"],
         width=field_width,
     )
     email_field = ft.TextField(
-        label="Email",
+        label="E-mail",
         hint_text="seu.email@empresa.com",
         border_color=COLORS["muted"],
         focused_border_color=COLORS["secondary"],
@@ -50,8 +57,8 @@ def contact_content(page: ft.Page):
         width=field_width,
     )
     message_field = ft.TextField(
-        label="Mensagem",
-        hint_text="Conte o que voce quer construir, automatizar ou melhorar com IA.",
+        label="Contexto do projeto",
+        hint_text="Descreva o objetivo, o contexto atual, os sistemas envolvidos e o prazo esperado.",
         multiline=True,
         min_lines=5,
         max_lines=6,
@@ -77,27 +84,19 @@ def contact_content(page: ft.Page):
         if not name_field.value or not email_field.value or not message_field.value:
             show_snack_bar(
                 ft.SnackBar(
-                    content=ft.Text("Por favor, preencha todos os campos."),
+                    content=ft.Text("Preencha todos os campos para continuar."),
                     bgcolor=COLORS["error"],
                 )
             )
             return
 
-        success, feedback = send_email(name_field.value, email_field.value, message_field.value)
-        if not success:
-            show_snack_bar(ft.SnackBar(content=ft.Text(feedback), bgcolor=COLORS["error"]))
-            return
-
+        page.launch_url(build_mailto_url(name_field.value, email_field.value, message_field.value))
         show_snack_bar(
             ft.SnackBar(
-                content=ft.Text("Diagnostico recebido com sucesso!"),
+                content=ft.Text("Seu aplicativo de e-mail foi aberto para concluir o contato."),
                 bgcolor=COLORS["success"],
             )
         )
-        name_field.value = ""
-        email_field.value = ""
-        message_field.value = ""
-        page.update()
 
     def prompt_card(icon, title, text, color):
         return ft.Container(
@@ -128,8 +127,8 @@ def contact_content(page: ft.Page):
         )
 
     submit_button = ft.Button(
-        "Enviar diagnostico",
-        icon=ft.Icons.TASK_ALT,
+        "Continuar por e-mail",
+        icon=ft.Icons.EMAIL,
         style=get_button_style(),
         bgcolor=COLORS["coral"],
         color=ft.Colors.WHITE,
@@ -144,8 +143,8 @@ def contact_content(page: ft.Page):
                         ft.Image(src="/favicon.png", width=44, height=44, fit=ft.BoxFit.CONTAIN),
                         ft.Column(
                             [
-                                ft.Text("Vamos mapear sua proxima entrega", size=section_title_size, weight="bold", color=COLORS["text_primary"]),
-                                ft.Text("Flet, Python, dados, automacao e IA aplicada ao seu processo.", size=body_size, color=COLORS["text_secondary"]),
+                                ft.Text("Informações iniciais do projeto", size=section_title_size, weight="bold", color=COLORS["text_primary"]),
+                                ft.Text("Compartilhe o contexto necessário para uma primeira análise.", size=body_size, color=COLORS["text_secondary"]),
                             ],
                             spacing=4,
                             expand=True,
@@ -175,10 +174,10 @@ def contact_content(page: ft.Page):
                 ft.Container(
                     content=ft.Column(
                         [
-                            ft.Text("Contato", size=get_responsive_font_size(15, width), color=COLORS["accent"], weight="bold"),
-                            ft.Text("Agende um diagnostico para Flet, IA e automacao", size=title_font_size, weight="bold", color=ft.Colors.WHITE),
+                            ft.Text("Contato comercial", size=get_responsive_font_size(15, width), color=COLORS["accent"], weight="bold"),
+                            ft.Text("Converse com a GMF-tech sobre seu próximo projeto", size=title_font_size, weight="bold", color=ft.Colors.WHITE),
                             ft.Text(
-                                "Traga uma ideia, um processo manual ou um sistema que precisa evoluir. A GMF-tech transforma isso em plano tecnico e primeira entrega navegavel.",
+                                "Apresente o objetivo de negócio, o cenário atual e o resultado esperado. A equipe organiza as informações para avaliar escopo, abordagem e próximos passos.",
                                 size=get_responsive_font_size(18, width),
                                 color=ft.Colors.WHITE_70,
                             ),
@@ -190,9 +189,9 @@ def contact_content(page: ft.Page):
                 ft.Container(
                     content=ft.Column(
                         [
-                            prompt_card(ft.Icons.DEVICES, "Projeto Flet", "Apps web, desktop, mobile, dashboards e sistemas internos.", COLORS["secondary"]),
-                            prompt_card(ft.Icons.SMART_TOY, "Consultoria de IA", "Copilots, agentes, classificacao, extracao e atendimento inteligente.", COLORS["coral"]),
-                            prompt_card(ft.Icons.HUB, "Automacao", "Integre APIs, documentos, planilhas, CRM, backoffice e rotinas repetitivas.", COLORS["accent_alt"]),
+                            prompt_card(ft.Icons.DEVICES, "Novo produto digital", "Aplicações web e mobile, portais de cliente e sistemas internos.", COLORS["secondary"]),
+                            prompt_card(ft.Icons.HUB, "Modernização e integração", "Sistemas legados, APIs, dados e processos entre plataformas.", COLORS["coral"]),
+                            prompt_card(ft.Icons.SETTINGS_SUGGEST, "Dados e automação", "Dashboards, pipelines, rotinas operacionais e IA quando houver justificativa.", COLORS["accent_alt"]),
                         ],
                         spacing=12,
                     ),
@@ -214,9 +213,8 @@ def contact_content(page: ft.Page):
                 ft.Container(
                     content=ft.Column(
                         [
-                            ft.Text("O que pode entrar no diagnostico", size=section_title_size, weight="bold", color=COLORS["text_primary"]),
-                            ft.Text("Modernizacao de sistemas, MVPs em Flet, bots internos, automacoes com IA, dashboards, pipelines de dados, cloud e deploy em GitHub Pages.", size=body_size, color=COLORS["text_secondary"]),
-                            ft.Text("Resposta simulada nesta versao: o formulario valida os campos e prepara o fluxo para integracao futura.", size=get_responsive_font_size(14, width), color=COLORS["text_secondary"]),
+                            ft.Text("Informações que ajudam na análise", size=section_title_size, weight="bold", color=COLORS["text_primary"]),
+                            ft.Text("Objetivo de negócio, usuários envolvidos, sistemas atuais, integrações necessárias, restrições, prazo e critérios de sucesso.", size=body_size, color=COLORS["text_secondary"]),
                         ],
                         spacing=14,
                     ),

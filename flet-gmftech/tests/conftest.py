@@ -59,6 +59,7 @@ def mock_page():
     page.pop_dialog = Mock()
     page.show_drawer = Mock()
     page.close_drawer = Mock()
+    page.launch_url = Mock()
     page.add = Mock()
     
     return page
@@ -94,6 +95,7 @@ def mobile_page():
     page.pop_dialog = Mock()
     page.show_drawer = Mock()
     page.close_drawer = Mock()
+    page.launch_url = Mock()
     page.add = Mock()
     
     return page
@@ -129,6 +131,7 @@ def tablet_page():
     page.pop_dialog = Mock()
     page.show_drawer = Mock()
     page.close_drawer = Mock()
+    page.launch_url = Mock()
     page.add = Mock()
     
     return page
@@ -164,6 +167,7 @@ def desktop_page():
     page.pop_dialog = Mock()
     page.show_drawer = Mock()
     page.close_drawer = Mock()
+    page.launch_url = Mock()
     page.add = Mock()
     
     return page

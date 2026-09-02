@@ -6,9 +6,8 @@
 # @Link   :
 
 import flet as ft
-from theme import COLORS, get_theme, get_button_style, get_text_style, get_shadow, get_responsive_font_size, get_responsive_spacing
+from theme import COLORS, get_theme, get_responsive_font_size, get_responsive_spacing
 from utils.flet_runtime import call_page_method
-from utils.responsive import ResponsiveConfig
 
 # Variáveis globais para header e footer
 header = None
@@ -19,7 +18,7 @@ def main(page: ft.Page):
     global header, footer, main_content
     
     # Configurações iniciais da página
-    page.title = "GMF-tech - Flet, Python e IA para negócios"
+    page.title = "GMF-tech | Fábrica de software"
     page.bgcolor = COLORS["background"]
     page.scroll = None
     page.padding = 0
@@ -29,61 +28,6 @@ def main(page: ft.Page):
     # Pré-carregar dados de cotação
     from pages.coins import preload_data
     page.run_task(preload_data)
-
-    def show_snack_bar(snack_bar: ft.SnackBar):
-        page.snack_bar = snack_bar
-        snack_bar.open = True
-        if hasattr(page, "show_dialog"):
-            try:
-                page.show_dialog(snack_bar)
-                page.update()
-                return
-            except Exception:
-                pass
-        page.update()
-
-    # Função para fechar o diálogo
-    def close_dialog(e):
-        dialog = getattr(page, "login_dialog", None)
-        if dialog:
-            dialog.open = False
-            if hasattr(page, "pop_dialog"):
-                try:
-                    page.pop_dialog()
-                except Exception:
-                    pass
-            elif dialog in page.overlay:
-                page.overlay.remove(dialog)
-        handle_dialog_dismiss(e)
-        page.update()
-
-    # Acoes simuladas do diagnostico comercial.
-    def login_with_google(e):
-        snack_bar = ft.SnackBar(
-            content=ft.Text("Diagnóstico via Google iniciado...", style=get_text_style()),
-            bgcolor=COLORS["success"],
-            behavior=ft.SnackBarBehavior.FLOATING,
-        )
-        close_dialog(e)
-        show_snack_bar(snack_bar)
-
-    def login_with_apple(e):
-        snack_bar = ft.SnackBar(
-            content=ft.Text("Diagnóstico via Apple iniciado...", style=get_text_style()),
-            bgcolor=COLORS["success"],
-            behavior=ft.SnackBarBehavior.FLOATING,
-        )
-        close_dialog(e)
-        show_snack_bar(snack_bar)
-
-    def login_with_x(e):
-        snack_bar = ft.SnackBar(
-            content=ft.Text("Diagnóstico via X iniciado...", style=get_text_style()),
-            bgcolor=COLORS["success"],
-            behavior=ft.SnackBarBehavior.FLOATING,
-        )
-        close_dialog(e)
-        show_snack_bar(snack_bar)
 
     # Funções para navegação entre páginas
     def go_to_home(e):
@@ -98,72 +42,11 @@ def main(page: ft.Page):
     def go_to_contact(e):
         call_page_method(page, "push_route", "/contact")
 
+    def go_to_portfolio(e):
+        call_page_method(page, "push_route", "/portfolio")
+
     def go_to_coins(e):
         call_page_method(page, "push_route", "/coins")
-
-    def handle_login_click(e):
-        page.login_dialog = ft.AlertDialog(
-            modal=True,
-            title=ft.Text("Agendar diagnóstico técnico", style=get_text_style(20, weight="bold")),
-            content=ft.Column(
-                [
-                    ft.Text(
-                        "Escolha um canal para iniciar uma conversa sobre Flet, Python, IA e automação.",
-                        style=get_text_style(16, COLORS["text_secondary"]),
-                    ),
-                    ft.Button(
-                        content=ft.Row(
-                            [
-                                ft.Icon(ft.Icons.ACCOUNT_CIRCLE, color=ft.Colors.WHITE),
-                                ft.Text("Continuar com Google", color=ft.Colors.WHITE),
-                            ],
-                            alignment="center",
-                        ),
-                        bgcolor=COLORS["error"],
-                        style=get_button_style(),
-                        on_click=login_with_google,
-                    ),
-                    ft.Button(
-                        content=ft.Row(
-                            [
-                                ft.Icon(ft.Icons.APPLE, color=ft.Colors.WHITE),
-                                ft.Text("Continuar com Apple", color=ft.Colors.WHITE),
-                            ],
-                            alignment="center",
-                        ),
-                        bgcolor=COLORS["text_primary"],
-                        style=get_button_style(),
-                        on_click=login_with_apple,
-                    ),
-                    ft.Button(
-                        content=ft.Row(
-                            [
-                                ft.Icon(ft.Icons.ALTERNATE_EMAIL, color=ft.Colors.WHITE),
-                                ft.Text("Continuar com X", color=ft.Colors.WHITE),
-                            ],
-                            alignment="center",
-                        ),
-                        bgcolor=COLORS["accent"],
-                        style=get_button_style(),
-                        on_click=login_with_x,
-                    ),
-                ],
-                tight=True,
-                spacing=15,
-            ),
-            actions=[ft.TextButton("Cancelar", on_click=close_dialog)],
-            actions_alignment="end",
-            on_dismiss=lambda e: handle_dialog_dismiss(e),
-        )
-        if hasattr(page, "show_dialog"):
-            page.show_dialog(page.login_dialog)
-        else:
-            page.overlay.append(page.login_dialog)
-            page.login_dialog.open = True
-            page.update()
-
-    def handle_dialog_dismiss(e):
-        return None
 
     def close_drawer(e):
         if hasattr(page, "close_drawer"):
@@ -178,11 +61,6 @@ def main(page: ft.Page):
                 close_drawer(e)
             call_page_method(page, "push_route", route)
         return handler
-
-    def login_and_close_drawer(e):
-        if page.drawer:
-            close_drawer(e)
-        handle_login_click(e)
 
     def create_mobile_drawer():
         # Get responsive values
@@ -205,7 +83,7 @@ def main(page: ft.Page):
                             color=COLORS["primary"],
                         ),
                         ft.Text(
-                            "Flet, Python e IA aplicada",
+                            "Engenharia de software sob medida",
                             size=item_font_size - 2,
                             color=COLORS["text_secondary"],
                         ),
@@ -260,9 +138,9 @@ def main(page: ft.Page):
             drawer_items.extend([
                 ft.Divider(height=1, color=COLORS["text_secondary"]),
                 ft.ListTile(
-                    leading=ft.Icon(ft.Icons.TASK_ALT, color=COLORS["secondary"], size=icon_size),
-                    title=ft.Text("Diagnóstico", size=item_font_size, weight="bold"),
-                    on_click=login_and_close_drawer,
+                    leading=ft.Icon(ft.Icons.CONTACT_MAIL, color=COLORS["secondary"], size=icon_size),
+                    title=ft.Text("Fale com a GMF-tech", size=item_font_size, weight="bold"),
+                    on_click=navigate_and_close_drawer("/contact"),
                 ),
             ])
 
@@ -329,15 +207,23 @@ def main(page: ft.Page):
                     ),
                     on_click=go_to_coins,
                 ),
+                ft.TextButton(
+                    "Portfólio",
+                    style=ft.ButtonStyle(
+                        color=ft.Colors.WHITE,
+                        overlay_color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
+                    ),
+                    on_click=go_to_portfolio,
+                ),
             ]
 
             if page.route != "/coins":
                 nav_buttons.append(
                     ft.Button(
-                        "Diagnóstico",
+                        "Fale com a GMF-tech",
                         bgcolor=COLORS["secondary"],
                         color=ft.Colors.WHITE,
-                        on_click=handle_login_click,
+                        on_click=go_to_contact,
                         style=ft.ButtonStyle(
                             shape=ft.RoundedRectangleBorder(radius=6),
                             padding=ft.Padding.symmetric(horizontal=button_padding_h, vertical=button_padding_v),
@@ -395,86 +281,84 @@ def main(page: ft.Page):
         )
 
     def create_footer():
-        # Get responsive values based on screen width
         width = page.width if page.width else 1024
-        breakpoint = ResponsiveConfig.get_breakpoint(width)
-        
-        # Calculate responsive font sizes
-        title_font_size = get_responsive_font_size(18, width)
-        contact_font_size = get_responsive_font_size(14, width)
-        copyright_font_size = get_responsive_font_size(12, width)
-        
-        # Calculate responsive icon size
-        icon_size = get_responsive_font_size(20, width)
-        
-        # Calculate responsive spacing
-        column_spacing = get_responsive_spacing(8, width)
-        icon_spacing = get_responsive_spacing(15, width)
-        
-        # Calculate responsive padding
-        padding_vertical = get_responsive_spacing(15, width)
-        padding_horizontal = get_responsive_spacing(20, width)
-        
-        return ft.Container(
-            content=ft.Column(
+        is_mobile = width <= 600
+
+        brand = ft.Row(
+            [
+                ft.Image(src="/favicon.png", width=22, height=22, fit=ft.BoxFit.CONTAIN),
+                ft.Text("GMF-tech", size=15, color=ft.Colors.WHITE, weight="bold"),
+                *(
+                    [
+                        ft.Container(width=1, height=18, bgcolor=ft.Colors.GREY_700),
+                        ft.Text(
+                            "Fábrica de software sob medida",
+                            size=13,
+                            color=ft.Colors.GREY_300,
+                        ),
+                    ]
+                    if not is_mobile
+                    else []
+                ),
+            ],
+            spacing=7,
+            tight=True,
+            vertical_alignment=ft.CrossAxisAlignment.CENTER,
+        )
+
+        contact = ft.Container(
+            content=ft.Row(
                 [
-                    ft.Text(
-                        "GMF-tech - Tecnologia para negócios",
-                        size=title_font_size,
-                        color=ft.Colors.WHITE,
-                        weight="bold",
-                        font_family="Roboto",
-                        text_align="center",
-                    ),
-                    ft.Text(
-                        "contato@gmf-tech.com | soluções digitais sob medida",
-                        size=contact_font_size,
-                        color=ft.Colors.GREY_300,
-                        text_align="center",
-                    ),
-                    ft.Text(
-                        "© 2026 GMF-tech. Todos os direitos reservados.",
-                        size=copyright_font_size,
-                        color=ft.Colors.GREY_400,
-                        text_align="center",
-                    ),
-                    ft.Row(
-                        [
-                            ft.IconButton(
-                                icon=ft.Icons.FACEBOOK,
-                                icon_color=ft.Colors.WHITE,
-                                icon_size=icon_size,
-                                tooltip="Comunidade",
-                            ),
-                            ft.IconButton(
-                                icon=ft.Icons.PUBLIC,
-                                icon_color=ft.Colors.WHITE,
-                                icon_size=icon_size,
-                                tooltip="LinkedIn",
-                            ),
-                            ft.IconButton(
-                                icon=ft.Icons.PUBLIC,
-                                icon_color=ft.Colors.WHITE,
-                                icon_size=icon_size,
-                                tooltip="Portfólio",
-                            ),
-                        ],
-                        alignment="center",
-                        spacing=icon_spacing,
-                    ),
+                    ft.Icon(ft.Icons.MAIL_OUTLINE, size=15, color=COLORS["accent"]),
+                    ft.Text("contato@gmf-tech.com", size=12, color=ft.Colors.GREY_200),
                 ],
-                alignment="center",
-                spacing=column_spacing,
-                horizontal_alignment="center",
+                spacing=5,
+                tight=True,
+                vertical_alignment=ft.CrossAxisAlignment.CENTER,
             ),
+            padding=ft.Padding.symmetric(horizontal=6, vertical=4),
+            border_radius=ft.BorderRadius.all(4),
+            url="mailto:contato@gmf-tech.com",
+            ink=True,
+            tooltip="Enviar e-mail para a GMF-tech",
+        )
+
+        copyright_text = ft.Text(
+            "© 2026 GMF-tech",
+            size=11,
+            color=ft.Colors.GREY_400,
+            text_align="center" if is_mobile else "right",
+        )
+
+        if is_mobile:
+            footer_content = ft.Column(
+                [
+                    ft.Row(
+                        [brand, contact],
+                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                        vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                    ),
+                    copyright_text,
+                ],
+                spacing=2,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            )
+        else:
+            footer_content = ft.Row(
+                [brand, contact, copyright_text],
+                alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                vertical_alignment=ft.CrossAxisAlignment.CENTER,
+            )
+
+        return ft.Container(
+            content=footer_content,
             bgcolor=COLORS["primary"],
             padding=ft.Padding.symmetric(
-                vertical=padding_vertical,
-                horizontal=padding_horizontal
+                vertical=6 if is_mobile else 8,
+                horizontal=14 if is_mobile else 24,
             ),
-            border_radius=ft.BorderRadius.only(top_left=8, top_right=8),
             alignment=ft.Alignment.CENTER,
-            shadow=get_shadow(),
+            border=ft.Border.only(top=ft.BorderSide(1, COLORS["secondary"])),
         )
 
     # Criar o header e drawer

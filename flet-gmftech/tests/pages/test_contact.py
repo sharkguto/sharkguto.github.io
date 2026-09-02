@@ -1,7 +1,8 @@
+from urllib.parse import unquote
+
 import flet as ft
 
-import pages.contact as contact_module
-from pages.contact import contact_content
+from pages.contact import build_mailto_url, contact_content
 from tests.helpers import find_controls, text_exists
 from theme import COLORS
 
@@ -15,29 +16,29 @@ def _submit_button(result):
     return next(
         button
         for button in find_controls(result, ft.Button)
-        if button.content == "Enviar diagnostico"
+        if button.content == "Continuar por e-mail"
     )
 
 
-def test_contact_renders_diagnostic_landing(mock_page):
+def test_contact_renders_commercial_landing(mock_page):
     result = contact_content(mock_page)
 
     assert isinstance(result, ft.Container)
     assert isinstance(result.content, ft.Column)
     assert len(result.content.controls) == 2
-    assert text_exists(result, "Agende um diagnostico para Flet, IA e automacao")
-    assert text_exists(result, "Projeto Flet")
-    assert text_exists(result, "Consultoria de IA")
-    assert text_exists(result, "Automacao")
+    assert text_exists(result, "Converse com a GMF-tech sobre seu próximo projeto")
+    assert text_exists(result, "Novo produto digital")
+    assert text_exists(result, "Modernização e integração")
+    assert text_exists(result, "Dados e automação")
 
 
 def test_contact_form_has_required_fields_and_button(mock_page):
     result = contact_content(mock_page)
     fields = _fields(result)
 
-    assert set(fields) == {"Nome", "Email", "Mensagem"}
-    assert fields["Mensagem"].multiline is True
-    assert fields["Mensagem"].min_lines == 5
+    assert set(fields) == {"Nome", "E-mail", "Contexto do projeto"}
+    assert fields["Contexto do projeto"].multiline is True
+    assert fields["Contexto do projeto"].min_lines == 5
     assert _submit_button(result).on_click is not None
 
 
@@ -48,32 +49,37 @@ def test_contact_validation_shows_error_for_empty_fields(mock_page):
 
     assert isinstance(mock_page.snack_bar, ft.SnackBar)
     assert mock_page.snack_bar.bgcolor == COLORS["error"]
-    assert "preencha todos os campos" in mock_page.snack_bar.content.value
+    assert "preencha todos os campos" in mock_page.snack_bar.content.value.lower()
     assert mock_page.snack_bar.open is True
 
 
-def test_contact_submit_calls_send_email_and_clears_fields(mock_page, monkeypatch):
-    calls = []
-
-    def fake_send_email(name, email, message):
-        calls.append((name, email, message))
-        return True, "ok"
-
-    monkeypatch.setattr(contact_module, "send_email", fake_send_email)
+def test_contact_submit_opens_prefilled_email_without_claiming_it_was_sent(mock_page):
     result = contact_content(mock_page)
     fields = _fields(result)
     fields["Nome"].value = "Gustavo"
-    fields["Email"].value = "gustavo@gmf-tech.com"
-    fields["Mensagem"].value = "Quero automatizar atendimento com IA"
+    fields["E-mail"].value = "gustavo@gmf-tech.com"
+    fields["Contexto do projeto"].value = "Quero automatizar atendimento com IA"
 
     _submit_button(result).on_click(None)
 
-    assert calls == [("Gustavo", "gustavo@gmf-tech.com", "Quero automatizar atendimento com IA")]
+    mock_page.launch_url.assert_called_once()
+    mailto_url = unquote(mock_page.launch_url.call_args.args[0])
+    assert mailto_url.startswith("mailto:contato@gmf-tech.com")
+    assert "Nome: Gustavo" in mailto_url
+    assert "Email: gustavo@gmf-tech.com" in mailto_url
+    assert "Quero automatizar atendimento com IA" in mailto_url
     assert mock_page.snack_bar.bgcolor == COLORS["success"]
-    assert "sucesso" in mock_page.snack_bar.content.value
-    assert fields["Nome"].value == ""
-    assert fields["Email"].value == ""
-    assert fields["Mensagem"].value == ""
+    assert "aplicativo de e-mail" in mock_page.snack_bar.content.value
+    assert fields["Nome"].value == "Gustavo"
+    assert fields["E-mail"].value == "gustavo@gmf-tech.com"
+    assert fields["Contexto do projeto"].value == "Quero automatizar atendimento com IA"
+
+
+def test_build_mailto_url_encodes_subject_and_project_context():
+    url = unquote(build_mailto_url("Nome", "nome@empresa.com", "Portal & API"))
+
+    assert "subject=Contato pelo site GMF-tech" in url
+    assert "Contexto do projeto:\nPortal & API" in url
 
 
 def test_contact_field_widths_are_responsive(mobile_page, tablet_page, desktop_page):

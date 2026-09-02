@@ -1,7 +1,7 @@
 import flet as ft
 
 from pages.portfolio import portfolio_content
-from tests.helpers import find_controls, text_exists
+from tests.helpers import find_controls, find_text_values, text_exists
 from theme import COLORS
 
 
@@ -15,8 +15,9 @@ def test_portfolio_renders_enterprise_case_studies(mock_page):
     assert isinstance(result, ft.Container)
     assert isinstance(result.content, ft.Column)
     assert len(result.content.controls) == 3
-    assert text_exists(result, "Projetos com Flet, dados e automacao em producao")
-    assert text_exists(result, "Stack GMF-tech")
+    assert text_exists(result, "Projetos selecionados de software e produtos digitais")
+    assert text_exists(result, "Competências aplicadas")
+    assert text_exists(result, "Engenharia orientada ao contexto de cada negócio")
 
 
 def test_portfolio_lists_three_projects(mock_page):
@@ -26,8 +27,8 @@ def test_portfolio_lists_three_projects(mock_page):
     assert isinstance(row, ft.ResponsiveRow)
     assert len(row.controls) == 3
 
-    assert text_exists(result, "Velejar Facil")
-    assert text_exists(result, "Monitoramento de Cotacoes")
+    assert text_exists(result, "Velejar Fácil")
+    assert text_exists(result, "Monitoramento de Cotações")
     assert text_exists(result, "Website GMF-tech")
 
 
@@ -62,9 +63,24 @@ def test_velejar_facil_card_links_to_live_site(mock_page):
 
     assert velejar_card.url == "https://www.velejarfacil.com.br/"
     assert velejar_card.ink is True
-    assert velejar_card.tooltip == "Abrir Velejar Facil"
+    assert velejar_card.tooltip == "Abrir Velejar Fácil"
     assert quotes_card.url is None
     assert gmftech_card.url is None
+
+
+def test_velejar_facil_card_lists_current_stack(mock_page):
+    result = portfolio_content(mock_page)
+    velejar_card = _projects_row(result).controls[0].content
+    card_text = find_text_values(velejar_card)
+
+    assert all(
+        technology in card_text
+        for technology in ["React", "Node.js", "Cloudflare", "PostgreSQL", "WebSockets"]
+    )
+    assert all(
+        technology not in card_text
+        for technology in ["Python", "Flet", "APIs", "Cloud", "Pagamentos"]
+    )
 
 
 def test_portfolio_image_sizes_follow_breakpoints(mobile_page, tablet_page, desktop_page):

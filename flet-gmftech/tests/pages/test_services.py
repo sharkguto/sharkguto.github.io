@@ -23,16 +23,16 @@ def test_services_renders_header_grids_and_stack(mock_page):
     assert isinstance(result, ft.Container)
     assert isinstance(result.content, ft.Column)
     assert len(result.content.controls) == 5
-    assert text_exists(result, "Nossos Serviços")
-    assert text_exists(result, "Stack principal")
-    assert text_exists(result, "Stacks para Arquitetura de Sistemas")
+    assert text_exists(result, "Serviços de engenharia de software")
+    assert text_exists(result, "Tecnologias e plataformas")
+    assert text_exists(result, "Tecnologias para Arquitetura de Software")
 
     services_grid = _service_grid(result)
     tech_grid = _tech_grid(result)
     assert isinstance(services_grid, ft.ResponsiveRow)
     assert isinstance(tech_grid, ft.ResponsiveRow)
     assert len(services_grid.controls) == 9
-    assert len(tech_grid.controls) == 9
+    assert len(tech_grid.controls) == 12
 
 
 def test_services_lists_current_offers(mock_page):
@@ -40,14 +40,14 @@ def test_services_lists_current_offers(mock_page):
 
     for label in [
         "Levantamento de Requisitos",
-        "Arquitetura de Sistemas",
+        "Arquitetura de Software",
         "IoT com Arduino",
         "Prototipagem Eletrônica",
         "Desenvolvimento Web",
         "Desenvolvimento Mobile",
         "Cloud Computing",
         "Segurança",
-        "Consultoria e Automação com IA",
+        "Automação e Inteligência Artificial",
     ]:
         assert text_exists(result, label)
 
@@ -55,7 +55,7 @@ def test_services_lists_current_offers(mock_page):
 def test_services_lists_current_technologies(mock_page):
     result = services_content(mock_page)
 
-    for label in ["Python", "Flet", "PostgreSQL", "ScyllaDB", "Redis", "AWS", "Azure DevOps", "Apache ECharts", "IA e LLMs"]:
+    for label in ["Python", "Flet", "React", "Node.js", "PostgreSQL", "Cloudflare", "AWS", "Azure DevOps", "IA e LLMs"]:
         assert text_exists(result, label)
 
 
@@ -79,7 +79,7 @@ def test_services_cards_keep_gmftech_styling(mock_page):
     assert first_card.border_radius == ft.BorderRadius.all(8)
     assert first_card.shadow is not None
     assert first_card.on_click is not None
-    assert text_exists(first_card, "Arquitetura de Sistemas")
+    assert text_exists(first_card, "Arquitetura de Software")
 
 
 def test_services_clicking_card_updates_stack_panel(mock_page):
@@ -88,7 +88,7 @@ def test_services_clicking_card_updates_stack_panel(mock_page):
 
     services_grid.controls[8].content.on_click(None)
 
-    assert text_exists(_stack_panel(result), "Stacks para Consultoria e Automação com IA")
+    assert text_exists(_stack_panel(result), "Tecnologias para Automação e Inteligência Artificial")
     assert text_exists(_stack_panel(result), "LLMs")
     assert services_grid.controls[8].content.border.top.width == 2
     assert services_grid.controls[8].content.content.controls[-1].visible is True

@@ -2,7 +2,7 @@
 
 Website institucional da GMF-tech feito em Python com Flet, WebAssembly/Pyodide e build estatico para GitHub Pages.
 
-O site posiciona a GMF-tech como especialista em Flet, Python, IA aplicada, automacao, dados, cloud e sistemas internos prontos para producao.
+O site posiciona a GMF-tech como fabrica de software para planejamento, desenvolvimento, implantacao e evolucao de solucoes digitais sob medida.
 
 ## Stack
 
@@ -18,10 +18,10 @@ O site posiciona a GMF-tech como especialista em Flet, Python, IA aplicada, auto
 
 ## Conteudo Do Site
 
-- Home com hero enterprise, CTAs e servicos principais.
+- Home com proposta institucional, capacidades e processo de entrega.
 - Servicos com cards clicaveis para mostrar stacks relacionadas a levantamento de requisitos, arquitetura, IoT/Arduino, prototipagem, web, mobile, cloud, seguranca e IA.
-- Sobre com posicionamento da GMF-tech e identidade da caravela.
-- Contato com formulario de diagnostico tecnico.
+- Sobre com posicionamento da GMF-tech e processo de trabalho.
+- Contato comercial com briefing inicial e continuidade por email.
 - Portfolio com projetos e tecnologias.
 - Terminal de mercado para cambio e acoes, com campo digitavel no cambio, padrao USD/BRL e PyECharts de preco/volume renderizado em `flet_webview.WebView`.
 
@@ -141,6 +141,6 @@ Paleta atual em `theme.py`:
 ## Observacoes
 
 - A pagina de mercado depende da AwesomeAPI, da brapi para acoes e de CDN do ECharts.
-- `send_email()` em `pages/contact.py` ainda e simulado.
+- O formulario de contato usa `mailto:` e depende do aplicativo de email configurado no dispositivo.
 - `old.py` e `new2.py` sao prototipos legados.
 - O projeto deve continuar usando Flet como stack de frontend.

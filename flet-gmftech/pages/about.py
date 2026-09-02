@@ -4,14 +4,10 @@
 import flet as ft
 
 from theme import COLORS, get_responsive_font_size, get_responsive_padding, get_responsive_spacing, get_shadow
-from utils.responsive import Breakpoint, ResponsiveConfig
 
 
 def about_content(page: ft.Page):
     width = page.width if page.width else 1024
-    breakpoint = ResponsiveConfig.get_breakpoint(width)
-    is_mobile = breakpoint == Breakpoint.MOBILE
-
     title_size = get_responsive_font_size(38, width)
     section_title_size = get_responsive_font_size(24, width)
     body_text_size = get_responsive_font_size(16, width)
@@ -45,9 +41,9 @@ def about_content(page: ft.Page):
                                 content=ft.Column(
                                     [
                                         ft.Text("Sobre a GMF-tech", size=get_responsive_font_size(15, width), color=COLORS["accent"], weight="bold"),
-                                        ft.Text("Um estúdio técnico para empresas que querem sair do slide e colocar software em produção.", size=title_size, weight="bold", color=ft.Colors.WHITE),
+                                        ft.Text("Fábrica de software para empresas que precisam transformar processos em sistemas confiáveis.", size=title_size, weight="bold", color=ft.Colors.WHITE),
                                         ft.Text(
-                                            "A GMF-tech combina desenvolvimento Python, DevOps, APIs, dados, cloud e IA aplicada para construir sistemas úteis, seguros e fáceis de evoluir.",
+                                            "A GMF-tech planeja, desenvolve e mantém soluções sob medida, reunindo produto, arquitetura, desenvolvimento, dados e infraestrutura.",
                                             size=body_text_size,
                                             color=ft.Colors.WHITE_70,
                                         ),
@@ -61,8 +57,8 @@ def about_content(page: ft.Page):
                                     content=ft.Column(
                                         [
                                             ft.Image(src="/favicon.png", width=82, height=82, fit=ft.BoxFit.CONTAIN),
-                                            ft.Text("Caravela digital", size=section_title_size, weight="bold", color=ft.Colors.WHITE),
-                                            ft.Text("Direção, velocidade e tecnologia navegando para resultado mensurável.", size=body_text_size, color=ft.Colors.WHITE_70, text_align="center"),
+                                            ft.Text("Identidade GMF-tech", size=section_title_size, weight="bold", color=ft.Colors.WHITE),
+                                            ft.Text("Engenharia de software com direção técnica, transparência e responsabilidade sobre a entrega.", size=body_text_size, color=ft.Colors.WHITE_70, text_align="center"),
                                         ],
                                         horizontal_alignment="center",
                                         spacing=12,
@@ -87,9 +83,9 @@ def about_content(page: ft.Page):
                 ft.Container(
                     content=ft.ResponsiveRow(
                         [
-                            ft.Container(content=value_card(ft.Icons.PSYCHOLOGY, "Consultoria sem enrolação", "Mapeio gargalos, priorizo ganhos rápidos e uso IA quando ela reduz trabalho manual de verdade.", COLORS["coral"]), col={"sm": 12, "md": 4, "lg": 4}),
-                            ft.Container(content=value_card(ft.Icons.DEVICES, "Desenvolvimento Python", "APIs, automações, sistemas internos e apps em Flet (Flutter com Python) para web, celular e desktop.", COLORS["secondary"]), col={"sm": 12, "md": 4, "lg": 4}),
-                            ft.Container(content=value_card(ft.Icons.AUTO_AWESOME, "DevOps para produção", "Docker, pipelines, Azure DevOps, deploys repetíveis e ambientes organizados para reduzir risco operacional.", COLORS["accent_alt"]), col={"sm": 12, "md": 4, "lg": 4}),
+                            ft.Container(content=value_card(ft.Icons.FACT_CHECK, "Consultoria e discovery", "Levantamento de objetivos, processos, requisitos e riscos para estruturar o escopo do projeto.", COLORS["coral"]), col={"sm": 12, "md": 4, "lg": 4}),
+                            ft.Container(content=value_card(ft.Icons.DEVICES, "Desenvolvimento sob medida", "Aplicações web e mobile, sistemas internos, APIs e integrações alinhados à operação da empresa.", COLORS["secondary"]), col={"sm": 12, "md": 4, "lg": 4}),
+                            ft.Container(content=value_card(ft.Icons.CLOUD_DONE, "Entrega e operação", "Testes, documentação, infraestrutura, implantação e acompanhamento da evolução do sistema.", COLORS["accent_alt"]), col={"sm": 12, "md": 4, "lg": 4}),
                         ],
                         spacing=16,
                         run_spacing=16,
@@ -100,12 +96,12 @@ def about_content(page: ft.Page):
                 ft.Container(
                     content=ft.Column(
                         [
-                            ft.Text("Como eu trabalho", size=title_size, weight="bold", color=COLORS["text_primary"], text_align="center"),
+                            ft.Text("Como conduzimos cada projeto", size=title_size, weight="bold", color=COLORS["text_primary"], text_align="center"),
                             ft.ResponsiveRow(
                                 [
-                                    ft.Container(content=value_card(ft.Icons.FACT_CHECK, "1. Diagnóstico", "Levantamento de processos, dados, integrações, infraestrutura, dores do time, riscos técnicos e oportunidades reais de IA. A ideia é separar sintoma de causa e transformar necessidade de negócio em um plano executável.", COLORS["secondary"]), col={"sm": 12, "md": 4, "lg": 4}),
-                                    ft.Container(content=value_card(ft.Icons.ROUTE, "2. Protótipo", "Validação rápida com Python, FastAPI, PostgreSQL, apps em Flet (Flutter com Python), automações com IA e integrações reais quando fizer sentido. O protótipo prova fluxo, regra de negócio e valor antes de virar projeto grande.", COLORS["coral"]), col={"sm": 12, "md": 4, "lg": 4}),
-                                    ft.Container(content=value_card(ft.Icons.SPEED, "3. Produção", "Entrega com Docker, Azure DevOps, testes, documentação, deploy automatizado, monitoramento básico e automações com IA bem integradas. Depois disso, evolução incremental com previsibilidade e menos retrabalho.", COLORS["accent_alt"]), col={"sm": 12, "md": 4, "lg": 4}),
+                                    ft.Container(content=value_card(ft.Icons.FACT_CHECK, "1. Descoberta e escopo", "Objetivos, requisitos, dependências, riscos e critérios de aceite são consolidados para orientar a execução.", COLORS["secondary"]), col={"sm": 12, "md": 4, "lg": 4}),
+                                    ft.Container(content=value_card(ft.Icons.ROUTE, "2. Engenharia e validação", "Arquitetura, protótipos, implementação e testes evoluem em entregas priorizadas e verificáveis.", COLORS["coral"]), col={"sm": 12, "md": 4, "lg": 4}),
+                                    ft.Container(content=value_card(ft.Icons.SPEED, "3. Implantação e evolução", "Deploy, documentação, monitoramento e backlog de melhorias sustentam a operação após a entrega.", COLORS["accent_alt"]), col={"sm": 12, "md": 4, "lg": 4}),
                                 ],
                                 spacing=16,
                                 run_spacing=16,

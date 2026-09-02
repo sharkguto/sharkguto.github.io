@@ -14,17 +14,17 @@ def portfolio_content(page: ft.Page):
 
     projects = [
         {
-            "title": "Velejar Facil",
-            "description": "Produto digital para operacao de embarcacoes, reservas, pagamentos e experiencia web/mobile. O foco foi transformar um fluxo complexo em uma interface clara para negocio e usuario final.",
+            "title": "Velejar Fácil",
+            "description": "Plataforma web em desenvolvimento para gestão de embarcações, reservas e jornadas de atendimento. A solução utiliza React, Node.js, PostgreSQL, WebSockets e infraestrutura Cloudflare.",
             "image": "/velejar_facil.png",
-            "technologies": ["Python", "Flet", "APIs", "Cloud", "Pagamentos"],
+            "technologies": ["React", "Node.js", "Cloudflare", "PostgreSQL", "WebSockets"],
             "metric": "Produto",
             "accent": COLORS["accent"],
             "url": "https://www.velejarfacil.com.br/",
         },
         {
-            "title": "Monitoramento de Cotacoes",
-            "description": "Terminal tecnico para acompanhar cambio e acoes com historico, indicadores, volume e grafico PyECharts dentro do Flet. Uma demonstracao direta de dados, WebView e Python no navegador.",
+            "title": "Monitoramento de Cotações",
+            "description": "Aplicação demonstrativa para consulta de câmbio e ações, com histórico, volume e gráficos interativos. O projeto valida integração de APIs, processamento em Python e visualização no navegador.",
             "image": "/chart-project.jpg",
             "technologies": ["Python", "PyECharts", "Flet", "ScyllaDB", "Docker"],
             "metric": "Dados",
@@ -32,7 +32,7 @@ def portfolio_content(page: ft.Page):
         },
         {
             "title": "Website GMF-tech",
-            "description": "Site institucional em Flet/WebAssembly, preparado para build estatico, GitHub Pages, Docker/Nginx local e validacao automatizada com Playwright.",
+            "description": "Site institucional da GMF-tech desenvolvido em Flet e WebAssembly, com build estático, testes automatizados e validação em navegador.",
             "image": "/website-project.jpg",
             "technologies": ["Flet", "WebAssembly", "Pyodide", "Nginx", "Playwright"],
             "metric": "Web",
@@ -143,10 +143,10 @@ def portfolio_content(page: ft.Page):
                 ft.Container(
                     content=ft.Column(
                         [
-                            ft.Text("Portfolio", size=get_responsive_font_size(15, width), color=COLORS["accent"], weight="bold"),
-                            ft.Text("Projetos com Flet, dados e automacao em producao", size=title_size, weight="bold", color=ft.Colors.WHITE),
+                            ft.Text("Portfólio", size=get_responsive_font_size(15, width), color=COLORS["accent"], weight="bold"),
+                            ft.Text("Projetos selecionados de software e produtos digitais", size=title_size, weight="bold", color=ft.Colors.WHITE),
                             ft.Text(
-                                "Casos que mostram a linha de trabalho da GMF-tech: transformar operacao real em software simples de usar, bonito de apresentar e pronto para evoluir.",
+                                "Uma seleção de trabalhos que demonstra capacidade de atuar em produto, desenvolvimento web, integração de dados e engenharia de plataforma.",
                                 size=subtitle_size,
                                 color=ft.Colors.WHITE_70,
                             ),
@@ -160,8 +160,8 @@ def portfolio_content(page: ft.Page):
                         content=ft.Column(
                             [
                                 ft.Image(src="/favicon.png", width=64, height=64, fit=ft.BoxFit.CONTAIN),
-                                ft.Text("Stack GMF-tech", size=get_responsive_font_size(22, width), weight="bold", color=ft.Colors.WHITE),
-                                ft.Text("Flet, Python, WebAssembly, IA, dados e deploy estatico.", size=get_responsive_font_size(14, width), color=ft.Colors.WHITE_70, text_align="center"),
+                                ft.Text("Competências aplicadas", size=get_responsive_font_size(22, width), weight="bold", color=ft.Colors.WHITE),
+                                ft.Text("Arquitetura, interfaces, integrações, dados, qualidade e implantação.", size=get_responsive_font_size(14, width), color=ft.Colors.WHITE_70, text_align="center"),
                             ],
                             horizontal_alignment="center",
                             spacing=10,
@@ -208,8 +208,8 @@ def portfolio_content(page: ft.Page):
                 ft.Container(
                     content=ft.Column(
                         [
-                            ft.Text("Entregas que combinam produto e engenharia", size=get_responsive_font_size(30, width), weight="bold", color=COLORS["text_primary"]),
-                            ft.Text("A mesma base visual pode virar site, painel operacional, dashboard, backoffice, portal de cliente ou automacao interna com IA.", size=subtitle_size, color=COLORS["text_secondary"]),
+                            ft.Text("Engenharia orientada ao contexto de cada negócio", size=get_responsive_font_size(30, width), weight="bold", color=COLORS["text_primary"]),
+                            ft.Text("Cada projeto combina requisitos, tecnologia e operação de acordo com os objetivos, as restrições e o estágio do produto.", size=subtitle_size, color=COLORS["text_secondary"]),
                         ],
                         spacing=12,
                     ),
@@ -218,9 +218,9 @@ def portfolio_content(page: ft.Page):
                 ft.Container(
                     content=ft.Row(
                         [
-                            ft.Column([ft.Text("1", size=get_responsive_font_size(34, width), weight="bold", color=COLORS["coral"]), ft.Text("base Python", size=description_size, color=COLORS["text_secondary"])], spacing=2),
-                            ft.Column([ft.Text("3", size=get_responsive_font_size(34, width), weight="bold", color=COLORS["secondary"]), ft.Text("targets Flet", size=description_size, color=COLORS["text_secondary"])], spacing=2),
-                            ft.Column([ft.Text("IA", size=get_responsive_font_size(34, width), weight="bold", color=COLORS["accent_alt"]), ft.Text("aplicada ao fluxo", size=description_size, color=COLORS["text_secondary"])], spacing=2),
+                            ft.Column([ft.Text("Escopo", size=get_responsive_font_size(24, width), weight="bold", color=COLORS["coral"]), ft.Text("requisitos e critérios de aceite", size=description_size, color=COLORS["text_secondary"])], spacing=2),
+                            ft.Column([ft.Text("Entrega", size=get_responsive_font_size(24, width), weight="bold", color=COLORS["secondary"]), ft.Text("produto, software e integrações", size=description_size, color=COLORS["text_secondary"])], spacing=2),
+                            ft.Column([ft.Text("Operação", size=get_responsive_font_size(24, width), weight="bold", color=COLORS["accent_alt"]), ft.Text("cloud, segurança e evolução", size=description_size, color=COLORS["text_secondary"])], spacing=2),
                         ],
                         wrap=True,
                         spacing=get_responsive_spacing(28, width),

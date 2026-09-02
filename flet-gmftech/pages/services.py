@@ -49,7 +49,7 @@ def services_content(page: ft.Page):
                     ft.Row(
                         [
                             ft.Icon(ft.Icons.TOUCH_APP, size=get_responsive_font_size(16, width), color=highlight),
-                            ft.Text("Ver stacks", size=get_responsive_font_size(13, width), color=highlight, weight="bold"),
+                            ft.Text("Ver tecnologias", size=get_responsive_font_size(13, width), color=highlight, weight="bold"),
                         ],
                         spacing=6,
                     ) if index is not None else ft.Container(height=0),
@@ -93,7 +93,7 @@ def services_content(page: ft.Page):
                         ),
                         ft.Column(
                             [
-                                ft.Text("Stacks para " + service["title"], size=get_responsive_font_size(25, width), weight="bold", color=COLORS["text_primary"]),
+                                ft.Text("Tecnologias para " + service["title"], size=get_responsive_font_size(25, width), weight="bold", color=COLORS["text_primary"]),
                                 ft.Text(service["stack_note"], size=get_responsive_font_size(15, width), color=COLORS["text_secondary"]),
                             ],
                             spacing=4,
@@ -112,7 +112,7 @@ def services_content(page: ft.Page):
                 ft.Divider(color=COLORS["muted"], height=1),
                 ft.Column(
                     [
-                        ft.Text("Aplicações típicas", size=get_responsive_font_size(17, width), weight="bold", color=COLORS["text_primary"]),
+                        ft.Text("Escopos atendidos", size=get_responsive_font_size(17, width), weight="bold", color=COLORS["text_primary"]),
                         *[
                             ft.Row(
                                 [
@@ -151,97 +151,100 @@ def services_content(page: ft.Page):
     services = [
         {
             "icon": ft.Icons.ARCHITECTURE,
-            "title": "Arquitetura de Sistemas",
-            "description": "Especialidade em desenhar sistemas Python escaláveis, integrados e preparados para produção desde o início.",
+            "title": "Arquitetura de Software",
+            "description": "Definição de componentes, integrações, dados, segurança e operação para sistemas novos ou existentes.",
             "highlight": COLORS["primary"],
             "stacks": ["Python", "FastAPI", "PostgreSQL", "Docker", "Azure DevOps", "OCI", "Redis", "Observabilidade", "Testes"],
-            "stack_note": "Minha especialidade é ligar negócio, dados, APIs, integrações, infraestrutura e entrega em uma arquitetura clara e sustentável.",
-            "use_cases": ["Arquitetura de APIs e sistemas internos", "Modelagem de dados, integrações e fluxos críticos", "Modernização de sistemas com deploy, testes e operação"],
+            "stack_note": "A GMF-tech estrutura a solução técnica a partir dos requisitos de negócio, dos sistemas envolvidos e das condições de operação.",
+            "use_cases": ["Arquitetura de APIs e sistemas internos", "Modelagem de dados e integrações", "Modernização de aplicações em produção"],
         },
         {
             "icon": ft.Icons.ASSIGNMENT,
             "title": "Levantamento de Requisitos",
-            "description": "Análise detalhada, documentação e priorização das necessidades do seu projeto.",
+            "description": "Levantamento de objetivos, processos, regras de negócio, dependências e critérios de aceite.",
             "highlight": COLORS["secondary"],
-            "stacks": ["Discovery", "User Stories", "Backlog", "Roadmap", "Protótipos Flet", "Critérios de aceite", "Documentação", "Automação com IA"],
-            "stack_note": "Organizo o problema, documento os fluxos e uso IA para acelerar análise, priorização e documentação.",
-            "use_cases": ["Mapeamento de processos e sistemas", "Backlog técnico para MVPs e produtos", "Documentação assistida por IA"],
+            "stacks": ["Discovery", "User Stories", "Backlog", "Roadmap", "Mapeamento de processos", "Critérios de aceite", "Prototipação", "Documentação"],
+            "stack_note": "O trabalho transforma necessidades dispersas em escopo priorizado, requisitos verificáveis e plano de execução.",
+            "use_cases": ["Mapeamento de processos e sistemas", "Backlog técnico para produtos digitais", "Especificação para contratação e desenvolvimento"],
         },
         {
             "icon": ft.Icons.DEVELOPER_BOARD,
             "title": "IoT com Arduino",
-            "description": "Desenvolvimento de soluções IoT com hardware Arduino e sistemas conectados.",
+            "description": "Prototipagem e desenvolvimento de soluções conectadas para captura, transmissão e análise de dados.",
             "highlight": COLORS["coral"],
             "stacks": ["Arduino", "Sensores", "Python", "APIs", "Flet", "Dashboards", "MQTT", "Dados", "Automação"],
-            "stack_note": "Da bancada ao painel: protótipos conectados, coleta de dados e interfaces para acompanhar tudo.",
-            "use_cases": ["Coleta de dados com sensores", "Painéis de monitoramento", "Integração entre hardware e sistemas"],
+            "stack_note": "O escopo integra dispositivos, protocolos, APIs e interfaces de acompanhamento em uma solução única.",
+            "use_cases": ["Coleta de dados com sensores", "Telemetria e monitoramento", "Integração entre equipamentos e sistemas corporativos"],
         },
         {
             "icon": ft.Icons.PRECISION_MANUFACTURING,
             "title": "Prototipagem Eletrônica",
-            "description": "Simulação e prototipagem para validação rápida de ideias e projetos.",
+            "description": "Simulação e construção de provas de conceito para validar requisitos técnicos antes da produção.",
             "highlight": COLORS["accent_alt"],
             "stacks": ["Arduino", "SimulIDE", "Protoboard", "Sensores", "Python", "Flet", "Validação", "Documentação"],
-            "stack_note": "Valido ideias antes de escalar investimento, conectando protótipo, software e dados.",
-            "use_cases": ["Prova de conceito eletrônica", "Validação de sensores e atuadores", "Demonstrações técnicas para produto"],
+            "stack_note": "A prototipagem reduz incertezas de hardware, integração e operação antes do investimento em escala.",
+            "use_cases": ["Provas de conceito eletrônicas", "Validação de sensores e atuadores", "Protótipos para decisão de produto"],
         },
         {
             "icon": ft.Icons.LAPTOP_MAC,
             "title": "Desenvolvimento Web",
-            "description": "Sites, aplicações web e dashboards modernos, responsivos e prontos para deploy.",
+            "description": "Produtos digitais, portais, sistemas internos e sites institucionais responsivos.",
             "highlight": COLORS["accent"],
-            "stacks": ["Python 3.14", "Flet 0.86.5", "WebAssembly", "Pyodide 314.0.3", "GitHub Pages", "Docker", "Nginx", "Playwright"],
-            "stack_note": "A web continua sendo Flet-first: Python no navegador, bundle estático e validação real antes de publicar.",
-            "use_cases": ["Sites institucionais em Flet", "Portais e backoffices", "Dashboards com PyECharts/Apache ECharts"],
+            "stacks": ["React", "Node.js", "Python 3.14", "Flet 0.86.5", "FastAPI", "PostgreSQL", "Cloudflare", "Docker", "Playwright"],
+            "stack_note": "A arquitetura e a stack são definidas conforme requisitos de produto, integrações, segurança, prazo e operação.",
+            "use_cases": ["Portais e sistemas web", "Sites institucionais e plataformas digitais", "Dashboards e aplicações orientadas a dados"],
         },
         {
             "icon": ft.Icons.PHONE_ANDROID,
             "title": "Desenvolvimento Mobile",
-            "description": "Aplicativos nativos e híbridos para iOS e Android, com foco em produto e operação.",
+            "description": "Aplicativos multiplataforma para equipes internas, clientes e operações em campo.",
             "highlight": COLORS["secondary"],
             "stacks": ["Flet", "Python", "APIs", "Design responsivo", "Banco de dados", "Cloud", "CI/CD", "Testes"],
-            "stack_note": "Uso Flet e Python para acelerar apps multiplataforma sem perder clareza de arquitetura.",
-            "use_cases": ["Apps internos de operação", "Aplicativos conectados a APIs", "Interfaces mobile para produtos existentes"],
+            "stack_note": "O desenvolvimento considera experiência de uso, integração com APIs, segurança e distribuição desde o planejamento.",
+            "use_cases": ["Aplicativos internos de operação", "Aplicativos conectados a APIs", "Extensões mobile de produtos existentes"],
         },
         {
             "icon": ft.Icons.CLOUD,
             "title": "Cloud Computing",
-            "description": "Soluções em nuvem para escalabilidade, performance, disponibilidade e deploy confiável.",
+            "description": "Infraestrutura, automação de entrega e observabilidade para aplicações em produção.",
             "highlight": COLORS["primary"],
             "stacks": ["AWS", "OCI", "Azure DevOps", "Docker", "Nginx", "CI/CD", "Observabilidade", "Backups", "Monitoramento"],
-            "stack_note": "Organizo ambientes reproduzíveis, pipelines confiáveis e infraestrutura pronta para evoluir sem improviso.",
-            "use_cases": ["Infraestrutura para APIs e sistemas", "Automação de build, testes e deploy", "Ambientes de produção com monitoramento e rotina de backup"],
+            "stack_note": "Ambientes e pipelines são documentados para reduzir intervenções manuais e dar previsibilidade à operação.",
+            "use_cases": ["Infraestrutura para APIs e sistemas", "Automação de build, testes e implantação", "Monitoramento, logs e rotinas de backup"],
         },
         {
             "icon": ft.Icons.SECURITY,
             "title": "Segurança",
-            "description": "Proteção, revisão técnica e boas práticas para seus dados, aplicações e integrações.",
+            "description": "Revisão de aplicações, integrações e processos de entrega com foco em riscos técnicos.",
             "highlight": COLORS["success"],
-            "stacks": ["Hardening", "Revisão de código", "Testes", "Backups", "Logs", "CI/CD", "Docker", "Governança de IA"],
-            "stack_note": "Segurança aplicada ao ciclo real: código, dados, deploy, automações e uso responsável de IA.",
-            "use_cases": ["Revisão de aplicações e APIs", "Padronização de deploy seguro", "Controles para automações com IA"],
+            "stacks": ["Hardening", "Revisão de código", "Testes", "Backups", "Logs", "CI/CD", "Docker", "Gestão de acessos"],
+            "stack_note": "Os controles são incorporados ao desenvolvimento, à infraestrutura e às rotinas de operação.",
+            "use_cases": ["Revisão de aplicações e APIs", "Padronização de implantação", "Controles de acesso, logs e recuperação"],
         },
         {
             "icon": ft.Icons.SMART_TOY,
-            "title": "Consultoria e Automação com IA",
-            "description": "Copilots, agentes, análise de documentos e automações inteligentes para reduzir tarefas manuais.",
+            "title": "Automação e Inteligência Artificial",
+            "description": "Automação de processos e recursos de IA integrados a sistemas e bases de conhecimento existentes.",
             "highlight": COLORS["coral"],
             "stacks": ["LLMs", "Agentes", "RAG", "Python", "APIs", "HTTPX", "PostgreSQL", "Redis", "Governança"],
-            "stack_note": "IA entra como camada prática sobre os serviços que você já presta: análise, automação, atendimento e decisão.",
-            "use_cases": ["Copilots internos", "Extração e classificação de documentos", "Automação de backoffice, CRM e atendimento"],
+            "stack_note": "A adoção é condicionada a um caso de uso definido, dados disponíveis, controles de acesso e critérios de avaliação.",
+            "use_cases": ["Assistentes internos", "Extração e classificação de documentos", "Automação de backoffice e atendimento"],
         },
     ]
 
     technologies = [
-        ("Python", "Desenvolvimento backend robusto, automações, APIs e IA aplicada.", ft.Icons.CODE, COLORS["secondary"]),
+        ("Python", "APIs, processamento de dados, integrações e automação.", ft.Icons.CODE, COLORS["secondary"]),
         ("Flet", "Apps multiplataforma com Python para web, desktop e mobile.", ft.Icons.DEVICES, COLORS["coral"]),
+        ("React", "Interfaces web componentizadas para produtos e plataformas digitais.", ft.Icons.WEB, COLORS["accent"]),
+        ("Node.js", "Serviços web, APIs e comunicação em tempo real.", ft.Icons.HUB, COLORS["success"]),
         ("PostgreSQL", "Banco de dados relacional de alta performance.", ft.Icons.STORAGE, COLORS["primary"]),
         ("ScyllaDB", "Banco NoSQL de alta performance e baixa latência.", ft.Icons.DATA_OBJECT, COLORS["secondary"]),
         ("Redis", "Cache distribuído, filas leves e banco em memória.", ft.Icons.MEMORY, COLORS["success"]),
         ("AWS", "Infraestrutura em nuvem escalável e confiável.", ft.Icons.CLOUD_QUEUE, COLORS["coral"]),
+        ("Cloudflare", "Entrega, proteção e serviços de borda para aplicações web.", ft.Icons.CLOUD_DONE, COLORS["secondary"]),
         ("Azure DevOps", "CI/CD, backlog e gestão ágil de projetos.", ft.Icons.INTEGRATION_INSTRUCTIONS, COLORS["accent_alt"]),
         ("Apache ECharts", "Visualização de dados interativa via PyECharts.", ft.Icons.INSERT_CHART, COLORS["accent"]),
-        ("IA e LLMs", "Copilots, agentes, RAG e automações inteligentes.", ft.Icons.SMART_TOY, COLORS["coral"]),
+        ("IA e LLMs", "Assistentes, busca semântica e processamento de documentos.", ft.Icons.SMART_TOY, COLORS["coral"]),
     ]
 
     title_size = get_responsive_font_size(36, width)
@@ -266,9 +269,9 @@ def services_content(page: ft.Page):
                 ft.Container(
                     content=ft.Column(
                         [
-                            ft.Text("Nossos Serviços", size=title_size, weight="bold", color=ft.Colors.WHITE, text_align="center"),
+                            ft.Text("Serviços de engenharia de software", size=title_size, weight="bold", color=ft.Colors.WHITE, text_align="center"),
                             ft.Text(
-                                "Tudo que a GMF-tech já entrega em software, web, mobile, IoT, cloud e segurança, agora também com consultoria e automação com IA.",
+                                "A GMF-tech atua da definição do escopo à implantação, reunindo produto, desenvolvimento, integrações, dados e infraestrutura.",
                                 size=subtitle_size,
                                 color=ft.Colors.WHITE_70,
                                 text_align="center",
@@ -308,7 +311,7 @@ def services_content(page: ft.Page):
                     width=width,
                 ),
                 ft.Container(
-                    content=ft.Text("Stack principal", size=title_size, weight="bold", color=COLORS["text_primary"], text_align="center"),
+                    content=ft.Text("Tecnologias e plataformas", size=title_size, weight="bold", color=COLORS["text_primary"], text_align="center"),
                     alignment=ft.Alignment.CENTER,
                     padding=ft.Padding.only(top=get_responsive_padding(20, width)),
                     width=width,
