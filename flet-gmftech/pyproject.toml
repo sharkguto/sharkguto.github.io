@@ -3,7 +3,7 @@ name = "gmf_tech"
 version = "1.0.0"
 description = "website gmf-tech"
 authors = [{ name = "Gustavo M Freitas", email = "gustavo@gmf-tech.com" }]
-requires-python = ">=3.13,<3.14"
+requires-python = ">=3.14,<3.15"
 dependencies = [
     "flet==0.86.5",
     "flet-webview==0.86.5",

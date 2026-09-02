@@ -37,11 +37,11 @@ Use como fontes de verdade:
 
 Stack atual:
 
-- Python 3.13 (`>=3.13,<3.14` para manter o runtime web compativel);
+- Python 3.14 (`>=3.14,<3.15` para manter o runtime web compativel);
 - Flet e `flet-webview` 0.86.5;
 - PyECharts 2.1.0;
 - HTTPX 0.28.1;
-- Pyodide 0.29.4 no bundle publicado.
+- Pyodide 314.0.3 no bundle web.
 
 Flet e o framework do frontend e parte central do posicionamento do produto.
 Nao migre telas para React, Vue, Next, Astro ou HTML/JavaScript paralelo. Nao

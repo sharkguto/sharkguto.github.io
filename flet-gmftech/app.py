@@ -21,7 +21,7 @@ def main(page: ft.Page):
     # Configurações iniciais da página
     page.title = "GMF-tech - Flet, Python e IA para negócios"
     page.bgcolor = COLORS["background"]
-    page.scroll = "auto"
+    page.scroll = None
     page.padding = 0
     page.theme_mode = ft.ThemeMode.LIGHT
     page.theme = get_theme()
@@ -494,6 +494,10 @@ def main(page: ft.Page):
         else:
             page.drawer = None
         footer = create_footer()
+        if page.controls:
+            page_layout = page.controls[0]
+            if isinstance(page_layout, ft.Column) and len(page_layout.controls) == 2:
+                page_layout.controls[1] = footer
         page.update()
 
     page.on_resize = on_resize
@@ -539,11 +543,18 @@ def main(page: ft.Page):
             page.controls.append(
                 ft.Column(
                     [
-                        main_content,
+                        ft.Column(
+                            [main_content],
+                            expand=True,
+                            spacing=0,
+                            scroll=ft.ScrollMode.AUTO,
+                            horizontal_alignment=ft.CrossAxisAlignment.STRETCH,
+                        ),
                         footer,
                     ],
                     expand=True,
                     spacing=0,
+                    horizontal_alignment=ft.CrossAxisAlignment.STRETCH,
                 )
             )
         page.update()

@@ -7,9 +7,11 @@ from playwright.sync_api import sync_playwright
 
 
 URL = os.environ.get("GMFTECH_E2E_URL", sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:8080/")
-PYODIDE_VERSION = os.environ.get("GMFTECH_EXPECTED_PYODIDE", "0.29.4")
+PYODIDE_VERSION = os.environ.get("GMFTECH_EXPECTED_PYODIDE", "314.0.3")
 TIMEOUT_SECONDS = int(os.environ.get("GMFTECH_E2E_TIMEOUT", "180"))
 SCREENSHOT_PATH = os.environ.get("GMFTECH_E2E_SCREENSHOT", "/tmp/gmftech-playwright.png")
+VIEWPORT_WIDTH = int(os.environ.get("GMFTECH_E2E_WIDTH", "1366"))
+VIEWPORT_HEIGHT = int(os.environ.get("GMFTECH_E2E_HEIGHT", "900"))
 
 ERROR_MARKERS = (
     "Python worker init error",
@@ -79,7 +81,7 @@ def main():
     with sync_playwright() as playwright:
         browser_name, browser = launch_browser(playwright)
         context = browser.new_context(
-            viewport={"width": 1366, "height": 900},
+            viewport={"width": VIEWPORT_WIDTH, "height": VIEWPORT_HEIGHT},
             service_workers="block",
         )
         page = context.new_page()

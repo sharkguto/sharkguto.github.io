@@ -20,6 +20,7 @@ def portfolio_content(page: ft.Page):
             "technologies": ["Python", "Flet", "APIs", "Cloud", "Pagamentos"],
             "metric": "Produto",
             "accent": COLORS["accent"],
+            "url": "https://www.velejarfacil.com.br/",
         },
         {
             "title": "Monitoramento de Cotacoes",
@@ -69,6 +70,7 @@ def portfolio_content(page: ft.Page):
         )
 
     def create_project_card(project):
+        project_url = project.get("url")
         return ft.Container(
             content=ft.Column(
                 [
@@ -91,7 +93,29 @@ def portfolio_content(page: ft.Page):
                             ),
                         ]
                     ),
-                    ft.Text(project["title"], size=card_title_size, weight="bold", color=COLORS["text_primary"]),
+                    ft.Row(
+                        [
+                            ft.Text(
+                                project["title"],
+                                size=card_title_size,
+                                weight="bold",
+                                color=COLORS["text_primary"],
+                                expand=True,
+                            ),
+                            *(
+                                [
+                                    ft.Icon(
+                                        ft.Icons.OPEN_IN_NEW,
+                                        size=get_responsive_font_size(20, width),
+                                        color=COLORS["secondary"],
+                                    )
+                                ]
+                                if project_url
+                                else []
+                            ),
+                        ],
+                        vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                    ),
                     ft.Text(project["description"], size=description_size, color=COLORS["text_secondary"]),
                     ft.Row(
                         [create_tag(tech) for tech in project["technologies"]],
@@ -108,6 +132,9 @@ def portfolio_content(page: ft.Page):
             border_radius=ft.BorderRadius.all(8),
             border=ft.Border.all(1, COLORS["muted"]),
             shadow=get_shadow(),
+            url=project_url,
+            ink=bool(project_url),
+            tooltip=f"Abrir {project['title']}" if project_url else None,
         )
 
     hero = ft.Container(

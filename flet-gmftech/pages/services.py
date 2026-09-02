@@ -190,7 +190,7 @@ def services_content(page: ft.Page):
             "title": "Desenvolvimento Web",
             "description": "Sites, aplicações web e dashboards modernos, responsivos e prontos para deploy.",
             "highlight": COLORS["accent"],
-            "stacks": ["Python 3.13", "Flet 0.86.5", "WebAssembly", "Pyodide 0.29.4", "GitHub Pages", "Docker", "Nginx", "Playwright"],
+            "stacks": ["Python 3.14", "Flet 0.86.5", "WebAssembly", "Pyodide 314.0.3", "GitHub Pages", "Docker", "Nginx", "Playwright"],
             "stack_note": "A web continua sendo Flet-first: Python no navegador, bundle estático e validação real antes de publicar.",
             "use_cases": ["Sites institucionais em Flet", "Portais e backoffices", "Dashboards com PyECharts/Apache ECharts"],
         },

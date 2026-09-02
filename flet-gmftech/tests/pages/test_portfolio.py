@@ -55,6 +55,18 @@ def test_portfolio_card_layout_uses_current_visual_system(mock_page):
     assert first_card.shadow is not None
 
 
+def test_velejar_facil_card_links_to_live_site(mock_page):
+    result = portfolio_content(mock_page)
+    cards = [wrapper.content for wrapper in _projects_row(result).controls]
+    velejar_card, quotes_card, gmftech_card = cards
+
+    assert velejar_card.url == "https://www.velejarfacil.com.br/"
+    assert velejar_card.ink is True
+    assert velejar_card.tooltip == "Abrir Velejar Facil"
+    assert quotes_card.url is None
+    assert gmftech_card.url is None
+
+
 def test_portfolio_image_sizes_follow_breakpoints(mobile_page, tablet_page, desktop_page):
     mobile_image = next(image for image in find_controls(portfolio_content(mobile_page), ft.Image) if image.src == "/velejar_facil.png")
     tablet_image = next(image for image in find_controls(portfolio_content(tablet_page), ft.Image) if image.src == "/velejar_facil.png")

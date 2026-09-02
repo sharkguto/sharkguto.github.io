@@ -490,11 +490,13 @@ class TestPageInitialization:
         
         assert mock_page.bgcolor == COLORS["background"]
     
-    def test_page_scroll_is_enabled(self, mock_page):
-        """Test that page scroll is set to 'auto'"""
-        mock_page.scroll = "auto"
-        
-        assert mock_page.scroll == "auto"
+    def test_page_scroll_is_delegated_to_content_region(self, mock_page):
+        """The page itself must not scroll so the footer remains fixed."""
+        from app import main
+
+        main(mock_page)
+
+        assert mock_page.scroll is None
     
     def test_page_padding_is_zero(self, mock_page):
         """Test that page padding is set to 0"""
@@ -527,9 +529,24 @@ class TestPageInitialization:
 
         assert len(mock_page.controls) == 1
         layout = mock_page.controls[0]
-        content_container = layout.controls[0]
-        assert content_container.content is not None
+        scroll_region, footer = layout.controls
+        assert isinstance(scroll_region, ft.Column)
+        assert scroll_region.expand is True
+        assert scroll_region.scroll == ft.ScrollMode.AUTO
+        assert scroll_region.controls[0] is not None
+        assert footer.bgcolor == COLORS["primary"]
         assert mock_page.update.called
+
+    def test_main_keeps_footer_outside_scroll_region(self, mock_page):
+        """Only page content scrolls; the footer is a fixed layout sibling."""
+        from app import main
+
+        main(mock_page)
+
+        layout = mock_page.controls[0]
+        scroll_region, footer = layout.controls
+        assert footer not in scroll_region.controls
+        assert layout.controls[-1] is footer
 
 
 class TestResizeHandler:

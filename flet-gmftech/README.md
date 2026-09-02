@@ -6,13 +6,13 @@ O site posiciona a GMF-tech como especialista em Flet, Python, IA aplicada, auto
 
 ## Stack
 
-- Python `>=3.13,<3.14`
+- Python `>=3.14,<3.15`
 - Flet `0.86.5`
 - Flet WebView `0.86.5`
 - HTTPX `0.28.1`
 - PyECharts `2.1.0`
 - `typing_extensions==4.15.0`
-- Pyodide `0.29.4`, selecionado pelo Flet a partir do pin do Python 3.13
+- Pyodide `314.0.3`, selecionado pelo Flet a partir do pin do Python 3.14
 
 `flet-web==0.86.5` fica apenas em `requirements-dev.txt`/extra `serve`, porque nao deve entrar no runtime Pyodide do GitHub Pages.
 
