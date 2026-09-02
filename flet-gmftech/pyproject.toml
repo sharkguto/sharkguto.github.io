@@ -8,7 +8,7 @@ dependencies = [
     "flet==0.86.5",
     "flet-webview==0.86.5",
     "pyecharts==2.1.0",
-    "httpx==0.28.1",
+    "httpx==0.28.1; platform_system != 'Emscripten'",
     "typing_extensions==4.15.0",
 ]
 
@@ -52,6 +52,13 @@ exclude = [
     "tools",
     "utils/__pycache__",
     "uv.lock",
+]
+
+[tool.flet.cleanup]
+package_files = [
+    "**/test",
+    "**/testing",
+    "**/tests",
 ]
 
 [tool.flet.web]

@@ -25,10 +25,6 @@ def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.LIGHT
     page.theme = get_theme()
 
-    # Pré-carregar dados de cotação
-    from pages.coins import preload_data
-    page.run_task(preload_data)
-
     # Funções para navegação entre páginas
     def go_to_home(e):
         call_page_method(page, "push_route", "/")

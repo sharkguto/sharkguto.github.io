@@ -162,7 +162,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "flet" },
     { name = "flet-webview" },
-    { name = "httpx" },
+    { name = "httpx", marker = "sys_platform != 'emscripten'" },
     { name = "pyecharts" },
     { name = "typing-extensions" },
 ]
@@ -182,7 +182,7 @@ requires-dist = [
     { name = "flet", specifier = "==0.86.5" },
     { name = "flet-web", marker = "extra == 'serve'", specifier = "==0.86.5" },
     { name = "flet-webview", specifier = "==0.86.5" },
-    { name = "httpx", specifier = "==0.28.1" },
+    { name = "httpx", marker = "sys_platform != 'emscripten'", specifier = "==0.28.1" },
     { name = "pyecharts", specifier = "==2.1.0" },
     { name = "pytest", marker = "extra == 'test'", specifier = ">=7.4.0" },
     { name = "pytest-asyncio", marker = "extra == 'test'", specifier = ">=0.21.0" },

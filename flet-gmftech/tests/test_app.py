@@ -39,7 +39,7 @@ def test_main_initializes_page_and_initial_route(mock_page):
         _page_layout(mock_page),
         "Arquitetura de soluções e sistemas sob medida",
     )
-    assert mock_page.run_task.called
+    assert not mock_page.run_task.called
     assert mock_page.update.called
 
 
