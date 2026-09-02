@@ -38,7 +38,14 @@ self.sendPythonOutput = function (text, isStderr) {
 
 self.initPyodide = async function () {
     try {
-        importScripts(self.pyodideUrl);
+        // Module-worker load path. `importScripts` only exists in classic
+        // workers — Pyodide >= 0.29 actively refuses to load there ("Classic
+        // web workers are not supported"). We're a module worker, so the
+        // runtime ships as `pyodide.mjs` and exposes `loadPyodide` via ESM
+        // exports. The CDN/jsdelivr fallback URL set by patch_index.py also
+        // points at the .mjs variant.
+        const pyodideModule = await import(self.pyodideUrl);
+        const loadPyodide = pyodideModule.loadPyodide || self.loadPyodide;
         self.pyodide = await loadPyodide({
             stdout: (text) => self.sendPythonOutput(text, false),
             stderr: (text) => self.sendPythonOutput(text, true),
@@ -75,6 +82,21 @@ self.initPyodide = async function () {
         if "script" not in py_args:
             print("Downloading app archive")
             response = await pyfetch(app_package_url)
+            # Fail with a readable error on a non-2xx response.
+            # Without this check the error body (JSON/HTML from the
+            # server) lands in unpack_archive and surfaces as a
+            # cryptic "... is not a zip file" ReadError.
+            if not response.ok:
+                _err_body = ""
+                try:
+                    _err_body = (await response.text())[:200].strip()
+                except Exception:
+                    pass
+                raise RuntimeError(
+                    f"Failed to download app package: "
+                    f"HTTP {response.status} {app_package_url}"
+                    + (f" — {_err_body}" if _err_body else "")
+                )
             # Pick format from the URL's path extension. Pyodide's
             # filename-based sniff trips over query strings like
             # ?v=42. We only support zip and tar.gz (matching what
@@ -163,8 +185,15 @@ self.initPyodide = async function () {
             import msgpack as _msgpack
 
         def _send_python_output(text, is_stderr):
+            # Frame exactly like PyodideConnection.send_message: a 0x00 type
+            # byte (0x00 = MsgPack Flet protocol frame, 0x01 = raw DataChannel
+            # frame) in front of the packed [action, body]. Without the prefix
+            # the Dart side reads msgpack's leading 0x92 as an unknown packet
+            # type and silently drops the line. bytes([0]) avoids a literal
+            # NUL escape inside this JS template string.
             flet_js.receive_callback(
-                _msgpack.packb(
+                bytes([0])
+                + _msgpack.packb(
                     [7, {"text": text, "is_stderr": bool(is_stderr)}]
                 )
             )
@@ -206,7 +235,14 @@ self.initPyodide = async function () {
 };
 
 self.receiveCallback = (message) => {
-    self.postMessage(message.toJs());
+    // `message` is a Pyodide JsProxy wrapping a Python `bytes`. `toJs()`
+    // gives us a fresh Uint8Array; transferring its underlying ArrayBuffer
+    // to the main thread skips the structured-clone copy (~hundreds of KB
+    // per matplotlib frame). Safe because the Uint8Array is freshly
+    // materialized here, and the original Python `bytes` is untouched
+    // (Pyodide keeps its own reference).
+    const bytes = message.toJs();
+    self.postMessage(bytes, [bytes.buffer]);
 }
 // Same channel as `receiveCallback`, exposed under `flet_js` so the
 // Python python_output shim can post pre-encoded msgpack frames.

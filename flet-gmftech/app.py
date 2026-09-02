@@ -389,6 +389,7 @@ def main(page: ft.Page):
     def route_change(route_event=None):
         global main_content
         page.controls.clear()
+        page._content_scroller = None
 
         active_route = getattr(route_event, "route", None) or page.route or "/"
         if active_route == "":
@@ -424,16 +425,18 @@ def main(page: ft.Page):
             main_content = portfolio_content(page)
 
         if main_content:
+            content_scroller = ft.Column(
+                [main_content],
+                expand=True,
+                spacing=0,
+                scroll=ft.ScrollMode.AUTO,
+                horizontal_alignment=ft.CrossAxisAlignment.STRETCH,
+            )
+            page._content_scroller = content_scroller
             page.controls.append(
                 ft.Column(
                     [
-                        ft.Column(
-                            [main_content],
-                            expand=True,
-                            spacing=0,
-                            scroll=ft.ScrollMode.AUTO,
-                            horizontal_alignment=ft.CrossAxisAlignment.STRETCH,
-                        ),
+                        content_scroller,
                         footer,
                     ],
                     expand=True,

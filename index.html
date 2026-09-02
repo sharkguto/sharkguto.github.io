@@ -26,7 +26,14 @@
       assetBase: "/",
       routeUrlStrategy: "hash",
       canvasKitBaseUrl: "/canvaskit/",
-      pyodideUrl: "/pyodide/pyodide.js",
+      // .mjs is required: python-worker.js is a module worker and loads
+      // the runtime via dynamic `import()`. Pyodide >= 0.29 also refuses
+      // to run in classic workers. Use the local copy that `flet build`
+      // drops into web/pyodide/ when --no-cdn is set; otherwise pull
+      // from jsdelivr so the build artifact can stay slim.
+      
+      pyodideUrl: "https://cdn.jsdelivr.net/pyodide/v314.0.3/full/pyodide.mjs",
+      
       pythonModuleName: "app",
       webRenderer: "canvaskit",
       fontFallbackBaseUrl: "assets/fonts/", // for Noto Emoji, use Google CDN
@@ -42,9 +49,6 @@
     });
   </script>
   <script src="python.js"></script>
-  
-  
-  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
   <style id="splash-screen-style">
     html {
       height: 100%
@@ -116,6 +120,7 @@
       document.body.style.background = "transparent";
     }
   </script>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
 </head>
 
 <body>
@@ -124,7 +129,6 @@
       <source srcset="splash/img/dark-1x.png 1x, splash/img/dark-2x.png 2x, splash/img/dark-3x.png 3x, splash/img/dark-4x.png 4x" media="(prefers-color-scheme: dark)">
       <img class="center" aria-hidden="true" src="splash/img/light-1x.png" alt="">
   </picture>
-  
   <script src="flutter_bootstrap.js" async=""></script>
 
 

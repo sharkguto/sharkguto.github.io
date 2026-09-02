@@ -13,8 +13,17 @@ def services_content(page: ft.Page):
     is_mobile = breakpoint == Breakpoint.MOBILE
     selected_service = {"index": 0}
     service_cards = []
-    service_previews = []
+    service_actions = []
+    service_wrappers = []
+    service_grid = ft.ResponsiveRow()
     stack_panel = ft.Container()
+    stack_panel_wrapper = ft.Container()
+
+    cards_per_row = {
+        Breakpoint.MOBILE: 1,
+        Breakpoint.TABLET: 2,
+        Breakpoint.DESKTOP: 3,
+    }[breakpoint]
 
     def create_card(icon, title, description, highlight=COLORS["secondary"], index=None):
         card_padding = get_responsive_padding(22, width)
@@ -22,18 +31,17 @@ def services_content(page: ft.Page):
         title_size = get_responsive_font_size(19, width)
         description_size = get_responsive_font_size(15, width)
         selected = index == selected_service["index"]
-        preview = ft.Container(height=0)
-        if index is not None:
-            preview = ft.Container(
-                content=ft.Row(
-                    [create_stack_chip(stack, highlight) for stack in services[index]["stacks"][:4]],
-                    wrap=True,
-                    spacing=6,
-                    run_spacing=6,
-                ),
-                visible=selected,
-            )
-            service_previews.append(preview)
+        action_icon = ft.Icon(
+            ft.Icons.KEYBOARD_ARROW_DOWN if selected else ft.Icons.ARROW_FORWARD,
+            size=get_responsive_font_size(16, width),
+            color=highlight,
+        )
+        action_text = ft.Text(
+            "Selecionado" if selected else "Ver detalhes",
+            size=get_responsive_font_size(13, width),
+            color=highlight,
+            weight="bold",
+        )
 
         card = ft.Container(
             content=ft.Column(
@@ -48,12 +56,11 @@ def services_content(page: ft.Page):
                     ft.Text(description, size=description_size, color=COLORS["text_secondary"]),
                     ft.Row(
                         [
-                            ft.Icon(ft.Icons.TOUCH_APP, size=get_responsive_font_size(16, width), color=highlight),
-                            ft.Text("Ver tecnologias", size=get_responsive_font_size(13, width), color=highlight, weight="bold"),
+                            action_icon,
+                            action_text,
                         ],
                         spacing=6,
                     ) if index is not None else ft.Container(height=0),
-                    preview,
                 ],
                 spacing=12,
             ),
@@ -68,6 +75,7 @@ def services_content(page: ft.Page):
         if index is not None:
             card.on_click = select_service(index)
             service_cards.append(card)
+            service_actions.append((action_icon, action_text))
         return card
 
     def create_stack_chip(label, color=COLORS["secondary"]):
@@ -81,54 +89,86 @@ def services_content(page: ft.Page):
 
     def build_stack_panel():
         service = services[selected_service["index"]]
-        return ft.Column(
+        service_header = ft.Row(
             [
-                ft.Row(
-                    [
-                        ft.Container(
-                            content=ft.Icon(service["icon"], color=service["highlight"], size=get_responsive_font_size(30, width)),
-                            bgcolor=ft.Colors.with_opacity(0.1, service["highlight"]),
-                            padding=ft.Padding.all(10),
-                            border_radius=ft.BorderRadius.all(8),
-                        ),
-                        ft.Column(
-                            [
-                                ft.Text("Tecnologias para " + service["title"], size=get_responsive_font_size(25, width), weight="bold", color=COLORS["text_primary"]),
-                                ft.Text(service["stack_note"], size=get_responsive_font_size(15, width), color=COLORS["text_secondary"]),
-                            ],
-                            spacing=4,
-                            expand=True,
-                        ),
-                    ],
-                    spacing=14,
-                    vertical_alignment=ft.CrossAxisAlignment.START,
+                ft.Container(
+                    content=ft.Icon(service["icon"], color=service["highlight"], size=get_responsive_font_size(30, width)),
+                    bgcolor=ft.Colors.with_opacity(0.1, service["highlight"]),
+                    padding=ft.Padding.all(10),
+                    border_radius=ft.BorderRadius.all(8),
                 ),
+                ft.Column(
+                    [
+                        ft.Text("Detalhes do serviço", size=get_responsive_font_size(13, width), weight="bold", color=service["highlight"]),
+                        ft.Text(service["title"], size=get_responsive_font_size(25, width), weight="bold", color=COLORS["text_primary"]),
+                        ft.Text(service["stack_note"], size=get_responsive_font_size(15, width), color=COLORS["text_secondary"]),
+                    ],
+                    spacing=4,
+                    expand=True,
+                ),
+            ],
+            spacing=14,
+            vertical_alignment=ft.CrossAxisAlignment.START,
+        )
+
+        technologies = ft.Column(
+            [
+                ft.Text("Tecnologias e práticas", size=get_responsive_font_size(16, width), weight="bold", color=COLORS["text_primary"]),
                 ft.Row(
                     [create_stack_chip(stack, service["highlight"]) for stack in service["stacks"]],
                     wrap=True,
                     spacing=8,
                     run_spacing=8,
                 ),
-                ft.Divider(color=COLORS["muted"], height=1),
-                ft.Column(
-                    [
-                        ft.Text("Escopos atendidos", size=get_responsive_font_size(17, width), weight="bold", color=COLORS["text_primary"]),
-                        *[
-                            ft.Row(
-                                [
-                                    ft.Icon(ft.Icons.CHECK_CIRCLE, color=service["highlight"], size=get_responsive_font_size(18, width)),
-                                    ft.Text(item, size=get_responsive_font_size(14, width), color=COLORS["text_secondary"], expand=True),
-                                ],
-                                spacing=8,
-                                vertical_alignment=ft.CrossAxisAlignment.START,
-                            )
-                            for item in service["use_cases"]
+            ],
+            spacing=10,
+        )
+
+        scopes = ft.Column(
+            [
+                ft.Text("Escopos atendidos", size=get_responsive_font_size(17, width), weight="bold", color=COLORS["text_primary"]),
+                *[
+                    ft.Row(
+                        [
+                            ft.Icon(ft.Icons.CHECK_CIRCLE, color=service["highlight"], size=get_responsive_font_size(18, width)),
+                            ft.Text(item, size=get_responsive_font_size(14, width), color=COLORS["text_secondary"], expand=True),
                         ],
-                    ],
-                    spacing=8,
+                        spacing=8,
+                        vertical_alignment=ft.CrossAxisAlignment.START,
+                    )
+                    for item in service["use_cases"]
+                ],
+            ],
+            spacing=8,
+        )
+
+        return ft.ResponsiveRow(
+            [
+                ft.Container(
+                    content=ft.Column(
+                        [service_header, technologies],
+                        spacing=get_responsive_spacing(16, width),
+                    ),
+                    col={"sm": 12, "md": 7, "lg": 7},
+                ),
+                ft.Container(
+                    content=ft.Column(
+                        [
+                            ft.Container(
+                                content=scopes,
+                                padding=ft.Padding.only(left=0 if is_mobile else get_responsive_padding(20, width)),
+                            ),
+                        ],
+                    ),
+                    border=ft.Border.only(
+                        left=ft.BorderSide(0 if is_mobile else 1, COLORS["muted"]),
+                    ),
+                    col={"sm": 12, "md": 5, "lg": 5},
                 ),
             ],
             spacing=get_responsive_spacing(18, width),
+            run_spacing=get_responsive_spacing(18, width),
+            vertical_alignment=ft.CrossAxisAlignment.START,
         )
 
     def update_selection_styles():
@@ -137,14 +177,46 @@ def services_content(page: ft.Page):
             selected = index == selected_service["index"]
             card.bgcolor = ft.Colors.with_opacity(0.06, service["highlight"]) if selected else COLORS["surface"]
             card.border = ft.Border.all(2 if selected else 1, service["highlight"] if selected else COLORS["muted"])
-            service_previews[index].visible = selected
+            action_icon, action_text = service_actions[index]
+            action_icon.icon = ft.Icons.KEYBOARD_ARROW_DOWN if selected else ft.Icons.ARROW_FORWARD
+            action_text.value = "Selecionado" if selected else "Ver detalhes"
+
+    def place_stack_panel():
+        row_end = min(
+            ((selected_service["index"] // cards_per_row) + 1) * cards_per_row,
+            len(service_wrappers),
+        )
+        service_grid.controls = [
+            *service_wrappers[:row_end],
+            stack_panel_wrapper,
+            *service_wrappers[row_end:],
+        ]
+
+    async def center_stack_panel():
+        content_scroller = getattr(page, "_content_scroller", None)
+        if content_scroller is None:
+            return
+
+        await content_scroller.scroll_to(
+            scroll_key="service-detail",
+            duration=260,
+            curve=ft.AnimationCurve.EASE_OUT,
+        )
+        await content_scroller.scroll_to(
+            delta=-96 if is_mobile else -170,
+            duration=160,
+            curve=ft.AnimationCurve.EASE_OUT,
+        )
 
     def select_service(index):
         def handler(e):
             selected_service["index"] = index
             update_selection_styles()
             stack_panel.content = build_stack_panel()
+            stack_panel.border = ft.Border.all(1, services[index]["highlight"])
+            place_stack_panel()
             page.update()
+            page.run_task(center_stack_panel)
 
         return handler
 
@@ -258,10 +330,35 @@ def services_content(page: ft.Page):
         content=build_stack_panel(),
         padding=ft.Padding.all(get_responsive_padding(26, width)),
         bgcolor=COLORS["surface"],
-        border=ft.Border.all(1, COLORS["muted"]),
+        border=ft.Border.all(1, services[0]["highlight"]),
         border_radius=ft.BorderRadius.all(8),
         shadow=get_shadow(),
     )
+    stack_panel_wrapper = ft.Container(
+        content=stack_panel,
+        key="service-detail",
+        col={"sm": 12, "md": 12, "lg": 12},
+        padding=ft.Padding.symmetric(vertical=grid_spacing, horizontal=4),
+        data="service-detail",
+    )
+    service_wrappers = [
+        ft.Container(
+            content=create_card(
+                service["icon"],
+                service["title"],
+                service["description"],
+                service["highlight"],
+                index,
+            ),
+            col=service_col,
+        )
+        for index, service in enumerate(services)
+    ]
+    service_grid = ft.ResponsiveRow(
+        spacing=grid_spacing,
+        run_spacing=grid_spacing,
+    )
+    place_stack_panel()
 
     return ft.Container(
         content=ft.Column(
@@ -285,29 +382,8 @@ def services_content(page: ft.Page):
                     width=width,
                 ),
                 ft.Container(
-                    content=ft.ResponsiveRow(
-                        [
-                            ft.Container(
-                                content=create_card(
-                                    service["icon"],
-                                    service["title"],
-                                    service["description"],
-                                    service["highlight"],
-                                    index,
-                                ),
-                                col=service_col,
-                            )
-                            for index, service in enumerate(services)
-                        ],
-                        spacing=grid_spacing,
-                        run_spacing=grid_spacing,
-                    ),
-                    padding=ft.Padding.symmetric(horizontal=horizontal_padding, vertical=get_responsive_padding(28, width)),
-                    width=width,
-                ),
-                ft.Container(
-                    content=stack_panel,
-                    padding=ft.Padding.symmetric(horizontal=horizontal_padding, vertical=get_responsive_padding(10, width)),
+                    content=service_grid,
+                    padding=ft.Padding.symmetric(horizontal=horizontal_padding, vertical=get_responsive_padding(20, width)),
                     width=width,
                 ),
                 ft.Container(

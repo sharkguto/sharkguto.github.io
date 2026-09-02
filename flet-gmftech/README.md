@@ -76,15 +76,14 @@ PLAYWRIGHT_BROWSER=chromium uv run --project flet-gmftech --with playwright pyth
 ```
 
 O Flet 0.86 configura o Pyodide em `index.html` com o modulo `pyodide.mjs`.
-Os scripts de Docker/deploy na raiz ainda procuram o formato legado em
-`python.js` e precisam ser migrados antes da proxima publicacao. Eles nao fazem
-parte do escopo editavel de `flet-gmftech/`.
+O `deploy-flet.sh` valida esse formato e executa o build pelo ambiente do projeto
+com `uv run`. O pacote do app exclui ambiente virtual, caches, testes e
+prototipos; a copia local de Pyodide tambem nao e publicada porque o runtime e
+carregado pela CDN.
 
 ## Deploy
 
 O script `../deploy-flet.sh` existe para publicar no GitHub Pages, mas deve ser executado somente quando o deploy for solicitado explicitamente.
-Na versao atual, nao o execute antes de migrar o patch legado de Pyodide citado
-acima.
 
 Antes de publicar, valide:
 

@@ -10,11 +10,24 @@ def _service_grid(result):
 
 
 def _tech_grid(result):
-    return result.content.controls[4].content
+    return result.content.controls[3].content
 
 
 def _stack_panel(result):
-    return result.content.controls[2].content
+    detail_wrapper = next(
+        control
+        for control in _service_grid(result).controls
+        if control.data == "service-detail"
+    )
+    return detail_wrapper.content
+
+
+def _service_wrappers(result):
+    return [
+        control
+        for control in _service_grid(result).controls
+        if control.data != "service-detail"
+    ]
 
 
 def test_services_renders_header_grids_and_stack(mock_page):
@@ -22,16 +35,17 @@ def test_services_renders_header_grids_and_stack(mock_page):
 
     assert isinstance(result, ft.Container)
     assert isinstance(result.content, ft.Column)
-    assert len(result.content.controls) == 5
+    assert len(result.content.controls) == 4
     assert text_exists(result, "Serviços de engenharia de software")
     assert text_exists(result, "Tecnologias e plataformas")
-    assert text_exists(result, "Tecnologias para Arquitetura de Software")
+    assert text_exists(result, "Detalhes do serviço")
+    assert text_exists(_stack_panel(result), "Arquitetura de Software")
 
     services_grid = _service_grid(result)
     tech_grid = _tech_grid(result)
     assert isinstance(services_grid, ft.ResponsiveRow)
     assert isinstance(tech_grid, ft.ResponsiveRow)
-    assert len(services_grid.controls) == 9
+    assert len(services_grid.controls) == 10
     assert len(tech_grid.controls) == 12
 
 
@@ -65,13 +79,25 @@ def test_services_grid_responsiveness(mobile_page, tablet_page, desktop_page):
     desktop_result = services_content(desktop_page)
 
     for result in [mobile_result, tablet_result, desktop_result]:
-        assert _service_grid(result).controls[0].col == {"sm": 12, "md": 6, "lg": 4}
+        assert _service_wrappers(result)[0].col == {"sm": 12, "md": 6, "lg": 4}
         assert _tech_grid(result).controls[0].col == {"sm": 12, "md": 6, "lg": 4}
+
+
+def test_services_detail_follows_selected_row_at_each_breakpoint(mobile_page, tablet_page, desktop_page):
+    expected_detail_positions = [1, 2, 3]
+
+    for page, expected_position in zip(
+        [mobile_page, tablet_page, desktop_page],
+        expected_detail_positions,
+        strict=True,
+    ):
+        grid = _service_grid(services_content(page))
+        assert grid.controls[expected_position].data == "service-detail"
 
 
 def test_services_cards_keep_gmftech_styling(mock_page):
     result = services_content(mock_page)
-    first_card = _service_grid(result).controls[0].content
+    first_card = _service_wrappers(result)[0].content
 
     assert isinstance(first_card, ft.Container)
     assert first_card.bgcolor != COLORS["surface"]
@@ -85,15 +111,18 @@ def test_services_cards_keep_gmftech_styling(mock_page):
 def test_services_clicking_card_updates_stack_panel(mock_page):
     result = services_content(mock_page)
     services_grid = _service_grid(result)
+    service_wrappers = _service_wrappers(result)
 
-    services_grid.controls[8].content.on_click(None)
+    service_wrappers[8].content.on_click(None)
 
-    assert text_exists(_stack_panel(result), "Tecnologias para Automação e Inteligência Artificial")
+    assert text_exists(_stack_panel(result), "Automação e Inteligência Artificial")
     assert text_exists(_stack_panel(result), "LLMs")
-    assert services_grid.controls[8].content.border.top.width == 2
-    assert services_grid.controls[8].content.content.controls[-1].visible is True
-    assert services_grid.controls[0].content.content.controls[-1].visible is False
+    assert service_wrappers[8].content.border.top.width == 2
+    assert text_exists(service_wrappers[8].content, "Selecionado")
+    assert text_exists(service_wrappers[0].content, "Ver detalhes")
+    assert services_grid.controls[-1].data == "service-detail"
     assert mock_page.update.called
+    mock_page.run_task.assert_called_once()
 
 
 def test_services_stack_panel_has_clickable_service_stacks(mock_page):

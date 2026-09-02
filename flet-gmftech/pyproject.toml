@@ -31,6 +31,28 @@ build_number = 1                              # --build-number
 
 [tool.flet.app]
 module = "app"
+exclude = [
+    ".coverage",
+    ".coveragerc",
+    ".gitignore",
+    ".pytest_cache",
+    ".venv",
+    "AGENTS.md",
+    "README.md",
+    "__pycache__",
+    "images",
+    "new2.py",
+    "old.py",
+    "pages/__pycache__",
+    "pyproject.toml",
+    "pytest.ini",
+    "requirements-dev.txt",
+    "requirements.txt",
+    "tests",
+    "tools",
+    "utils/__pycache__",
+    "uv.lock",
+]
 
 [tool.flet.web]
 base_url = "/"              # --base-url
