@@ -1,5 +1,5 @@
-flet==0.85.1
-flet-webview==0.85.1
+flet==0.86.5
+flet-webview==0.86.5
 httpx==0.28.1
 pyecharts==2.1.0
 typing_extensions==4.15.0

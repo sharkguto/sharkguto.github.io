@@ -95,10 +95,38 @@ def main():
 
         page.goto(URL, wait_until="domcontentloaded", timeout=120_000)
 
-        python_js = page.evaluate("() => fetch('/python.js', { cache: 'no-store' }).then((r) => r.text())")
-        expected_url = f"https://cdn.jsdelivr.net/pyodide/v{PYODIDE_VERSION}/full/pyodide.js"
-        if expected_url not in python_js:
-            raise AssertionError(f"python.js nao aponta para {expected_url}")
+        bundle_files = page.evaluate(
+            """async () => {
+                const fetchText = (path) =>
+                    fetch(new URL(path, document.baseURI), { cache: "no-store" })
+                        .then((response) => response.text());
+                const [pythonJs, indexHtml] = await Promise.all([
+                    fetchText("python.js"),
+                    fetchText("index.html"),
+                ]);
+                return { pythonJs, indexHtml };
+            }"""
+        )
+        expected_urls = (
+            f"https://cdn.jsdelivr.net/pyodide/v{PYODIDE_VERSION}/full/pyodide.js",
+            f"https://cdn.jsdelivr.net/pyodide/v{PYODIDE_VERSION}/full/pyodide.mjs",
+        )
+        pyodide_source = next(
+            (
+                source_name
+                for source_name, source in (
+                    ("python.js", bundle_files["pythonJs"]),
+                    ("index.html", bundle_files["indexHtml"]),
+                )
+                if any(expected_url in source for expected_url in expected_urls)
+            ),
+            None,
+        )
+        if pyodide_source is None:
+            raise AssertionError(
+                "Bundle nao aponta para uma URL Pyodide esperada: "
+                + " ou ".join(expected_urls)
+            )
 
         started_at = time.monotonic()
         initialized = False
@@ -141,7 +169,7 @@ def main():
             raise AssertionError("Nenhum host Flutter/Flet foi renderizado.")
 
         print(f"OK: {URL} validado com Playwright/{browser_name}")
-        print(f"OK: Pyodide {PYODIDE_VERSION} configurado em python.js")
+        print(f"OK: Pyodide {PYODIDE_VERSION} configurado em {pyodide_source}")
         print(f"OK: screenshot salvo em {SCREENSHOT_PATH}")
 
         context.close()

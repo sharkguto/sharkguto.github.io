@@ -6,15 +6,15 @@ O site posiciona a GMF-tech como especialista em Flet, Python, IA aplicada, auto
 
 ## Stack
 
-- Python `>=3.13`
-- Flet `0.85.1`
-- Flet WebView `0.85.1`
+- Python `>=3.13,<3.14`
+- Flet `0.86.5`
+- Flet WebView `0.86.5`
 - HTTPX `0.28.1`
 - PyECharts `2.1.0`
 - `typing_extensions==4.15.0`
-- Pyodide `0.29.4` no bundle final via patch pos-build
+- Pyodide `0.29.4`, selecionado pelo Flet a partir do pin do Python 3.13
 
-`flet-web==0.85.1` fica apenas em `requirements-dev.txt`/extra `serve`, porque nao deve entrar no runtime Pyodide do GitHub Pages.
+`flet-web==0.86.5` fica apenas em `requirements-dev.txt`/extra `serve`, porque nao deve entrar no runtime Pyodide do GitHub Pages.
 
 ## Conteudo Do Site
 
@@ -28,21 +28,21 @@ O site posiciona a GMF-tech como especialista em Flet, Python, IA aplicada, auto
 ## Desenvolvimento
 
 ```bash
-python3 -m pip install -r requirements-dev.txt
-python3 app.py
+uv sync --extra test --extra serve
+uv run python app.py
 ```
 
 ## Testes
 
 ```bash
-python3 -m compileall app.py pages theme.py utils tests
-python3 -m pytest
+uv run python -m compileall app.py pages theme.py utils tests
+uv run python -m pytest
 ```
 
 ## Build Web
 
 ```bash
-flet build web --yes
+uv run flet build web --yes
 ```
 
 O bundle e gerado em `build/web/`.
@@ -72,14 +72,19 @@ http://127.0.0.1:8080/
 Validacao com Playwright:
 
 ```bash
-PLAYWRIGHT_BROWSER=chromium python3 flet-gmftech/tools/validate_frontend_playwright.py http://127.0.0.1:8080/
+PLAYWRIGHT_BROWSER=chromium uv run --project flet-gmftech --with playwright python flet-gmftech/tools/validate_frontend_playwright.py http://127.0.0.1:8080/
 ```
 
-O `Dockerfile` serve `flet-gmftech/build/web/` com Nginx e atualiza `python.js` para carregar Pyodide `0.29.4`.
+O Flet 0.86 configura o Pyodide em `index.html` com o modulo `pyodide.mjs`.
+Os scripts de Docker/deploy na raiz ainda procuram o formato legado em
+`python.js` e precisam ser migrados antes da proxima publicacao. Eles nao fazem
+parte do escopo editavel de `flet-gmftech/`.
 
 ## Deploy
 
 O script `../deploy-flet.sh` existe para publicar no GitHub Pages, mas deve ser executado somente quando o deploy for solicitado explicitamente.
+Na versao atual, nao o execute antes de migrar o patch legado de Pyodide citado
+acima.
 
 Antes de publicar, valide:
 

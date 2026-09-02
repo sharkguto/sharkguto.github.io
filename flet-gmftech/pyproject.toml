@@ -3,10 +3,10 @@ name = "gmf_tech"
 version = "1.0.0"
 description = "website gmf-tech"
 authors = [{ name = "Gustavo M Freitas", email = "gustavo@gmf-tech.com" }]
-requires-python = ">=3.13"
+requires-python = ">=3.13,<3.14"
 dependencies = [
-    "flet==0.85.1",
-    "flet-webview==0.85.1",
+    "flet==0.86.5",
+    "flet-webview==0.86.5",
     "pyecharts==2.1.0",
     "httpx==0.28.1",
     "typing_extensions==4.15.0",
@@ -14,7 +14,7 @@ dependencies = [
 
 [project.optional-dependencies]
 serve = [
-    "flet-web==0.85.1",
+    "flet-web==0.86.5",
 ]
 test = [
     "pytest>=7.4.0",

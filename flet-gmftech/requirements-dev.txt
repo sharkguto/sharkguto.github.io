@@ -1,2 +1,2 @@
 -r requirements.txt
-flet-web==0.85.1
+flet-web==0.86.5
