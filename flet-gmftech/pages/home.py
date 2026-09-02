@@ -83,12 +83,12 @@ def home_content(page: ft.Page):
                             ft.Row(
                                 [
                                     ft.Icon(ft.Icons.HUB, color=COLORS["accent_alt"], size=20),
-                                    ft.Text("Sistemas integrados à operação", color=ft.Colors.WHITE, weight="bold"),
+                                    ft.Text("Arquitetura conectada ao negócio", color=ft.Colors.WHITE, weight="bold"),
                                 ],
                                 spacing=8,
                             ),
                             ft.Text(
-                                "Aplicações, APIs, dados e automações conectados aos processos da empresa.",
+                                "Aplicações, APIs e integrações projetadas para sustentar a operação e a evolução do produto.",
                                 color=ft.Colors.WHITE_70,
                                 size=get_responsive_font_size(13, width),
                             ),
@@ -117,7 +117,7 @@ def home_content(page: ft.Page):
                         [
                             ft.Container(
                                 content=ft.Text(
-                                    "Fábrica de software",
+                                    "Fábrica de software especializada",
                                     size=get_responsive_font_size(13, width),
                                     color=COLORS["accent"],
                                     weight="bold",
@@ -127,13 +127,13 @@ def home_content(page: ft.Page):
                                 border_radius=ft.BorderRadius.all(6),
                             ),
                             ft.Text(
-                                "Software sob medida para operações e produtos digitais",
+                                "Arquitetura de soluções e sistemas sob medida",
                                 size=title_size,
                                 weight="bold",
                                 color=ft.Colors.WHITE,
                             ),
                             ft.Text(
-                                "A GMF-tech especifica, desenvolve e implanta aplicações web, mobile e sistemas internos, com arquitetura, integrações e infraestrutura adequadas ao negócio.",
+                                "A GMF-tech desenvolve e implanta soluções com Python 3, FastAPI, React e Flet para web, WebAssembly e mobile.",
                                 size=subtitle_size,
                                 color=ft.Colors.WHITE_70,
                             ),
@@ -148,9 +148,9 @@ def home_content(page: ft.Page):
                             ),
                             ft.ResponsiveRow(
                                 [
-                                    ft.Container(content=stat_card("Sob medida", "Escopo, desenvolvimento e evolução"), col={"sm": 12, "md": 4, "lg": 4}),
-                                    ft.Container(content=stat_card("Full stack", "Frontend, backend e dados", COLORS["accent_alt"]), col={"sm": 12, "md": 4, "lg": 4}),
-                                    ft.Container(content=stat_card("Entrega", "Cloud, CI/CD e observabilidade"), col={"sm": 12, "md": 4, "lg": 4}),
+                                    ft.Container(content=stat_card("Arquitetura", "Soluções escaláveis e integradas"), col={"sm": 12, "md": 4, "lg": 4}),
+                                    ft.Container(content=stat_card("Backend Python", "APIs e serviços com FastAPI", COLORS["accent_alt"]), col={"sm": 12, "md": 4, "lg": 4}),
+                                    ft.Container(content=stat_card("Web e mobile", "React, Flet e WebAssembly"), col={"sm": 12, "md": 4, "lg": 4}),
                                 ],
                                 spacing=10,
                                 run_spacing=10,
@@ -181,26 +181,26 @@ def home_content(page: ft.Page):
         content=ft.Column(
             [
                 ft.Text(
-                    "Engenharia de software de ponta a ponta",
+                    "Especialização técnica para soluções completas",
                     size=section_title_size,
                     weight="bold",
                     color=COLORS["text_primary"],
                     text_align="center",
                 ),
                 ft.Text(
-                    "Atuação desde a definição do escopo até a implantação, documentação e evolução do sistema.",
+                    "Arquitetura, desenvolvimento e implantação conduzidos com tecnologias adequadas a cada contexto.",
                     size=subtitle_size,
                     color=COLORS["text_secondary"],
                     text_align="center",
                 ),
                 ft.ResponsiveRow(
                     [
-                        ft.Container(content=service_card(ft.Icons.ASSIGNMENT, "Discovery e Requisitos", "Objetivos, fluxos, regras de negócio, backlog e critérios de aceite.", COLORS["secondary"]), col={"sm": 12, "md": 6, "lg": 4}),
-                        ft.Container(content=service_card(ft.Icons.ARCHITECTURE, "Arquitetura de Software", "Definição de componentes, dados, integrações, segurança e operação.", COLORS["primary"]), col={"sm": 12, "md": 6, "lg": 4}),
-                        ft.Container(content=service_card(ft.Icons.DEVELOPER_BOARD, "IoT e Sistemas Conectados", "Prototipagem eletrônica, telemetria e integração entre dispositivos e software.", COLORS["coral"]), col={"sm": 12, "md": 6, "lg": 4}),
-                        ft.Container(content=service_card(ft.Icons.DEVICES, "Aplicações Web e Mobile", "Produtos digitais, portais, sistemas internos e interfaces responsivas.", COLORS["secondary"]), col={"sm": 12, "md": 6, "lg": 4}),
+                        ft.Container(content=service_card(ft.Icons.ARCHITECTURE, "Arquitetura de Soluções", "Modelagem de sistemas, componentes, integrações, dados, segurança e requisitos não funcionais.", COLORS["primary"]), col={"sm": 12, "md": 6, "lg": 4}),
+                        ft.Container(content=service_card(ft.Icons.API, "Backend Python e FastAPI", "APIs, serviços e integrações com contratos bem definidos, testes e observabilidade.", COLORS["secondary"]), col={"sm": 12, "md": 6, "lg": 4}),
+                        ft.Container(content=service_card(ft.Icons.WEB, "Frontend React", "Interfaces web componentizadas, responsivas e integradas às regras do produto.", COLORS["coral"]), col={"sm": 12, "md": 6, "lg": 4}),
+                        ft.Container(content=service_card(ft.Icons.DEVICES, "Aplicações com Flet", "Soluções em Python para web, WebAssembly e dispositivos móveis.", COLORS["secondary"]), col={"sm": 12, "md": 6, "lg": 4}),
+                        ft.Container(content=service_card(ft.Icons.HUB, "Dados e Integrações", "Bancos de dados, WebSockets e integrações entre sistemas e serviços externos.", COLORS["accent_alt"]), col={"sm": 12, "md": 6, "lg": 4}),
                         ft.Container(content=service_card(ft.Icons.CLOUD, "Cloud, DevOps e Segurança", "Ambientes, pipelines, monitoramento e controles para operação em produção.", COLORS["accent"]), col={"sm": 12, "md": 6, "lg": 4}),
-                        ft.Container(content=service_card(ft.Icons.SETTINGS_SUGGEST, "Dados, Automação e IA", "Integração de dados e automação de processos com critérios de segurança e governança.", COLORS["accent_alt"]), col={"sm": 12, "md": 6, "lg": 4}),
                     ],
                     spacing=16,
                     run_spacing=16,
@@ -221,9 +221,9 @@ def home_content(page: ft.Page):
                     content=ft.Column(
                         [
                             ft.Text("Processo de entrega", size=get_responsive_font_size(16, width), color=COLORS["accent"], weight="bold"),
-                            ft.Text("Projetos conduzidos com escopo, critérios técnicos e previsibilidade.", size=section_title_size, weight="bold", color=ft.Colors.WHITE),
+                            ft.Text("Engenharia aplicada do projeto à operação.", size=section_title_size, weight="bold", color=ft.Colors.WHITE),
                             ft.Text(
-                                "A GMF-tech organiza as decisões de produto e engenharia, define responsabilidades e acompanha cada etapa até a entrada em operação.",
+                                "A GMF-tech conduz as decisões de arquitetura e desenvolvimento, define responsabilidades e acompanha cada etapa até a entrada em operação.",
                                 size=body_size,
                                 color=ft.Colors.WHITE_70,
                             ),
@@ -235,9 +235,9 @@ def home_content(page: ft.Page):
                 ft.Container(
                     content=ft.Column(
                         [
-                            ft.ListTile(leading=ft.Icon(ft.Icons.FACT_CHECK, color=COLORS["accent_alt"]), title=ft.Text("1. Definir objetivos, escopo, riscos e critérios de aceite", color=ft.Colors.WHITE)),
-                            ft.ListTile(leading=ft.Icon(ft.Icons.ROUTE, color=COLORS["accent_alt"]), title=ft.Text("2. Projetar a arquitetura e validar os fluxos prioritários", color=ft.Colors.WHITE)),
-                            ft.ListTile(leading=ft.Icon(ft.Icons.SPEED, color=COLORS["accent_alt"]), title=ft.Text("3. Implantar, documentar e planejar a evolução", color=ft.Colors.WHITE)),
+                            ft.ListTile(leading=ft.Icon(ft.Icons.FACT_CHECK, color=COLORS["accent_alt"]), title=ft.Text("1. Entender objetivos, requisitos e restrições do negócio", color=ft.Colors.WHITE)),
+                            ft.ListTile(leading=ft.Icon(ft.Icons.ROUTE, color=COLORS["accent_alt"]), title=ft.Text("2. Definir arquitetura, contratos e plano de implementação", color=ft.Colors.WHITE)),
+                            ft.ListTile(leading=ft.Icon(ft.Icons.SPEED, color=COLORS["accent_alt"]), title=ft.Text("3. Desenvolver, testar, implantar e sustentar a solução", color=ft.Colors.WHITE)),
                         ],
                         spacing=6,
                     ),

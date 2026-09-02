@@ -35,7 +35,10 @@ def test_main_initializes_page_and_initial_route(mock_page):
     assert isinstance(mock_page.appbar, ft.AppBar)
     assert len(mock_page.controls) == 1
     assert mock_page._content_scroller is mock_page.controls[0].controls[0]
-    assert text_exists(_page_layout(mock_page), "Software sob medida")
+    assert text_exists(
+        _page_layout(mock_page),
+        "Arquitetura de soluções e sistemas sob medida",
+    )
     assert mock_page.run_task.called
     assert mock_page.update.called
 

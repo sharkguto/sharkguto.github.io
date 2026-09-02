@@ -13,9 +13,9 @@ def test_home_renders_new_gmftech_landing(mock_page):
     assert len(result.content.controls) == 3
     assert result.bgcolor == COLORS["background"]
 
-    assert text_exists(result, "Software sob medida para operações e produtos digitais")
-    assert text_exists(result, "Fábrica de software")
-    assert text_exists(result, "Engenharia de software de ponta a ponta")
+    assert text_exists(result, "Arquitetura de soluções e sistemas sob medida")
+    assert text_exists(result, "Fábrica de software especializada")
+    assert text_exists(result, "Especialização técnica para soluções completas")
     assert text_exists(result, "Processo de entrega")
 
 
@@ -23,12 +23,12 @@ def test_home_exposes_primary_services(mock_page):
     result = home_content(mock_page)
 
     for label in [
-        "Discovery e Requisitos",
-        "Arquitetura de Software",
-        "IoT e Sistemas Conectados",
-        "Aplicações Web e Mobile",
+        "Arquitetura de Soluções",
+        "Backend Python e FastAPI",
+        "Frontend React",
+        "Aplicações com Flet",
+        "Dados e Integrações",
         "Cloud, DevOps e Segurança",
-        "Dados, Automação e IA",
     ]:
         assert text_exists(result, label)
 
